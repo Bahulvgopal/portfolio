@@ -36,21 +36,21 @@ export const certificates: Certificate[] = [  // ✅ IMPORTANT
     title: "Cybersecurity Workshop",
     issuer: "Offenso Academy",
     year: "10 October 2025",
-    image: "/images/certificates/cyber.png",
+    image: "/images/certificates/cyber.jpg",
     link: "https://example.com/certificate", // optional
   },
       {
     title: "Industrial Java Development Workshop",
     issuer: "Spectrum Solutions, Ernakulam",
     year: "29 June 2023",
-    image: "/images/certificates/ijd.png",
+    image: "/images/certificates/ijd.jpg",
     link: "https://example.com/certificate", // optional
   },
       {
     title: "Configure And Deploy Web Server in Cloud",
     issuer: "Spectrum Solutions, Ernakulam",
     year: "12 August 2023",
-    image: "/images/certificates/web.png",
+    image: "/images/certificates/web.jpg",
     link: "https://example.com/certificate", // optional
   },
 ];
