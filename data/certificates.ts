@@ -25,4 +25,11 @@ export const certificates: Certificate[] = [  // ✅ IMPORTANT
     image: "/images/certificates/infosys.jpg",
     link: "https://example.com/certificate", // optional
   },
+    {
+    title: "IEDC Startup Summit 2026",
+    issuer: "IEDC - KSUM",
+    year: "07 March 2026",
+    image: "/images/certificates/SS.jpg",
+    link: "https://example.com/certificate", // optional
+  },
 ];
