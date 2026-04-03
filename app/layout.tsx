@@ -1,7 +1,13 @@
 import "./globals.css";
-import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Providers } from "./providers";
+import Script from "next/script";
+
+export const metadata = {
+  title: "Bahul | Portfolio",
+  description: "Full Stack Developer Portfolio",
+};
 
 export default function RootLayout({
   children,
@@ -9,14 +15,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-black">
-        <Providers>
-          <Navbar />
-          {children}
-          <Footer />
-        </Providers>
-      </body>
-    </html>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+  <body>
+
+    {/* 🔥 Google Analytics */}
+    <Script
+      src="https://www.googletagmanager.com/gtag/js?id=G-P5DBTLP152"
+      strategy="afterInteractive"
+    />
+
+    <Script id="google-analytics" strategy="afterInteractive">
+      {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-P5DBTLP152', {
+          page_path: window.location.pathname,
+        });
+      `}
+    </Script>
+
+    <Providers>
+      <Navbar />
+      {children}
+      <Footer />
+    </Providers>
+
+  </body>
+</html>
   );
 }
