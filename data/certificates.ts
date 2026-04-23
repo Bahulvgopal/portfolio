@@ -60,4 +60,11 @@ export const certificates: Certificate[] = [  // ✅ IMPORTANT
     image: "/images/certificates/startupS.png",
     link: "https://example.com/certificate", // optional
   },
+  {
+    title: "Zero to Hero in 6 Months by Offenso",
+    issuer: "Offenso Hackers Academy",
+    year: "18 April 2026",
+    image: "/images/certificates/Webinar1Offenso.png",
+    link: "https://example.com/certificate", // optional
+  },
 ];
