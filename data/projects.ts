@@ -1,4 +1,39 @@
 export const projects = [
+  
+  {
+    title: "AmoraWeds Website",
+    slug: "amora",
+    description: "Full stack website for AmoraWeds wedding invitations",
+
+    image: "/images/projects/aw1.png",
+
+    github: "https://amora-weds-h2l57315k-bahul-v-gopals-projects.vercel.app/",
+    live: "https://amora-weds-h2l57315k-bahul-v-gopals-projects.vercel.app/",
+
+    tech: ["Next.js", "MongoDB", "Tailwind"],
+
+    features: [
+      "Ordering through whatsapp",
+      "Review section",
+      "Previous works section",
+    ],
+
+    problem:
+      "Difficult to explain every features to clients fro works.",
+
+    solution:
+      "Built a centralized platform to manage ordering,features we provide etc.",
+
+    learnings:
+      "Improved understanding of full-stack architecture and API design.",
+
+    screenshots: [
+      "/images/projects/aw2.png",
+      "/images/projects/aw3.png",
+      "/images/projects/aw4.png",
+    ],
+  },
+  
   {
     title: "IEDC website",
     slug: "iedc",
