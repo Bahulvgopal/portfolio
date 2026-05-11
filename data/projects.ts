@@ -31,6 +31,7 @@ export const projects = [
       "/images/projects/aw2.png",
       "/images/projects/aw3.png",
       "/images/projects/aw4.png",
+      "/images/projects/aw5.png",
     ],
   },
   
