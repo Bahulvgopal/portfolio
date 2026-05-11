@@ -7,8 +7,8 @@ export const projects = [
 
     image: "/images/projects/aw1.png",
 
-    github: "https://amora-weds-h2l57315k-bahul-v-gopals-projects.vercel.app/",
-    live: "https://amora-weds-h2l57315k-bahul-v-gopals-projects.vercel.app/",
+    github: "https://amora-weds.vercel.app/",
+    live: "https://amora-weds.vercel.app/",
 
     tech: ["Next.js", "MongoDB", "Tailwind"],
 
