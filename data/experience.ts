@@ -8,13 +8,22 @@ type Experience = {
 };
 
 export const experiences: Experience[] = [
+   {
+    role: "Technical Officer",
+    company: "Hult at UCEK",
+    period: "2026 - Present",
+    description:
+      "Built responsive UI using React and improved performance of web applications.",
+    type: "co-Leadership",
+    skills: ["React", "UI/UX", "Performance"],
+  },
   {
     role: "Technical Officer",
     company: "IEDC at UCEK",
     period: "2026 - Present",
     description:
       "Built responsive UI using React and improved performance of web applications.",
-    type: "Leadership",
+    type: "Officer",
     skills: ["React", "UI/UX", "Performance"],
   },
   {
@@ -23,7 +32,7 @@ export const experiences: Experience[] = [
     period: "2026",
     description:
       "Organized and managed events including treasure hunt and team coordination.",
-    type: "Event",
+    type: "Event Organiser",
     skills: ["Event Management", "Teamwork"],
   },
 ];
