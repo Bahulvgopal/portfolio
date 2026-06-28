@@ -61,14 +61,14 @@ export const certificates: Certificate[] = [  // ✅ IMPORTANT
     link: "https://example.com/certificate", // optional
   },
   {
-    title: "General Networking - Networking and Security Course",
+    title: "Zero to Hero in 6 Months by Offenso",
     issuer: "Offenso Hackers Academy",
     year: "18 April 2026",
     image: "/images/certificates/Webinar1Offenso.png",
     link: "https://example.com/certificate", // optional
   },
     {
-    title: "Zero to Hero in 6 Months by Offenso",
+    title: "General Networking - Networking and Security Course",
     issuer:"Infosys",
     year: "25 June 2026",
     image: "/images/certificates/cn.png",
