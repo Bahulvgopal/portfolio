@@ -19,7 +19,7 @@ export const projects = [
     ],
 
     problem:
-      "Difficult to explain every features to clients fro works.",
+      "Website that show case features and the packages of a startup that make digital wedding invitations.",
 
     solution:
       "Built a centralized platform to manage ordering,features we provide etc.",
@@ -54,7 +54,7 @@ export const projects = [
     ],
 
     problem:
-      "Managing college events manually was inefficient and error-prone.",
+      "New website for IEDC club at college with has admindashboard to manages data without any coding.",
 
     solution:
       "Built a centralized platform to manage registrations, events, and participants.",
@@ -88,7 +88,7 @@ export const projects = [
     ],
 
     problem:
-      "Booking trip individually was difficult",
+      "A platform made for tourists to book activities and other packages individually without any third party fees and enjoy different kind of experiences individually.",
 
     solution:
       "Built a prototype to book trip, hotel, activities etc.",
@@ -125,7 +125,7 @@ export const projects = [
     ],
 
     problem:
-      "No applocation that detect currency and give sum output through audio",
+      "Detect currency and coins using computer vison and give voice output of the currency scanned and the total sum. made using yolo v8n version for better detection and ml.",
 
     solution:
       "Built a website which detect currency and give audio output.",
@@ -155,7 +155,7 @@ export const projects = [
     ],
 
     problem:
-      "No applocation that detect currency and give sum output through audio",
+      "Detect currency and give voice output using computer vision and made using yolo v4.",
 
     solution:
       "Built a website which detect currency and give audio output.",
@@ -187,7 +187,7 @@ export const projects = [
       "",
 
     solution:
-      "Built a website that used to order painting from an artist.",
+      "Built an website that used to order painting from an artist.",
 
     learnings:
       "Learned to build website using html,css and js.",

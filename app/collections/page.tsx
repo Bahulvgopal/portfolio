@@ -1,122 +1,226 @@
-import Link from "next/link";
+"use client";
 
-// Replace or move this to @/data/collections.ts when ready
-const collections = [
+import { motion } from "framer-motion";
+import {
+  SiHtml5, SiCss, SiJavascript, SiReact, SiNextdotjs,
+  SiTailwindcss, SiNodedotjs, SiExpress, SiMongodb, SiMongoose,
+  SiGit, SiGithub, SiVscodium, SiVercel, SiPostman,
+} from "react-icons/si";
+import { TbApi } from "react-icons/tb";
+
+/* --- skill icon map ------------------------------------------------------- */
+const ICON_MAP: Record<string, React.ReactNode> = {
+  HTML:          <SiHtml5      className="text-orange-400" />,
+  CSS:           <SiCss        className="text-blue-400" />,
+  JavaScript:    <SiJavascript className="text-yellow-400" />,
+  React:         <SiReact      className="text-cyan-400" />,
+  "Next.js":     <SiNextdotjs  className="text-white" />,
+  "Tailwind CSS":<SiTailwindcss className="text-sky-400" />,
+  "Node.js":     <SiNodedotjs  className="text-green-500" />,
+  "Express.js":  <SiExpress    className="text-neutral-300" />,
+  "REST APIs":   <TbApi        className="text-violet-400" />,
+  MongoDB:       <SiMongodb    className="text-green-400" />,
+  Mongoose:      <SiMongoose   className="text-red-400" />,
+  Git:           <SiGit        className="text-orange-500" />,
+  GitHub:        <SiGithub     className="text-neutral-300" />,
+  "VS Code":     <SiVscodium   className="text-blue-500" />,
+  Vercel:        <SiVercel     className="text-white" />,
+  Postman:       <SiPostman    className="text-orange-400" />,
+};
+
+/* --- data ----------------------------------------------------------------- */
+const skillGroups = [
   {
-    slug: "treasure-hunt-design",
-    title: "Treasure Hunt Design",
-    description: "Visual assets and branding created for a treasure hunt event.",
-    tag: "Event Design",
-    image: "", // add image path when ready e.g. "/images/collections/treasure-hunt.jpg"
+    title: "Frontend",
+    description: "Building fast, responsive, and delightful user interfaces.",
+    accent: "from-sky-400 via-blue-400 to-indigo-400",
+    glow: "rgba(56,189,248,0.06)",
+    hoverBorder: "hover:border-sky-500/20",
+    skills: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS"],
   },
   {
-    slug: "poster-designs",
-    title: "Poster Designs",
-    description: "A set of posters designed for college events and competitions.",
-    tag: "Print",
-    image: "",
+    title: "Backend",
+    description: "Scalable APIs and solid application logic.",
+    accent: "from-violet-400 via-purple-400 to-fuchsia-400",
+    glow: "rgba(139,92,246,0.06)",
+    hoverBorder: "hover:border-violet-500/20",
+    skills: ["Node.js", "Express.js", "REST APIs"],
   },
   {
-    slug: "ui-concepts",
-    title: "UI Concepts",
-    description: "Exploratory UI mockups and interface experiments.",
-    tag: "UI / UX",
-    image: "",
+    title: "Database",
+    description: "Structuring and managing data efficiently at scale.",
+    accent: "from-emerald-400 via-green-400 to-teal-400",
+    glow: "rgba(52,211,153,0.06)",
+    hoverBorder: "hover:border-emerald-500/20",
+    skills: ["MongoDB", "Mongoose"],
+  },
+  {
+    title: "Tools & Workflow",
+    description: "The daily toolkit for building, shipping, and iterating.",
+    accent: "from-amber-400 via-orange-400 to-rose-400",
+    glow: "rgba(251,191,36,0.06)",
+    hoverBorder: "hover:border-amber-500/20",
+    skills: ["Git", "GitHub", "VS Code", "Vercel", "Postman"],
   },
 ];
 
-// Palette per index — cycles if more items added
-const accents = [
-  "from-blue-50 to-indigo-100 dark:from-blue-950/40 dark:to-indigo-950/40",
-  "from-purple-50 to-pink-100 dark:from-purple-950/40 dark:to-pink-950/40",
-  "from-emerald-50 to-teal-100 dark:from-emerald-950/40 dark:to-teal-950/40",
-];
+/* --- animation helpers ---------------------------------------------------- */
+const reveal = (delay = 0) => ({
+  initial: { opacity: 0, y: 28 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const, delay },
+});
 
-export default function CollectionsPage() {
+/* --- component ------------------------------------------------------------- */
+export default function Skills() {
   return (
-    <main className="min-h-screen pb-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <section className="relative py-28 px-5 sm:px-8 lg:px-0 bg-[#5858a7] overflow-hidden">
 
-        {/* ── Header ──────────────────────────────── */}
-        <div className="pt-14 sm:pt-20 mb-10 sm:mb-12">
-          <p className="text-xs font-bold uppercase tracking-widest
-                        text-gray-400 dark:text-gray-600 mb-3">
-            Creative work
-          </p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight
-                         text-gray-900 dark:text-white leading-tight">
-            Collections
-            <span aria-hidden className="block mt-2 h-1 w-12 rounded-full bg-blue-500" />
-          </h1>
-          <p className="mt-4 text-base sm:text-lg text-gray-500 dark:text-gray-400
-                        leading-relaxed max-w-lg">
-            Design work, visual experiments, and creative projects outside of code.
-          </p>
-        </div>
+      {/* ambient blobs */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-blue-600/5 blur-[140px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-violet-600/5 blur-[120px]" />
 
-        {/* ── Grid ────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {collections.map((item, i) => (
-            <Link
-              key={item.slug}
-              href={`/collections/${item.slug}`}
-              className="group flex flex-col rounded-2xl overflow-hidden
-                         border border-gray-200 dark:border-gray-800
-                         bg-white dark:bg-gray-900/60
-                         hover:border-blue-400 dark:hover:border-blue-600
-                         hover:shadow-lg hover:shadow-blue-500/10
-                         transition-all duration-300"
+      <div className="relative z-10 max-w-6xl mx-auto">
+
+        {/* -- Header ----------------------------------------------------- */}
+        <motion.div {...reveal(0)} className="text-center mb-16">
+          <span className="
+            inline-flex items-center gap-1.5
+            px-3 py-1 rounded-full mb-5
+            border border-sky-400/20 bg-sky-400/[0.04]
+            text-sky-400 font-mono text-[10px] font-medium tracking-[0.15em] uppercase
+          ">
+            <span className="w-[5px] h-[5px] rounded-full bg-sky-400 animate-pulse" />
+            Tech Stack
+          </span>
+
+          <h2
+            className="text-4xl sm:text-5xl font-normal tracking-tight leading-[1.08] text-white"
+            style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+          >
+            Technoles I{" "}
+            <em
+              className="italic"
+              style={{
+                background: "linear-gradient(90deg, #38bdf8, #818cf8)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
             >
-              {/* Thumbnail or gradient placeholder */}
-              <div className={`relative w-full h-44 shrink-0 flex items-center justify-center
-                               bg-gradient-to-br ${accents[i % accents.length]}`}>
-                {/* Decorative icon */}
-                <svg className="w-10 h-10 text-blue-300 dark:text-blue-700
-                                group-hover:scale-110 transition-transform duration-300"
-                     fill="none" stroke="currentColor" strokeWidth={1.5}
-                     viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5M4.5 3h15A1.5 1.5 0 0121 4.5v15a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 19.5v-15A1.5 1.5 0 014.5 3z" />
-                </svg>
-              </div>
+              work with
+            </em>
+          </h2>
 
-              {/* Body */}
-              <div className="flex flex-col flex-1 p-4 sm:p-5 gap-2">
-                {/* Tag */}
-                <span className="text-[10px] font-bold uppercase tracking-widest
-                                 text-blue-600 dark:text-blue-400">
-                  {item.tag}
-                </span>
+          <p className="mt-4 text-sm text-neutral-500 max-w-md mx-auto leading-[1.75]">
+            Tools and technologies I use to design, build, and ship modern digital products.
+          </p>
 
-                <h2 className="text-sm sm:text-base font-bold
-                               text-gray-900 dark:text-white leading-snug
-                               group-hover:text-blue-600 dark:group-hover:text-blue-400
-                               transition-colors duration-150">
-                  {item.title}
-                </h2>
+          <div
+            className="mt-8 h-px max-w-xs mx-auto"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(56,189,248,0.2) 40%, rgba(129,140,248,0.2) 70%, transparent)",
+            }}
+          />
+        </motion.div>
 
-                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mt-auto">
-                  {item.description}
-                </p>
+        {/* -- Grid ------------------------------------------------------- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {skillGroups.map((group, i) => (
+            <motion.article
+              key={group.title}
+              {...reveal(0.06 + i * 0.08)}
+              className={`
+                group relative overflow-hidden
+                rounded-[26px] bg-[#0f0f10]
+                border border-white/[0.06]
+                ${group.hoverBorder}
+                hover:-translate-y-1
+                hover:shadow-[0_24px_60px_rgba(0,0,0,0.5)]
+                transition-all duration-500
+                p-7
+              `}
+            >
+              {/* top accent bar */}
+              <div className={`
+                absolute top-0 left-0 right-0 h-[2px]
+                bg-gradient-to-r ${group.accent}
+                scale-x-0 origin-left
+                group-hover:scale-x-100
+                transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+              `} />
 
-                {/* CTA hint */}
-                <div className="flex items-center gap-1 mt-2 text-xs font-semibold
-                                text-gray-400 dark:text-gray-600
-                                group-hover:text-blue-500 dark:group-hover:text-blue-400
-                                transition-colors duration-150">
-                  View collection
-                  <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150"
-                       fill="none" stroke="currentColor" strokeWidth={2}
-                       viewBox="0 0 24 24" aria-hidden>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
+              {/* ambient glow on hover */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{
+                  background: `radial-gradient(circle at 50% 0%, ${group.glow} 0%, transparent 65%)`,
+                }}
+              />
+
+              <div className="relative z-10">
+
+                {/* card header */}
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <h3
+                      className="text-[1.35rem] font-normal text-white tracking-tight"
+                      style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+                    >
+                      {group.title}
+                    </h3>
+                    <p className="text-[12px] text-neutral-600 leading-relaxed mt-1">
+                      {group.description}
+                    </p>
+                  </div>
+
+                  <span className="font-mono text-[9px] text-neutral-700 tracking-[0.12em] shrink-0 mt-1 ml-4">
+                    {String(group.skills.length).padStart(2, "0")} skills
+                  </span>
+                </div>
+
+                <div className="h-px bg-white/[0.05] my-5" />
+
+                {/* skill pills with icons */}
+                <div className="flex flex-wrap gap-2">
+                  {group.skills.map((skill, j) => (
+                    <motion.span
+                      key={skill}
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.15 + i * 0.06 + j * 0.04, duration: 0.4, ease: "backOut" }}
+                      className="
+                        inline-flex items-center gap-1.5
+                        px-3 py-1.5 rounded-full
+                        border border-white/[0.07] bg-white/[0.03]
+                        text-[11px] font-mono font-medium tracking-wide text-neutral-500
+                        hover:border-white/15 hover:text-neutral-300 hover:bg-white/[0.06]
+                        transition-all duration-300 cursor-default
+                      "
+                    >
+                      <span className="text-[13px] leading-none">
+                        {ICON_MAP[skill]}
+                      </span>
+                      {skill}
+                    </motion.span>
+                  ))}
                 </div>
               </div>
-            </Link>
+
+              {/* bottom shimmer */}
+              <div className="
+                absolute bottom-0 left-0 right-0 h-px
+                bg-gradient-to-r from-transparent via-white/10 to-transparent
+                opacity-0 group-hover:opacity-100 transition-opacity duration-500
+              " />
+            </motion.article>
           ))}
         </div>
 
       </div>
-    </main>
+    </section>
   );
 }

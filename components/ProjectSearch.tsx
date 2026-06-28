@@ -7,11 +7,10 @@ type Props = {
 
 export default function ProjectSearch({ search, setSearch }: Props) {
   return (
-    <div className="relative w-full">
+    <div className="relative group w-full">
       {/* Search icon */}
       <svg
-        className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4
-                   text-gray-400 dark:text-gray-600 pointer-events-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-600 pointer-events-none transition-colors duration-200 group-focus-within:text-sky-400"
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
@@ -28,28 +27,17 @@ export default function ProjectSearch({ search, setSearch }: Props) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         aria-label="Search projects"
-        className="w-full pl-10 pr-10 py-2.5 rounded-xl text-sm
-                   bg-white dark:bg-gray-900
-                   border border-gray-200 dark:border-gray-700
-                   text-gray-900 dark:text-white
-                   placeholder:text-gray-400 dark:placeholder:text-gray-600
-                   focus:outline-none focus:ring-2 focus:ring-blue-500/50
-                   focus:border-blue-400 dark:focus:border-blue-500
-                   transition-colors duration-150"
+        className="w-full pl-11 pr-11 py-3.5 rounded-[16px] text-sm bg-[#0f0f10] border border-white/[0.07] text-white placeholder:text-neutral-600 focus:outline-none focus:border-sky-500/40 focus:bg-[#111112] transition-all duration-300 font-mono"
       />
 
-      {/* Clear button — only visible when there's input */}
+      {/* Clear button */}
       {search && (
         <button
           onClick={() => setSearch("")}
           aria-label="Clear search"
-          className="absolute right-3 top-1/2 -translate-y-1/2
-                     text-gray-400 dark:text-gray-600
-                     hover:text-gray-700 dark:hover:text-gray-300
-                     transition-colors duration-150"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white/[0.07] flex items-center justify-center text-neutral-500 hover:text-white hover:bg-white/[0.12] transition-all duration-200"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor"
-               strokeWidth={2} viewBox="0 0 24 24" aria-hidden>
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>

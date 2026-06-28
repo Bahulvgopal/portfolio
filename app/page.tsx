@@ -1,5 +1,5 @@
 import Hero from "@/components/Hero";
-import Skills from "@/components/Skills";
+
 import ProjectsPreview from "@/components/ProjectsPreview";
 import GithubGraph from "@/components/GithubGraph";
 import GithubStats from "@/components/GithubStats";
@@ -9,15 +9,17 @@ import ExperiencePreview from "@/components/ExperiencePreview";
 
 export default function Home() {
   return (
-    <main className="space-y-24">
+    <main className="space-y-24 bg-[#0a0a0b]">
       <Hero />
-      <Skills />
+      {/* <Skills /> */}
+      <div className="-mt-[4rem]"><ExperiencePreview /> 
+      
       <ProjectsPreview />
-      <ExperiencePreview /> 
       <EducationPreview />
       <CertificatesPreview />
       <GithubGraph />
       <GithubStats />
+      </div>
     </main>
   );
 }

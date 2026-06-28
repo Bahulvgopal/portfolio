@@ -3,41 +3,37 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import ThemeToggle from "./ThemeToggle";
+import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
-  { name: "Home",         href: "/" },
-  { name: "About",        href: "/about" },
-  { name: "Projects",     href: "/projects" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Projects", href: "/projects" },
   { name: "Education", href: "/education" },
+  { name: "Experience", href: "/experience" },
   { name: "Certificates", href: "/certificates" },
-  // { name: "Experience",  href: "/collections" },
-  { name: "Contact",      href: "/contact" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen]     = useState(false);
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const pathname                = usePathname();
 
-  // Close on route change
   useEffect(() => { setIsOpen(false); }, [pathname]);
 
-  // Close on resize to desktop
   useEffect(() => {
     const onResize = () => { if (window.innerWidth >= 768) setIsOpen(false); };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Scroll shadow
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 6);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -45,29 +41,31 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        className={[
-          "sticky top-0 z-50 w-full",
-          "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md",
-          "border-b border-gray-200/60 dark:border-gray-800/60",
-          "transition-shadow duration-300",
-          scrolled ? "shadow-sm shadow-black/5 dark:shadow-black/20" : "",
-        ].join(" ")}
-      >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16">
+      <header className="sticky top-0 z-50 px-4 pt-4">
+        <nav
+          className={[
+            "max-w-6xl mx-auto rounded-[26px] relative",
+            "transition-all duration-300",
+            "border border-white/[0.07]",
+            "backdrop-blur-xl",
+            "bg-[#0f0f10]/90",
+            scrolled ? "shadow-xl shadow-black/40" : "",
+          ].join(" ")}
+        >
+          <div className="h-16 px-5 sm:px-6 flex items-center justify-between">
 
             {/* Logo */}
-            <Link
-              href="/"
-              className="text-base sm:text-lg font-bold tracking-tight
-                         text-gray-900 dark:text-white shrink-0
-                         hover:opacity-70 transition-opacity duration-200"
-            >
-              Bahul V Gopal
+            <Link href="/" className="flex items-center gap-3 group shrink-0">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-500 text-white font-bold text-sm shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/40 transition-shadow duration-300">
+                BG
+              </div>
+              <div className="leading-tight">
+                <h2 className="font-bold text-white tracking-tight">Bahul V Gopal</h2>
+                <p className="text-xs text-neutral-500">Full Stack Developer</p>
+              </div>
             </Link>
 
-            {/* Desktop links */}
+            {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-1">
               {links.map((link) => {
                 const isActive = pathname === link.href;
@@ -75,105 +73,93 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={[
-                      "px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-150",
-                      isActive
-                        ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800",
-                    ].join(" ")}
+                    className={["relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200", isActive ? "text-white" : "text-neutral-500 hover:text-white"].join(" ")}
                   >
-                    {link.name}
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/[0.1]"
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{link.name}</span>
                   </Link>
                 );
               })}
-              <div className="ml-2 pl-2 border-l border-gray-200 dark:border-gray-700">
-                <ThemeToggle />
-              </div>
-            </div>
 
-            {/* Mobile: ThemeToggle + hamburger */}
-            <div className="flex items-center gap-1 md:hidden">
-              <ThemeToggle />
-              <button
-                onClick={() => setIsOpen((v) => !v)}
-                aria-label={isOpen ? "Close menu" : "Open menu"}
-                aria-expanded={isOpen}
-                aria-controls="mobile-menu"
-                className="p-2 rounded-md text-gray-600 dark:text-gray-300
-                           hover:bg-gray-100 dark:hover:bg-gray-800
-                           transition-colors duration-150"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  {isOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                  )}
+              {/* Resume CTA — desktop */}
+              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="ml-3 inline-flex items-center gap-2 rounded-full px-5 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white text-sm font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/40 hover:scale-[1.03] transition-all duration-200">
+                Resume
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15M19.5 4.5H8.25M19.5 4.5v11.25" />
                 </svg>
-              </button>
+              </a>
             </div>
-          </div>
-        </div>
 
-        {/* Mobile dropdown */}
-        <div
-          id="mobile-menu"
-          className={[
-            "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
-            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
-          ].join(" ")}
-          aria-hidden={!isOpen}
-        >
-          <div className="border-t border-gray-200/60 dark:border-gray-800/60
-                          bg-white/95 dark:bg-gray-900/95
-                          px-4 sm:px-6 py-2 flex flex-col gap-0.5">
-            {links.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={[
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg",
-                    "text-sm font-medium transition-colors duration-150",
-                    isActive
-                      ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white",
-                  ].join(" ")}
-                >
-                  <span
-                    className={[
-                      "w-1.5 h-1.5 rounded-full shrink-0",
-                      isActive ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-600",
-                    ].join(" ")}
-                  />
-                  {link.name}
-                </Link>
-              );
-            })}
-            <div className="mt-1 pt-3 pb-1 border-t border-gray-100 dark:border-gray-800 px-3">
-              <ThemeToggle />
-            </div>
+            {/* Mobile Hamburger */}
+            <button onClick={() => setIsOpen((prev) => !prev)} aria-label="Menu" className="md:hidden w-10 h-10 rounded-full border border-white/[0.08] bg-white/[0.04] flex items-center justify-center hover:bg-white/[0.08] hover:border-white/[0.15] transition-all duration-200">
+              <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                {isOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                )}
+              </svg>
+            </button>
           </div>
-        </div>
-      </nav>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                key="mobile-menu"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="md:hidden overflow-hidden"
+              >
+                <div className="border-t border-white/[0.06] px-4 py-4 flex flex-col gap-1">
+                  {links.map((link) => {
+                    const isActive = pathname === link.href;
+                    return (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={["rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200", isActive ? "bg-white/[0.08] border border-white/[0.1] text-white" : "text-neutral-500 hover:bg-white/[0.05] hover:text-white"].join(" ")}
+                      >
+                        {link.name}
+                      </Link>
+                    );
+                  })}
+
+                  {/* Resume CTA — mobile */}
+                  <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="mt-2 rounded-2xl px-4 py-3 text-center font-semibold text-sm text-white bg-gradient-to-r from-sky-500 to-blue-600 shadow-md shadow-sky-500/20">
+                    Download Resume ↗
+                  </a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+         
+        </nav>
+      </header>
 
       {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/20 dark:bg-black/40 md:hidden"
-          onClick={() => setIsOpen(false)}
-          aria-hidden
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

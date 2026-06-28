@@ -1,127 +1,189 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { certificates } from "@/data/certificates";
 
+/* =========================================================================
+   ANIMATION HELPERS (matches hero/skills/education pages)
+   ========================================================================= */
+const reveal = (delay = 0, y = 28) => ({
+  initial: { opacity: 0, y },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const, delay },
+});
+
+const revealInView = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const, delay },
+});
+
+const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
+
+/* =========================================================================
+   PAGE
+   ========================================================================= */
 export default function CertificatesPage() {
   return (
-    <main className="min-h-screen pb-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <main className="relative -mt-[5rem] min-h-screen bg-[#0a0a0b] pb-28 pt-28 sm:pt-32 px-5 sm:px-8 lg:px-0 overflow-hidden">
 
-        {/* ── Header ──────────────────────────────── */}
-        <div className="pt-14 sm:pt-20 mb-10 sm:mb-12">
-          <p className="text-xs font-bold uppercase tracking-widest
-                        text-gray-400 dark:text-gray-600 mb-3">
+      {/* grain */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.035]"
+        style={{ backgroundImage: GRAIN_URL, backgroundRepeat: "repeat", backgroundSize: "128px" }}
+      />
+
+      {/* blobs */}
+      <div aria-hidden className="pointer-events-none absolute -top-40 -right-32 w-[520px] h-[520px] rounded-full bg-violet-600/[0.07] blur-[150px]" />
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 w-[420px] h-[420px] rounded-full bg-blue-600/[0.06] blur-[140px]" />
+
+      {/* decorative oversized word */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-[3%] top-[4%] text-[13vw] font-black leading-none select-none text-white/[0.025] tracking-tighter hidden lg:block"
+        style={{ fontFamily: "'Georgia', serif" }}
+      >
+        Certs
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto">
+
+        {/* ── Header ───────────────────────────────────────────────── */}
+        <motion.div {...reveal(0.05)} className="mb-12 sm:mb-14">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-6 border border-sky-400/20 bg-sky-400/[0.04] text-sky-400 font-mono text-[10px] font-medium tracking-[0.15em] uppercase">
+            <span className="w-[5px] h-[5px] rounded-full bg-sky-400 animate-pulse" />
             Credentials
-          </p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight
-                         text-gray-900 dark:text-white leading-tight">
-            Certificates
-            <span aria-hidden className="block mt-2 h-1 w-12 rounded-full bg-blue-500" />
-          </h1>
-          <p className="mt-4 text-base sm:text-lg text-gray-500 dark:text-gray-400
-                        leading-relaxed max-w-lg">
-            Courses and programs I've completed to sharpen my skills.
-          </p>
-        </div>
+          </span>
 
-        {/* ── Result count ────────────────────────── */}
-        <p className="text-xs font-semibold uppercase tracking-widest
-                      text-gray-400 dark:text-gray-600 mb-6">
-          {certificates.length} certificate{certificates.length !== 1 ? "s" : ""}
-        </p>
-
-        {/* ── Grid ────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {certificates.map((cert, i) => (
-            <div
-              key={i}
-              className="group flex flex-col rounded-2xl overflow-hidden
-                         border border-gray-200 dark:border-gray-800
-                         bg-white dark:bg-gray-900/60
-                         hover:border-blue-400 dark:hover:border-blue-600
-                         hover:shadow-lg hover:shadow-blue-500/10
-                         transition-all duration-300"
+          <h1
+            className="text-[clamp(2.4rem,6.5vw,4.2rem)] font-normal tracking-tight leading-[1.05] text-white"
+            style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+          >
+            Courses &{" "}
+            <em
+              className="italic"
+              style={{
+                background: "linear-gradient(90deg, #38bdf8, #818cf8)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
             >
-              {/* Image / placeholder */}
-              {cert.image ? (
-                <div className="relative w-full h-44 overflow-hidden shrink-0">
-                  <Image
-                    src={cert.image}
-                    alt={cert.title}
-                    fill
-                    className="object-cover group-hover:scale-[1.03]
-                               transition-transform duration-500 ease-out"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    loading="lazy"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-44 shrink-0 flex items-center justify-center
-                                bg-gradient-to-br from-blue-50 to-indigo-100
-                                dark:from-blue-950/40 dark:to-indigo-950/40">
-                  <svg className="w-10 h-10 text-blue-300 dark:text-blue-700"
-                       fill="none" stroke="currentColor" strokeWidth={1.5}
-                       viewBox="0 0 24 24" aria-hidden>
-                    <path strokeLinecap="round" strokeLinejoin="round"
-                          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              )}
+              certificates
+            </em>
+          </h1>
 
-              {/* Body */}
-              <div className="flex flex-1 flex-col p-4 sm:p-5">
+          <p className="mt-5 text-sm sm:text-[15px] text-neutral-500 max-w-md leading-[1.75]">
+            Programs I&apos;ve completed to sharpen my skills and stay current with the stack.
+          </p>
+        </motion.div>
+
+        {/* gradient rule + count */}
+        <motion.div {...reveal(0.1)} className="flex items-center gap-4 mb-10">
+          <div
+            className="h-px flex-1"
+            style={{
+              background: "linear-gradient(90deg, rgba(56,189,248,0.18), rgba(129,140,248,0.1) 60%, transparent)",
+            }}
+          />
+          <span className="font-mono text-[10px] font-medium tracking-[0.12em] uppercase text-neutral-600 shrink-0">
+            {certificates.length} {certificates.length === 1 ? "Certificate" : "Certificates"}
+          </span>
+        </motion.div>
+
+        {/* ── Grid ─────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {certificates.map((cert, i) => (
+            <motion.article
+              key={cert.title + i}
+              {...revealInView(0.04 * (i % 6))}
+              className="group relative flex flex-col overflow-hidden rounded-[22px] bg-[#0f0f10] border border-white/[0.06] hover:border-sky-500/25 hover:-translate-y-1 hover:shadow-[0_24px_64px_rgba(0,0,0,0.5)] transition-all duration-500"
+            >
+              {/* top accent bar */}
+              <div
+                className="absolute top-0 left-0 right-0 h-[2px] z-10 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{ background: "linear-gradient(90deg, #38bdf8, #818cf8)" }}
+              />
+
+              {/* image / placeholder */}
+              <div className="relative w-full h-40 shrink-0 overflow-hidden">
+                {cert.image ? (
+                  <>
+                    <Image
+                      src={cert.image}
+                      alt={cert.title}
+                      fill
+                      className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f10] via-transparent to-transparent" />
+                  </>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-white/[0.02]">
+                    <svg
+                      className="w-9 h-9 text-neutral-700"
+                      fill="none" stroke="currentColor" strokeWidth={1.5}
+                      viewBox="0 0 24 24" aria-hidden
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+
+              {/* body */}
+              <div className="relative z-10 flex flex-1 flex-col p-5">
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <h2 className="text-sm sm:text-base font-bold
-                                 text-gray-900 dark:text-white leading-snug">
+                  <h2
+                    className="text-[15px] font-normal text-white tracking-tight leading-snug"
+                    style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+                  >
                     {cert.title}
                   </h2>
 
-                  {/* Verified badge */}
-                  <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5
-                                   rounded-full text-[10px] font-bold uppercase tracking-widest
-                                   bg-green-50 dark:bg-green-950/40
-                                   text-green-600 dark:text-green-400
-                                   border border-green-200 dark:border-green-800">
-                    <svg className="w-2.5 h-2.5" fill="currentColor"
-                         viewBox="0 0 20 20" aria-hidden>
-                      <path fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd" />
+                  <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-mono text-[9px] font-medium uppercase tracking-[0.1em] text-emerald-400/90 border border-emerald-500/25 bg-emerald-500/[0.06]">
+                    <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden>
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                     Verified
                   </span>
                 </div>
 
-                {/* Issuer + year */}
-                <p className="text-xs text-gray-400 dark:text-gray-600 font-medium mt-auto">
+                <div className="h-px bg-white/[0.05] mt-2 mb-3" />
+
+                {/* issuer + year */}
+                <p className="text-[12px] text-neutral-500 font-medium mt-auto">
                   {cert.issuer}
                   {cert.year && (
-                    <span className="ml-1.5 pl-1.5 border-l
-                                     border-gray-200 dark:border-gray-700">
+                    <span className="ml-1.5 pl-1.5 border-l border-white/10 text-neutral-600">
                       {cert.year}
                     </span>
                   )}
                 </p>
 
-                {/* Optional credential link */}
+                {/* credential link */}
                 {cert.link && (
                   <a
                     href={cert.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 mt-3 text-xs font-semibold
-                               text-blue-600 dark:text-blue-400
-                               hover:underline underline-offset-4 transition"
+                    className="inline-flex items-center gap-1.5 mt-3 text-[12px] font-medium text-sky-400 hover:text-sky-300 transition-colors duration-200"
                   >
                     View credential
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor"
-                         strokeWidth={2} viewBox="0 0 24 24" aria-hidden>
-                      <path strokeLinecap="round" strokeLinejoin="round"
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    <svg className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
                 )}
               </div>
-            </div>
+
+              {/* bottom shimmer */}
+              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            </motion.article>
           ))}
         </div>
 
