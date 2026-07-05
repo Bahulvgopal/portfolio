@@ -5,7 +5,7 @@ export default function EducationPreview() {
   const preview = education.slice(0, 2);
 
   return (
-    <section className="relative py-28 px-5 sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">
+    <section className="relative py-10 px-5 -mt-[6rem] sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">
 
       {/* blobs */}
       <div className="pointer-events-none absolute top-0 left-0 w-[500px] h-[400px] rounded-full bg-violet-600/5 blur-[140px]" />

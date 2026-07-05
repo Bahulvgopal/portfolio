@@ -49,7 +49,7 @@ export default function GithubStats() {
   ];
 
   return (
-    <section className="relative py-28 px-5 sm:px-8 lg:px-0 overflow-hidden bg-[#0a0a0b]">
+    <section className="relative py-10 px-5 sm:px-8 lg:px-0 overflow-hidden bg-[#0a0a0b]">
 
       {/* Ambient blobs */}
       <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[380px] rounded-full bg-blue-700/5 blur-[140px]" />

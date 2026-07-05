@@ -3,10 +3,13 @@ import Link from "next/link";
 import { certificates } from "@/data/certificates";
 
 export default function CertificatesPreview() {
-  const preview = certificates.slice(0, 2);
-
+const preview = [...certificates]
+  .sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
+  .slice(0, 1);
   return (
-    <section className="relative py-28 px-5 sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">
+    <section className="relative py-10 px-5  sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">
 
       {/* blobs */}
       <div className="pointer-events-none absolute top-0 right-1/4 w-[500px] h-[400px] rounded-full bg-emerald-600/5 blur-[140px]" />
@@ -87,8 +90,8 @@ export default function CertificatesPreview() {
         />
 
         {/* -- Cards grid -- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {preview.map((cert, i) => (
+            <div className="grid grid-cols-1">
+            {preview.map((cert, i) => (
             <article
               key={i}
               className="
@@ -165,15 +168,16 @@ export default function CertificatesPreview() {
                       </h3>
                       <p className="text-[12px] text-neutral-500 mt-0.5">
                         {cert.issuer}
-                        {cert.year && (
-                          <span className="
+                        <span
+                         className="
                             ml-2 pl-2
                             border-l border-white/[0.08]
                             text-neutral-600
-                          ">
-                            {cert.year}
-                          </span>
-                        )}
+                          "
+                        >
+                          {cert.displayDate}
+                        </span>
+                        
                       </p>
                     </div>
 
@@ -206,11 +210,15 @@ export default function CertificatesPreview() {
         </div>
 
         {/* archive hint */}
-        {certificates.length > 2 && (
-          <p className="mt-10 text-center text-[11px] font-mono text-neutral-700 tracking-[0.1em] uppercase">
-            {certificates.length - 2} more {certificates.length - 2 === 1 ? "certificate" : "certificates"} in the full archive
-          </p>
-        )}
+        {certificates.length > 1 && (
+  <p className="mt-10 text-center text-[11px] font-mono text-neutral-700 tracking-[0.1em] uppercase">
+    {certificates.length - 1} more{" "}
+    {certificates.length - 1 === 1
+      ? "certificate"
+      : "certificates"}{" "}
+    in the full archive
+  </p>
+)}
 
       </div>
     </section>

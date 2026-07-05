@@ -8,7 +8,11 @@ import {
   SiHtml5, SiCss, SiJavascript, SiReact, SiNextdotjs,
   SiTailwindcss, SiNodedotjs, SiExpress, SiMongodb,
   SiGit, SiGithub, SiVscodium, SiVercel, SiPostman,
+  SiInstagram, SiX, SiFacebook, SiYoutube, SiDribbble,
+  SiBehance, SiPinterest, SiTiktok, SiDiscord, SiTelegram,
+  SiSnapchat,
 } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa";
 import { TbApi } from "react-icons/tb";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -27,12 +31,10 @@ const revealInView = (delay = 0) => ({
 });
 
 const slideIn = (delay = 0) => ({
-  initial: { opacity: 0, x: 60 },
+  initial: { opacity: 0, x: -60 },
   animate: { opacity: 1, x: 0 },
   transition: { duration: 1, ease: EASE, delay },
 });
-
-
 
 const TAGS = ["React", "Next.js", "MongoDB", "TypeScript", "TailwindCSS"];
 
@@ -96,20 +98,79 @@ const skillGroups = [
 
 const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
+const STATS = [
+  { value: "10+", label: "Projects" },
+  { value: "Next.js", label: "Primary Stack" },
+  { value: "Open", label: "To Hire" },
+];
+
+const SOCIALS = [
+  { icon: <SiGithub />, href: "https://github.com/Bahulvgopal?tab=overview&from=2024-12-01&to=2024-12-31", label: "GitHub" },
+  { icon: <FaLinkedin />, href: "https://www.linkedin.com/in/bahul-v-gopal-b7493b280", label: "LinkedIn" },
+  { icon: <SiInstagram />, href: "https://www.instagram.com/_.bahul_?igsh=MTM5OG1kd3FwMnBrZg==", label: "Instagram" },
+  // { icon: <SiX />, href: "https://x.com/", label: "X" },
+  { icon: <SiFacebook />, href: "https://www.facebook.com/bahulakul.bahulakul", label: "Facebook" },
+  // { icon: <SiYoutube />, href: "https://youtube.com/", label: "YouTube" },
+  // { icon: <SiDribbble />, href: "https://dribbble.com/", label: "Dribbble" },
+  // { icon: <SiBehance />, href: "https://behance.net/", label: "Behance" },
+  // { icon: <SiPinterest />, href: "https://pinterest.com/", label: "Pinterest" },
+  // { icon: <SiTiktok />, href: "https://tiktok.com/", label: "TikTok" },
+  // { icon: <SiDiscord />, href: "https://discord.com/", label: "Discord" },
+  // { icon: <SiTelegram />, href: "https://telegram.org/", label: "Telegram" },
+  // { icon: <SiSnapchat />, href: "https://snapchat.com/", label: "Snapchat" },
+];
+
+function SocialRow({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      {SOCIALS.map((s) => (
+        <a
+          key={s.label}
+          href={s.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={s.label}
+className="
+flex items-center justify-center
+w-12 h-12
+rounded-full
+border border-white/[0.08]
+bg-white/[0.03]
+text-neutral-400
+text-[20px]
+hover:border-sky-500/40
+hover:text-sky-400
+hover:-translate-y-1
+hover:scale-110
+transition-all
+duration-300
+"        >
+          {s.icon}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 export default function HeroWithSkills() {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
   return (
     <div className="bg-[#0a0a0b]">
 
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden px-5 md:py-[7rem] py-9 sm:px-8 lg:px-0 -mt-[5rem]">
+      {/* ===== HERO ===== */}
+      <section ref={heroRef} className="relative md:py-[8rem] min-h-screen flex items-center overflow-hidden px-5 sm:px-8 lg:px-0 -mt-[5rem]">
 
+        {/* grain */}
         <div aria-hidden className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]" style={{ backgroundImage: GRAIN_URL, backgroundRepeat: "repeat", backgroundSize: "128px" }} />
-        <div aria-hidden className="pointer-events-none absolute -top-32 -left-32 w-[560px] h-[560px] rounded-full bg-blue-600/[0.08] blur-[160px]" />
-        <div aria-hidden className="pointer-events-none absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-violet-600/[0.06] blur-[140px]" />
 
+        {/* blobs */}
+        <div aria-hidden className="pointer-events-none absolute -top-32 -right-32 w-[560px] h-[560px] rounded-full bg-blue-600/[0.08] blur-[160px]" />
+        <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-violet-600/[0.06] blur-[140px]" />
+
+        {/* top rule */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -120,119 +181,201 @@ export default function HeroWithSkills() {
 
         
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] items-center gap-10 lg:gap-16 py-20 sm:py-24 lg:py-0 lg:min-h-screen">
+        <div className="relative z-10 w-full max-w-7xl mx-auto py-20 sm:py-24 lg:py-0 lg:min-h-screen flex items-center">
 
-          <div className="flex flex-col">
+          {/* ===== MOBILE LAYOUT (stacked: image → text) ===== */}
+          <div className="flex flex-col py-8 w-full lg:hidden gap-8">
 
-            <motion.h1 {...reveal(0.08)} className="text-[clamp(2.6rem,8vw,6.5rem)] font-black leading-[0.9] tracking-tight text-white mb-5" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-              Hi, I&apos;m{" "}
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Bahul</span>
-                <motion.svg
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 1, ease: "easeInOut", delay: 0.7 }}
-                  className="absolute -bottom-2 left-0 w-full"
-                  viewBox="0 0 200 12"
-                  fill="none"
-                  preserveAspectRatio="none"
-                >
-                  <motion.path d="M2 8 C40 2, 80 12, 120 6 S180 2, 198 7" stroke="url(#sqGrad)" strokeWidth="2.5" strokeLinecap="round" />
-                  <defs>
-                    <linearGradient id="sqGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#38bdf8" />
-                      <stop offset="100%" stopColor="#818cf8" />
-                    </linearGradient>
-                  </defs>
-                </motion.svg>
-              </span>{" "}
-              <br className="hidden sm:block" />
-              <span className="text-[clamp(2rem,6vw,5rem)] font-light italic text-neutral-400">I build</span>{" "}
-              <span className="bg-gradient-to-br from-white via-neutral-200 to-neutral-500 bg-clip-text text-transparent">digital</span>
-              <br />
-              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">experiences.</span>
-            </motion.h1>
-
-            <motion.p {...reveal(0.18)} className="max-w-lg text-[clamp(0.9rem,2vw,1.05rem)] text-neutral-400 leading-[1.75] mb-8">
-              Computer Science student passionate about building real-world products with modern web tech. From wedding platforms to scalable systems — clean UI, performance, meaningful UX.
-            </motion.p>
-
-            <motion.div {...reveal(0.22)} className="flex flex-wrap gap-2 mb-10">
-              {TAGS.map((tag, i) => (
-                <motion.span
-                  key={tag}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 + i * 0.06, duration: 0.4, ease: "backOut" }}
-                  className="px-3 py-1 rounded-full text-[11px] font-medium tracking-wide text-neutral-400 border border-white/[0.08] bg-white/[0.03] hover:border-blue-500/40 hover:text-blue-300 transition-colors duration-200 cursor-default"
-                >
-                  {tag}
-                </motion.span>
-              ))}
+            {/* Mobile image */}
+            <motion.div
+              {...slideIn(0.06)}
+              className="relative w-full flex justify-center"
+            >
+              {/* glow behind image */}
+              <div className="absolute inset-0 rounded-[40px] bg-gradient-to-b from-sky-500/10 via-blue-500/5 to-transparent blur-2xl" />
+              <div className="relative w-64 h-80 sm:w-72 sm:h-96">
+                <motion.div style={{ y: imgY }} className="absolute inset-0">
+                  <Image
+                    src="/images/main1.png"
+                    alt="Bahul"
+                    fill
+                    className="object-cover object-top"
+                    sizes="520px"
+                    
+                    priority
+                  />
+                </motion.div>
+                {/* bottom fade so image bleeds into bg */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent" />
+                {/* subtle side fades */}
+                {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0b]/40 via-transparent to-[#0a0a0b]/40" /> */}
+              </div>
             </motion.div>
 
-            {/* CTAs — all <a> attributes on one line to avoid Turbopack parse error */}
-            <motion.div {...reveal(0.26)} className="flex flex-col xs:flex-row flex-wrap gap-3 mb-14">
-              <Link href="/projects" className="group relative inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 transition-all duration-200 shadow-[0_0_32px_rgba(255,255,255,0.08)] hover:shadow-[0_0_48px_rgba(255,255,255,0.14)] overflow-hidden">
-                <span className="relative z-10">View Projects</span>
-                <svg className="w-4 h-4 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
+            {/* Mobile text */}
+            <div className="flex flex-col">
+              <motion.h1 {...reveal(0.1)} className="text-[clamp(2.6rem,10vw,5rem)] font-black leading-[0.9] tracking-tight text-white mb-5" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
+                Hi, I&apos;m{" "}
+                <span className="relative inline-block">
+                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Bahul</span>
+                  <motion.svg
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 1, ease: "easeInOut", delay: 0.7 }}
+                    className="absolute -bottom-2 left-0 w-full"
+                    viewBox="0 0 200 12"
+                    fill="none"
+                    preserveAspectRatio="none"
+                  >
+                    <motion.path d="M2 8 C40 2, 80 12, 120 6 S180 2, 198 7" stroke="url(#sqGradM)" strokeWidth="2.5" strokeLinecap="round" />
+                    <defs>
+                      <linearGradient id="sqGradM" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#38bdf8" />
+                        <stop offset="100%" stopColor="#818cf8" />
+                      </linearGradient>
+                    </defs>
+                  </motion.svg>
+                </span>
+                <br />
+                <span className="text-[clamp(1.6rem,7vw,3.5rem)] font-light italic text-neutral-400">I build</span>{" "}
+                <span className="bg-gradient-to-br from-white via-neutral-200 to-neutral-500 bg-clip-text text-transparent">digital</span>
+                <br />
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">experiences.</span>
+              </motion.h1>
 
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                </svg>
-                Resume
-              </a>
+              <motion.p {...reveal(0.18)} className="text-[clamp(0.9rem,2.5vw,1rem)] text-neutral-400 leading-[1.75] mb-6">
+                Computer Science student passionate about building real-world products with modern web tech. Clean UI, performance, meaningful UX.
+              </motion.p>
 
-              <a href="https://wa.me/918075298373" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-emerald-500/25 text-emerald-400 hover:bg-emerald-500/[0.08] hover:border-emerald-500/40 transition-all duration-200">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                </svg>
-                WhatsApp
-              </a>
-            </motion.div>
+              {/* <motion.div {...reveal(0.22)} className="flex flex-wrap gap-2 mb-8">
+                {TAGS.map((tag, i) => (
+                  <motion.span
+                    key={tag}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 + i * 0.06, duration: 0.4, ease: "backOut" }}
+                    className="px-3 py-1 rounded-full text-[11px] font-medium tracking-wide text-neutral-400 border border-white/[0.08] bg-white/[0.03] hover:border-blue-500/40 hover:text-blue-300 transition-colors duration-200 cursor-default"
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
+              </motion.div> */}
 
-            
-          </div>
-
-          {/* Mobile image */}
-          <div className="relative h-72 rounded-3xl overflow-hidden lg:hidden">
-            <Image src="/images/bahul.jpeg" alt="Bahul" fill className="object-cover object-top" sizes="(max-width:1024px) 100vw, 50vw" priority />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b]/70 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-[#0a0a0b]/80 backdrop-blur-md px-4 py-3">
-              <p className="text-sm font-semibold text-white">Building real-world products 🚀</p>
-              <p className="text-xs text-neutral-400 mt-0.5">Next.js · MongoDB · Full Stack</p>
-            </div>
-          </div>
-
-          {/* Desktop image */}
-          <motion.div {...slideIn(0.14)} className="hidden lg:flex relative h-[82vh] flex-col">
-            <div className="absolute -inset-6 rounded-[52px] bg-gradient-to-tr from-blue-500/10 via-indigo-500/5 to-violet-500/10 blur-3xl" />
-            <div className="relative flex-1 overflow-hidden rounded-[36px] border border-white/[0.07] shadow-[0_32px_80px_rgba(0,0,0,0.6)]">
-              <motion.div style={{ y: imgY }} className="absolute inset-0 scale-110">
-                <Image src="/images/bahul.jpeg" alt="Bahul" fill className="object-cover object-center" sizes="50vw" priority />
+              <motion.div {...reveal(0.26)} className="flex flex-wrap gap-3">
+                <Link href="/projects" className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 transition-all duration-200 shadow-[0_0_32px_rgba(255,255,255,0.08)]">
+                  View Projects
+                  <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                  </svg>
+                  Resume
+                </a>
               </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b]/60 via-transparent to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0b]/20 to-transparent" />
-              <motion.div
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ delay: 0.5, duration: 0.8, ease: EASE }}
-                style={{ transformOrigin: "top" }}
-                className="absolute top-6 right-6 w-px h-16 bg-gradient-to-b from-white/20 to-transparent"
-              />
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: EASE }}
-                style={{ transformOrigin: "right" }}
-                className="absolute top-6 right-6 h-px w-16 bg-gradient-to-l from-white/20 to-transparent"
-              />
+
+              {/* Social icons */}
+              <motion.div {...reveal(0.32)} className="mt-8 pt-6 flex justify-center items-center border-t border-white/[0.06]">
+                <SocialRow />
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
+
+          {/* ===== DESKTOP LAYOUT (image LEFT, text RIGHT) ===== */}
+          <div className="hidden lg:grid w-full grid-cols-[480px_1fr] xl:grid-cols-[520px_1fr] items-center gap-12 xl:gap-20">
+
+            {/* LEFT — image */}
+            <motion.div {...slideIn(0.1)} className="relative flex items-end -mt-[15rem] justify-center  h-[88vh]">
+
+              {/* glow halo behind the figure */}
+              <div
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[380px] h-[560px] rounded-full blur-[80px] pointer-events-none"
+                style={{ background: "radial-gradient(ellipse at 50% 80%, rgba(56,189,248,0.12) 0%, rgba(129,140,248,0.07) 50%, transparent 80%)" }}
+              />
+
+              
+
+              {/* image — no frame, just the transparent-bg figure */}
+              <motion.div style={{ y: imgY }} className="relative w-full h-full">
+                <Image
+                  src="/images/main1.png"
+                  alt="Bahul"
+                  fill
+                  className="object-contain object-bottom"
+                  sizes="520px"
+                  priority
+                />
+                {/* subtle bottom fade to anchor into page */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-[#0a0a0b]/10 to-transparent" style={{ maskImage: "linear-gradient(to top, black 0%, black 8%, transparent 30%)" }} />
+              </motion.div>
+            </motion.div>
+
+            {/* RIGHT — text */}
+            <div className="flex flex-col">
+
+              <motion.h1 {...reveal(0.08)} className="text-[clamp(2.8rem,5.5vw,6rem)] font-black leading-[0.9] tracking-tight text-white mb-6" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
+                Hi, I&apos;m{" "}
+                <span className="relative inline-block">
+                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Bahul</span>
+                  <motion.svg
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 1, ease: "easeInOut", delay: 0.7 }}
+                    className="absolute -bottom-2 left-0 w-full"
+                    viewBox="0 0 200 12"
+                    fill="none"
+                    preserveAspectRatio="none"
+                  >
+                    <motion.path d="M2 8 C40 2, 80 12, 120 6 S180 2, 198 7" stroke="url(#sqGradD)" strokeWidth="2.5" strokeLinecap="round" />
+                    <defs>
+                      <linearGradient id="sqGradD" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#38bdf8" />
+                        <stop offset="100%" stopColor="#818cf8" />
+                      </linearGradient>
+                    </defs>
+                  </motion.svg>
+                </span>
+                <br className="hidden sm:block" />
+                <span className="text-[clamp(2rem,4vw,5rem)] font-light italic text-neutral-400">I build</span>{" "}
+                <span className="bg-gradient-to-br from-white via-neutral-200 to-neutral-500 bg-clip-text text-transparent">digital</span>
+                <br />
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">experiences.</span>
+              </motion.h1>
+
+              <motion.p {...reveal(0.18)} className="max-w-lg text-[clamp(0.9rem,1.5vw,1.05rem)] text-neutral-400 leading-[1.75] mb-8">
+                Computer Science student passionate about building real-world products with modern web tech. From wedding platforms to scalable systems — clean UI, performance, meaningful UX.
+              </motion.p>
+
+              
+
+              <motion.div {...reveal(0.26)} className="flex flex-wrap gap-3 mb-8">
+                <Link href="/projects" className="group relative inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 transition-all duration-200 shadow-[0_0_32px_rgba(255,255,255,0.08)] hover:shadow-[0_0_48px_rgba(255,255,255,0.14)]">
+                  <span className="relative z-10">View Projects</span>
+                  <svg className="w-4 h-4 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+
+                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                  </svg>
+                  Resume
+                </a>
+
+                
+              </motion.div>
+
+              {/* Social icons */}
+              <motion.div {...reveal(0.3)} className="mb-10 mt-[2rem] flex justify-center items-center">
+                <SocialRow />
+              </motion.div>
+
+
+            </div>
+          </div>
 
         </div>
       </section>
@@ -242,8 +385,8 @@ export default function HeroWithSkills() {
         <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(56,189,248,0.12) 30%, rgba(129,140,248,0.12) 70%, transparent)" }} />
       </div>
 
-      {/* Skills */}
-      <section className="relative py-28 px-5 sm:px-8 lg:px-0 overflow-hidden">
+      {/* ===== SKILLS ===== */}
+      <section className="relative py-10 px-5 sm:px-8 lg:px-0 overflow-hidden">
 
         <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[380px] rounded-full bg-blue-700/5 blur-[140px]" />
         <div className="pointer-events-none absolute bottom-0 right-0 w-[420px] h-[420px] rounded-full bg-violet-700/5 blur-[130px]" />

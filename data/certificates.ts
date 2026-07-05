@@ -1,77 +1,120 @@
-type Certificate = {
+export type Certificate = {
   title: string;
   issuer: string;
-  year: string;
+
+  // ISO date used for sorting
+  date: string;
+
+  // Date shown on the UI
+  displayDate: string;
+
+  category:
+    | "Hackathon"
+    | "Workshop"
+    | "Internship"
+    | "Course"
+    | "Event"
+    | "Volunteering";
+
   image?: string;
-  link?: string;
 };
 
-export const certificates: Certificate[] = [  // ✅ IMPORTANT
+export const certificates: Certificate[] = [
   {
-    title: "MERN Stack",
-    issuer: "Spectrum Solutions, Eranakulam",
-    year: "01 May 2023 to 05 June 2023",
+    title: "It Networking Fundamental For Complete Beginners",
+    issuer: "Udemy",
+    date: "2026-07-04",
+    displayDate: "04 July 2026",
+    category: "Course",
+    image: "/images/certificates/itudemy.png",
   },
+
   {
-    title: "The Joy of Computing using Python",
-    issuer: "Nptel",
-    year: "2024",
-    image: "/images/certificates/nptel.jpg",
-  },
-  {
-    title: "Complete Unix & Linux Fundamentals",
+    title: "General Networking - Networking and Security Course",
     issuer: "Infosys",
-    year: "06 March 2026",
-    image: "/images/certificates/infosys.jpg",
-    link: "https://example.com/certificate", // optional
+    date: "2026-06-25",
+    displayDate: "25 June 2026",
+    category: "Course",
+    image: "/images/certificates/generalnet.png",
   },
-    {
-    title: "IEDC Cluster Level Hackathon 2026",
-    issuer: "IEDC - KSUM",
-    year: "25 February 2026",
-    image: "/images/certificates/SS.jpg",
-    link: "https://example.com/certificate", // optional
-  },
-      {
-    title: "Cybersecurity Workshop",
-    issuer: "Offenso Academy",
-    year: "10 October 2025",
-    image: "/images/certificates/cyber.jpg",
-    link: "https://example.com/certificate", // optional
-  },
-      {
-    title: "Industrial Java Development Workshop",
-    issuer: "Spectrum Solutions, Ernakulam",
-    year: "29 June 2023",
-    image: "/images/certificates/ijd.jpg",
-    link: "https://example.com/certificate", // optional
-  },
-      {
-    title: "Configure And Deploy Web Server in Cloud",
-    issuer: "Spectrum Solutions, Ernakulam",
-    year: "12 August 2023",
-    image: "/images/certificates/web.jpg",
-    link: "https://example.com/certificate", // optional
-  },
-        {
-    title: "IEDC Startup Summit March 2026",
-    issuer: "Kerala Startup Mission",
-    year: "07 March 2026",
-    image: "/images/certificates/startupS.png",
-    link: "https://example.com/certificate", // optional
-  },
+
   {
     title: "Zero to Hero in 6 Months by Offenso",
     issuer: "Offenso Hackers Academy",
-    year: "18 April 2026",
+    date: "2026-04-18",
+    displayDate: "18 April 2026",
+    category: "Course",
     image: "/images/certificates/Webinar1Offenso.png",
-    link: "https://example.com/certificate", // optional
   },
-    {
-    title: "General Networking - Networking and Security Course",
-    issuer:"Infosys",
-    year: "25 June 2026",
-    image: "/images/certificates/cn.png",
-    link: "https://example.com/certificate", // optional
+
+  {
+    title: "IEDC Startup Summit March 2026",
+    issuer: "Kerala Startup Mission",
+    date: "2026-03-07",
+    displayDate: "07 March 2026",
+    category: "Event",
+    image: "/images/certificates/startupS.png",
+  },
+
+  {
+    title: "Complete Unix & Linux Fundamentals",
+    issuer: "Infosys",
+    date: "2026-03-06",
+    displayDate: "06 March 2026",
+    category: "Course",
+    image: "/images/certificates/infosys.jpg",
+  },
+
+  {
+    title: "IEDC Cluster Level Hackathon 2026",
+    issuer: "IEDC - KSUM",
+    date: "2026-02-25",
+    displayDate: "25 February 2026",
+    category: "Hackathon",
+    image: "/images/certificates/SS.jpg",
+  },
+
+  {
+    title: "Cybersecurity Workshop",
+    issuer: "Offenso Academy",
+    date: "2025-10-10",
+    displayDate: "10 October 2025",
+    category: "Workshop",
+    image: "/images/certificates/cyber.jpg",
+  },
+
+  {
+    title: "The Joy of Computing using Python",
+    issuer: "NPTEL",
+    date: "2024-01-01",
+    displayDate: "2024",
+    category: "Course",
+    image: "/images/certificates/nptel.jpg",
+  },
+
+  {
+    title: "Configure And Deploy Web Server in Cloud",
+    issuer: "Spectrum Solutions, Ernakulam",
+    date: "2023-08-12",
+    displayDate: "12 August 2023",
+    category: "Workshop",
+    image: "/images/certificates/web.jpg",
+  },
+
+  {
+    title: "Industrial Java Development Workshop",
+    issuer: "Spectrum Solutions, Ernakulam",
+    date: "2023-06-29",
+    displayDate: "29 June 2023",
+    category: "Workshop",
+    image: "/images/certificates/ijd.jpg",
+  },
+
+  {
+    title: "MERN Stack",
+    issuer: "Spectrum Solutions, Ernakulam",
+    date: "2023-05-01",
+    displayDate: "01 May 2023 - 05 June 2023",
+    category: "Internship",
   },
 ];
