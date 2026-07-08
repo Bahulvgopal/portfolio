@@ -124,5 +124,6 @@ export const certificates: Certificate[] = [
     date: "2026-07-07",
     displayDate: "07 July 2026",
     category: "Course",
+    image: "/images/certificates/comp.png",
   },
 ];
