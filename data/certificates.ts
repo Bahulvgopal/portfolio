@@ -117,4 +117,12 @@ export const certificates: Certificate[] = [
     displayDate: "01 May 2023 - 05 June 2023",
     category: "Internship",
   },
+
+    {
+    title: "CompTIA Network+: Network Types",
+    issuer: "Infosys",
+    date: "2026-07-07",
+    displayDate: "07 July 2026",
+    category: "Course",
+  },
 ];
