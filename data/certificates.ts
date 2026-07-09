@@ -121,9 +121,19 @@ export const certificates: Certificate[] = [
     {
     title: "CompTIA Network+: Network Types",
     issuer: "Infosys",
+    date: "2026-07-08",
+    displayDate: "08 July 2026",
+    category: "Course",
+    image: "/images/certificates/comp2.png",
+  },
+
+  {
+    title: "CompTIA Network+: Well-known Ports & Protocols",
+    issuer: "Infosys",
     date: "2026-07-07",
     displayDate: "07 July 2026",
     category: "Course",
     image: "/images/certificates/comp.png",
   },
+  
 ];
