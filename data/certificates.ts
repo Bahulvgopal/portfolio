@@ -135,5 +135,23 @@ export const certificates: Certificate[] = [
     category: "Course",
     image: "/images/certificates/comp.png",
   },
+
+    {
+    title: "Python for Machine Learning",
+    issuer: "Great Learning",
+    date: "2023-07-05",
+    displayDate: "05 July 2023",
+    category: "Course",
+    image: "/images/certificates/python.jpg",
+  },
+
+    {
+    title: "ChatGpt for Beginners",
+    issuer: "Great Learning",
+    date: "2023-07-07",
+    displayDate: "07 July 2023",
+    category: "Course",
+    image: "/images/certificates/chatgpt.jpg",
+  },
   
 ];
