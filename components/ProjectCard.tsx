@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 interface Project {
   title: string;
   description: string;
+  tags: string[];
   tech: string[];
   slug: string;
   featured?: boolean;
@@ -133,21 +134,22 @@ export default function ProjectCard({
 
         {/* tech stack */}
         <div className="flex flex-wrap gap-1.5 mb-8">
-          {project.tech.map((tech) => (
-            <span
-              key={tech}
-              className="
-                px-2.5 py-1 rounded-full
-                text-[10px] font-semibold tracking-wide
-                bg-white/[0.04] border border-white/[0.08]
-                text-neutral-400
-                group-hover:border-white/[0.13] group-hover:text-neutral-300
-                transition-colors duration-300
-              "
-            >
-              {tech}
-            </span>
-          ))}
+          {(project.tags ?? []).map((tag) => (
+  <span
+    key={tag}
+    className="
+      px-2.5 py-1 rounded-full
+      text-[10px] font-semibold tracking-wide
+      bg-white/[0.04] border border-white/[0.08]
+      text-neutral-400
+      group-hover:border-white/[0.13]
+      group-hover:text-neutral-300
+      transition-colors duration-300
+    "
+  >
+    {tag}
+  </span>
+))}
         </div>
 
         {/* divider */}

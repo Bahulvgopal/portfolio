@@ -5,15 +5,20 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  SiHtml5, SiCss, SiJavascript, SiReact, SiNextdotjs,
-  SiTailwindcss, SiNodedotjs, SiExpress, SiMongodb,
-  SiGit, SiGithub, SiVscodium, SiVercel, SiPostman,
-  SiInstagram, SiX, SiFacebook, SiYoutube, SiDribbble,
-  SiBehance, SiPinterest, SiTiktok, SiDiscord, SiTelegram,
-  SiSnapchat,
+  SiInstagram,
+  SiX,
+  SiFacebook,
+  SiYoutube,
+  SiGithub,
+  SiHackerrank,
 } from "react-icons/si";
+import type { ReactNode } from "react";
 import { FaLinkedin } from "react-icons/fa";
 import { TbApi } from "react-icons/tb";
+import { FaGlobe, FaLaptopCode } from "react-icons/fa";
+import type { ReactElement } from "react";
+
+import { Profile } from "@/types/profile";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -38,89 +43,141 @@ const slideIn = (delay = 0) => ({
 
 const TAGS = ["React", "Next.js", "MongoDB", "TypeScript", "TailwindCSS"];
 
-const ICON_MAP: Record<string, { icon: React.ReactNode; color: string }> = {
-  HTML:           { icon: <SiHtml5 />,       color: "#f97316" },
-  CSS:            { icon: <SiCss />,         color: "#60a5fa" },
-  JavaScript:     { icon: <SiJavascript />,  color: "#facc15" },
-  React:          { icon: <SiReact />,       color: "#22d3ee" },
-  "Next.js":      { icon: <SiNextdotjs />,   color: "#e5e5e5" },
-  "Tailwind CSS": { icon: <SiTailwindcss />, color: "#38bdf8" },
-  "Node.js":      { icon: <SiNodedotjs />,   color: "#4ade80" },
-  "Express.js":   { icon: <SiExpress />,     color: "#d4d4d4" },
-  "REST APIs":    { icon: <TbApi />,         color: "#a78bfa" },
-  MongoDB:        { icon: <SiMongodb />,     color: "#4ade80" },
-  Mongoose:       { icon: <SiMongodb />,     color: "#f87171" },
-  Git:            { icon: <SiGit />,         color: "#fb923c" },
-  GitHub:         { icon: <SiGithub />,      color: "#d4d4d4" },
-  "VS Code":      { icon: <SiVscodium />,    color: "#60a5fa" },
-  Vercel:         { icon: <SiVercel />,      color: "#ffffff" },
-  Postman:        { icon: <SiPostman />,     color: "#f97316" },
-};
 
-const skillGroups = [
-  {
-    title: "Frontend",
-    description: "Fast, responsive, and delightful user interfaces.",
-    gradientFrom: "#38bdf8",
-    gradientTo: "#818cf8",
-    glowColor: "rgba(56,189,248,0.07)",
-    borderHover: "hover:border-sky-500/25",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS"],
-  },
-  {
-    title: "Backend",
-    description: "Scalable APIs and solid application logic.",
-    gradientFrom: "#a78bfa",
-    gradientTo: "#e879f9",
-    glowColor: "rgba(167,139,250,0.07)",
-    borderHover: "hover:border-violet-500/25",
-    skills: ["Node.js", "Express.js", "REST APIs"],
-  },
-  {
-    title: "Database",
-    description: "Structured, efficient data at any scale.",
-    gradientFrom: "#4ade80",
-    gradientTo: "#2dd4bf",
-    glowColor: "rgba(74,222,128,0.07)",
-    borderHover: "hover:border-emerald-500/25",
-    skills: ["MongoDB", "Mongoose"],
-  },
-  {
-    title: "Tools & Workflow",
-    description: "The daily toolkit for building and shipping.",
-    gradientFrom: "#fb923c",
-    gradientTo: "#f43f5e",
-    glowColor: "rgba(251,146,60,0.07)",
-    borderHover: "hover:border-orange-500/25",
-    skills: ["Git", "GitHub", "VS Code", "Vercel", "Postman"],
-  },
-];
+
+// const skillGroups = [
+//   {
+//     title: "Frontend",
+//     description: "Fast, responsive, and delightful user interfaces.",
+//     gradientFrom: "#38bdf8",
+//     gradientTo: "#818cf8",
+//     glowColor: "rgba(56,189,248,0.07)",
+//     borderHover: "hover:border-sky-500/25",
+//     skills: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS"],
+//   },
+//   {
+//     title: "Backend",
+//     description: "Scalable APIs and solid application logic.",
+//     gradientFrom: "#a78bfa",
+//     gradientTo: "#e879f9",
+//     glowColor: "rgba(167,139,250,0.07)",
+//     borderHover: "hover:border-violet-500/25",
+//     skills: ["Node.js", "Express.js", "REST APIs"],
+//   },
+//   {
+//     title: "Database",
+//     description: "Structured, efficient data at any scale.",
+//     gradientFrom: "#4ade80",
+//     gradientTo: "#2dd4bf",
+//     glowColor: "rgba(74,222,128,0.07)",
+//     borderHover: "hover:border-emerald-500/25",
+//     skills: ["MongoDB", "Mongoose"],
+//   },
+//   {
+//     title: "Tools & Workflow",
+//     description: "The daily toolkit for building and shipping.",
+//     gradientFrom: "#fb923c",
+//     gradientTo: "#f43f5e",
+//     glowColor: "rgba(251,146,60,0.07)",
+//     borderHover: "hover:border-orange-500/25",
+//     skills: ["Git", "GitHub", "VS Code", "Vercel", "Postman"],
+//   },
+// ];
 
 const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
-const STATS = [
-  { value: "10+", label: "Projects" },
-  { value: "Next.js", label: "Primary Stack" },
-  { value: "Open", label: "To Hire" },
-];
+type SocialItem = {
+  icon: React.ReactNode;
+  href: string;
+  label: string;
+};
 
-const SOCIALS = [
-  { icon: <SiGithub />, href: "https://github.com/Bahulvgopal?tab=overview&from=2024-12-01&to=2024-12-31", label: "GitHub" },
-  { icon: <FaLinkedin />, href: "https://www.linkedin.com/in/bahul-v-gopal-b7493b280", label: "LinkedIn" },
-  { icon: <SiInstagram />, href: "https://www.instagram.com/_.bahul_?igsh=MTM5OG1kd3FwMnBrZg==", label: "Instagram" },
-  // { icon: <SiX />, href: "https://x.com/", label: "X" },
-  { icon: <SiFacebook />, href: "https://www.facebook.com/bahulakul.bahulakul", label: "Facebook" },
-  // { icon: <SiYoutube />, href: "https://youtube.com/", label: "YouTube" },
-  // { icon: <SiDribbble />, href: "https://dribbble.com/", label: "Dribbble" },
-  // { icon: <SiBehance />, href: "https://behance.net/", label: "Behance" },
-  // { icon: <SiPinterest />, href: "https://pinterest.com/", label: "Pinterest" },
-  // { icon: <SiTiktok />, href: "https://tiktok.com/", label: "TikTok" },
-  // { icon: <SiDiscord />, href: "https://discord.com/", label: "Discord" },
-  // { icon: <SiTelegram />, href: "https://telegram.org/", label: "Telegram" },
-  // { icon: <SiSnapchat />, href: "https://snapchat.com/", label: "Snapchat" },
-];
+function SocialRow({
+  profile,
+  className = "",
+}: {
+  profile: Profile;
+  className?: string;
+}) {
 
-function SocialRow({ className = "" }: { className?: string }) {
+const SOCIALS: {
+  icon: ReactElement;
+  href: string;
+  label: string;
+}[] = [];
+
+if (profile.socials.github) {
+  SOCIALS.push({
+    icon: <SiGithub />,
+    href: profile.socials.github,
+    label: "GitHub",
+  });
+}
+
+if (profile.socials.linkedin) {
+  SOCIALS.push({
+    icon: <FaLinkedin />,
+    href: profile.socials.linkedin,
+    label: "LinkedIn",
+  });
+}
+
+if (profile.socials.instagram) {
+  SOCIALS.push({
+    icon: <SiInstagram />,
+    href: profile.socials.instagram,
+    label: "Instagram",
+  });
+}
+
+if (profile.socials.facebook) {
+  SOCIALS.push({
+    icon: <SiFacebook />,
+    href: profile.socials.facebook,
+    label: "Facebook",
+  });
+}
+
+if (profile.socials.twitter) {
+  SOCIALS.push({
+    icon: <SiX />,
+    href: profile.socials.twitter,
+    label: "X",
+  });
+}
+
+if (profile.socials.leetcode) {
+  SOCIALS.push({
+    icon: <FaLaptopCode />,
+    href: profile.socials.leetcode,
+    label: "LeetCode",
+  });
+}
+
+if (profile.socials.website || profile.socials.portfolio) {
+  SOCIALS.push({
+    icon: <FaGlobe />,
+    href: profile.socials.website || profile.socials.portfolio!,
+    label: "Portfolio",
+  });
+}
+
+if (profile.socials.youtube) {
+  SOCIALS.push({
+    icon: <SiYoutube />,
+    href: profile.socials.youtube,
+    label: "YouTube",
+  });
+}
+
+if (profile.socials.hackerrank) {
+  SOCIALS.push({
+    icon: <SiHackerrank />,
+    href: profile.socials.hackerrank,
+    label: "HackerRank",
+  });
+}
+
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       {SOCIALS.map((s) => (
@@ -130,21 +187,22 @@ function SocialRow({ className = "" }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={s.label}
-className="
-flex items-center justify-center
-w-12 h-12
-rounded-full
-border border-white/[0.08]
-bg-white/[0.03]
-text-neutral-400
-text-[20px]
-hover:border-sky-500/40
-hover:text-sky-400
-hover:-translate-y-1
-hover:scale-110
-transition-all
-duration-300
-"        >
+          className="
+            flex items-center justify-center
+            w-12 h-12
+            rounded-full
+            border border-white/[0.08]
+            bg-white/[0.03]
+            text-neutral-400
+            text-[20px]
+            hover:border-sky-500/40
+            hover:text-sky-400
+            hover:-translate-y-1
+            hover:scale-110
+            transition-all
+            duration-300
+          "
+        >
           {s.icon}
         </a>
       ))}
@@ -152,7 +210,14 @@ duration-300
   );
 }
 
-export default function HeroWithSkills() {
+interface HeroProps {
+  profile: Profile;
+}
+
+export default function Hero({
+  profile,
+}: HeroProps) {
+  console.log(profile.resume);
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
@@ -196,7 +261,7 @@ export default function HeroWithSkills() {
               <div className="relative w-64 h-80 sm:w-72 sm:h-96">
                 <motion.div style={{ y: imgY }} className="absolute inset-0">
                   <Image
-                    src="/images/main1.png"
+                    src={profile.profileImage?.url || "/images/main1.png"}
                     alt="Bahul"
                     fill
                     className="object-cover object-top"
@@ -217,7 +282,7 @@ export default function HeroWithSkills() {
               <motion.h1 {...reveal(0.1)} className="text-[clamp(2.6rem,10vw,5rem)] font-black leading-[0.9] tracking-tight text-white mb-5" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
                 Hi, I&apos;m{" "}
                 <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Bahul</span>
+                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">{profile.fullName}</span>
                   <motion.svg
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
@@ -244,7 +309,7 @@ export default function HeroWithSkills() {
               </motion.h1>
 
               <motion.p {...reveal(0.18)} className="text-[clamp(0.9rem,2.5vw,1rem)] text-neutral-400 leading-[1.75] mb-6">
-                Computer Science student passionate about building real-world products with modern web tech. Clean UI, performance, meaningful UX.
+                {profile.shortBio}
               </motion.p>
 
               {/* <motion.div {...reveal(0.22)} className="flex flex-wrap gap-2 mb-8">
@@ -268,17 +333,17 @@ export default function HeroWithSkills() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
-                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
+                <a href={profile.resume.url ?? "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                   </svg>
-                  Resume
+                  {profile.resume.buttonText}
                 </a>
               </motion.div>
 
               {/* Social icons */}
               <motion.div {...reveal(0.32)} className="mt-8 pt-6 flex justify-center items-center border-t border-white/[0.06]">
-                <SocialRow />
+                <SocialRow profile={profile}/>
               </motion.div>
             </div>
           </div>
@@ -300,7 +365,7 @@ export default function HeroWithSkills() {
               {/* image — no frame, just the transparent-bg figure */}
               <motion.div style={{ y: imgY }} className="relative w-full h-full">
                 <Image
-                  src="/images/main1.png"
+                  src={profile.profileImage?.url || "/images/main1.png"}
                   alt="Bahul"
                   fill
                   className="object-contain object-bottom"
@@ -318,7 +383,7 @@ export default function HeroWithSkills() {
               <motion.h1 {...reveal(0.08)} className="text-[clamp(2.8rem,5.5vw,6rem)] font-black leading-[0.9] tracking-tight text-white mb-6" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
                 Hi, I&apos;m{" "}
                 <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Bahul</span>
+                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">{profile.fullName}</span>
                   <motion.svg
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
@@ -345,7 +410,7 @@ export default function HeroWithSkills() {
               </motion.h1>
 
               <motion.p {...reveal(0.18)} className="max-w-lg text-[clamp(0.9rem,1.5vw,1.05rem)] text-neutral-400 leading-[1.75] mb-8">
-                Computer Science student passionate about building real-world products with modern web tech. From wedding platforms to scalable systems — clean UI, performance, meaningful UX.
+                {profile.shortBio}
               </motion.p>
 
               
@@ -358,11 +423,11 @@ export default function HeroWithSkills() {
                   </svg>
                 </Link>
 
-                <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
+                <a href={profile.resume.url ?? "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                   </svg>
-                  Resume
+                  {profile.resume.buttonText}
                 </a>
 
                 
@@ -370,7 +435,7 @@ export default function HeroWithSkills() {
 
               {/* Social icons */}
               <motion.div {...reveal(0.3)} className="mb-10 mt-[2rem] flex justify-center items-center">
-                <SocialRow />
+                <SocialRow profile={profile} />
               </motion.div>
 
 
@@ -385,89 +450,7 @@ export default function HeroWithSkills() {
         <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(56,189,248,0.12) 30%, rgba(129,140,248,0.12) 70%, transparent)" }} />
       </div>
 
-      {/* ===== SKILLS ===== */}
-      <section className="relative py-10 px-5 sm:px-8 lg:px-0 overflow-hidden">
-
-        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[380px] rounded-full bg-blue-700/5 blur-[140px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 w-[420px] h-[420px] rounded-full bg-violet-700/5 blur-[130px]" />
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{ backgroundImage: GRAIN_URL, backgroundSize: "128px" }} />
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-
-          <motion.div {...revealInView(0)} className="text-center mb-5">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-5 border border-sky-400/20 bg-sky-400/[0.04] text-sky-400 font-mono text-[10px] font-medium tracking-[0.15em] uppercase">
-              <span className="w-[5px] h-[5px] rounded-full bg-sky-400 animate-pulse" />
-              Tech Stack
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-normal tracking-tight leading-[1.08] text-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-              Technologies I{" "}
-              <em className="italic" style={{ background: "linear-gradient(90deg, #38bdf8, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                work with
-              </em>
-            </h2>
-            <p className="mt-4 text-sm text-neutral-500 max-w-md mx-auto leading-[1.75]">
-              Tools and technologies I use to design, build, and ship modern digital products.
-            </p>
-          </motion.div>
-
-          <motion.div {...revealInView(0.05)} className="h-px mb-12 max-w-xs mx-auto" style={{ background: "linear-gradient(90deg, transparent, rgba(56,189,248,0.2) 40%, rgba(129,140,248,0.2) 70%, transparent)" }} />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {skillGroups.map((group, i) => (
-              <motion.article
-                key={group.title}
-                {...revealInView(0.07 + i * 0.07)}
-                className={`group relative overflow-hidden rounded-[26px] bg-[#0f0f10] border border-white/[0.06] ${group.borderHover} hover:-translate-y-1 hover:shadow-[0_24px_64px_rgba(0,0,0,0.5)] transition-all duration-500 p-7`}
-              >
-                <div
-                  className="absolute top-0 left-0 right-0 h-[2px] scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                  style={{ background: `linear-gradient(90deg, ${group.gradientFrom}, ${group.gradientTo})` }}
-                />
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: `radial-gradient(circle at 50% 0%, ${group.glowColor} 0%, transparent 65%)` }}
-                />
-                <div className="relative z-10">
-                  <div className="flex items-start justify-between mb-1">
-                    <h3 className="text-[1.35rem] font-normal text-white tracking-tight leading-snug" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-                      {group.title}
-                    </h3>
-                    <span className="font-mono text-[9px] text-neutral-700 tracking-[0.12em] mt-1 shrink-0 ml-3">
-                      {String(group.skills.length).padStart(2, "0")} skills
-                    </span>
-                  </div>
-                  <p className="text-[12px] text-neutral-600 leading-relaxed mb-5">{group.description}</p>
-                  <div className="h-px bg-white/[0.05] mb-5" />
-                  <div className="flex flex-wrap gap-2">
-                    {group.skills.map((skill, j) => {
-                      const meta = ICON_MAP[skill];
-                      return (
-                        <motion.span
-                          key={skill}
-                          initial={{ opacity: 0, scale: 0.88 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.12 + i * 0.05 + j * 0.04, duration: 0.35, ease: "backOut" }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.07] bg-white/[0.025] font-mono text-[10px] font-medium tracking-wide text-neutral-500 hover:border-white/[0.14] hover:text-neutral-300 hover:bg-white/[0.05] transition-all duration-300 cursor-default"
-                        >
-                          {meta && (
-                            <span className="text-[13px] leading-none" style={{ color: meta.color }}>
-                              {meta.icon}
-                            </span>
-                          )}
-                          {skill}
-                        </motion.span>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </motion.article>
-            ))}
-          </div>
-
-        </div>
-      </section>
+    
 
     </div>
   );

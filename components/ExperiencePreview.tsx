@@ -1,8 +1,75 @@
-import { experiences } from "@/data/experience";
+import Image from "next/image";
 import Link from "next/link";
+import type { Experience } from "@/types/experience";
 
-export default function ExperiencePreview() {
-  const preview = experiences.slice(0, 2);
+type Props = {
+  experiences: Experience[];
+};
+function formatPeriod(
+  startDate: string,
+  endDate?: string,
+  current?: boolean
+) {
+  const start = new Date(startDate).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      year: "numeric",
+    }
+  );
+
+  if (current) return `${start} – Present`;
+
+  if (!endDate) return start;
+
+  const end = new Date(endDate).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      year: "numeric",
+    }
+  );
+
+  return `${start} – ${end}`;
+}
+
+function employmentLabel(type: Experience["employmentType"]) {
+  switch (type) {
+    case "full-time":
+      return "Full Time";
+
+    case "part-time":
+      return "Part Time";
+
+    case "internship":
+      return "Internship";
+
+    case "freelance":
+      return "Freelance";
+
+    case "contract":
+      return "Contract";
+
+    case "leadership":
+      return "Leadership";
+
+    case "volunteer":
+      return "Volunteer";
+
+    default:
+      return type;
+  }
+}
+export default function ExperiencePreview({
+  experiences,
+}: Props) {
+  const preview = [...experiences]
+  .sort(
+    (a, b) =>
+      new Date(b.startDate).getTime() -
+      new Date(a.startDate).getTime()
+  )
+  .slice(0, 2);
 
   return (
 <section className="relative pb-28 pt-7 -mt-[6rem] px-5 sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">
@@ -138,17 +205,53 @@ export default function ExperiencePreview() {
 
                     {/* top row */}
                     <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <h3
-                          className="text-[1.15rem] font-normal text-white tracking-tight leading-snug"
-                          style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-                        >
-                          {exp.role}
-                        </h3>
-                        <p className="text-[12px] text-neutral-500 mt-0.5">
-                          {exp.company}
-                        </p>
-                      </div>
+                      <div className="flex items-start gap-4">
+
+  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03]">
+
+    {exp.logo?.url ? (
+
+      <Image
+        src={exp.logo.url}
+        alt={exp.company}
+        fill
+        className="object-contain p-1.5"
+        sizes="48px"
+      />
+
+    ) : (
+
+      <div className="flex h-full w-full items-center justify-center text-sm font-bold text-neutral-500">
+        {exp.company.charAt(0)}
+      </div>
+
+    )}
+
+  </div>
+
+  <div className="flex-1">
+
+    <h3
+      className="text-[1.15rem] font-normal text-white tracking-tight leading-snug"
+      style={{
+        fontFamily:
+          "'Georgia','Times New Roman',serif",
+      }}
+    >
+      {exp.role}
+    </h3>
+
+    <p className="mt-0.5 text-[12px] text-neutral-500">
+      {exp.company}
+    </p>
+
+    <p className="mt-2 text-[11px] font-mono uppercase tracking-[0.12em] text-sky-400">
+      {employmentLabel(exp.employmentType)}
+    </p>
+
+  </div>
+
+</div>
 
                       <span className="
                         shrink-0 mt-0.5
@@ -157,7 +260,11 @@ export default function ExperiencePreview() {
                         font-mono text-[10px] text-neutral-600 tracking-wide
                         whitespace-nowrap
                       ">
-                        {exp.period}
+                        {formatPeriod(
+  exp.startDate,
+  exp.endDate,
+  exp.currentlyWorking
+)}
                       </span>
                     </div>
 

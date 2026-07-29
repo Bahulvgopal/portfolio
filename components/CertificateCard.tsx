@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Certificate } from "@/data/certificates";
+import type { Certificate } from "@/types/certificate";
 
 type Props = {
   certificate: Certificate;
@@ -85,10 +85,10 @@ export default function CertificateCard({
 
       <div className="relative h-48 overflow-hidden">
 
-        {certificate.image ? (
+        {certificate.logo?.url ? (
           <>
             <Image
-              src={certificate.image}
+              src={certificate.logo.url}
               alt={certificate.title}
               fill
               className="
@@ -181,7 +181,7 @@ export default function CertificateCard({
               tracking-wider
             "
           >
-            {certificate.category}
+            
           </span>
 
         </div>
@@ -195,7 +195,10 @@ export default function CertificateCard({
           </p>
 
           <p className="text-neutral-600 text-sm">
-            {certificate.displayDate}
+            {new Date(certificate.issueDate).toLocaleDateString("en-US", {
+  month: "short",
+  year: "numeric",
+})}
           </p>
 
         </div>

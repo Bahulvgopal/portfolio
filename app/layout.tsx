@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Providers } from "./providers";
 import Script from "next/script";
+import { Toaster } from "sonner";
 
 export const metadata = {
   metadataBase: new URL("https://bahulvgopal.me"),
@@ -132,6 +133,7 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           {children}
+          <Toaster richColors position="top-right" />
           <Footer />
         </Providers>
       </body>
