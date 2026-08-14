@@ -32,9 +32,9 @@ export async function POST(req: Request) {
 
     const result = await authService.login(parsed.data);
     const response = success({
-        admin: result.admin,
-       });
-
+  admin: result.admin,
+  token: result.token,
+});
     response.cookies.set({
         name: AUTH_COOKIE_NAME,
         value: result.token,

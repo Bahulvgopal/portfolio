@@ -8,8 +8,17 @@ import {
 
 import StatCard from "@/components/admin/StatCard";
 import { getDashboardStats } from "@/lib/api/dashboard";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth/auth";
 
 export default async function DashboardPage() {
+  const { isAuthenticated } = await auth();
+
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
+  // keep all your existing dashboard code below this
   const stats = await getDashboardStats();
 
   return (
