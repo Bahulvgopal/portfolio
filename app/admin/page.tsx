@@ -12,11 +12,12 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 
 export default async function DashboardPage() {
-  const { isAuthenticated } = await auth();
+  const { isAuthenticated, admin } = await auth();
 
-  if (!isAuthenticated) {
-    redirect("/login");
-  }
+console.log("ADMIN PAGE AUTH:", {
+  isAuthenticated,
+  adminId: admin?._id?.toString(),
+});
 
   // keep all your existing dashboard code below this
   const stats = await getDashboardStats();
