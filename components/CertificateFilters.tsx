@@ -8,10 +8,7 @@ type Props = {
   setSearch: (value: string) => void;
   year: string;
   setYear: (value: string) => void;
-  category: string;
-  setCategory: (value: string) => void;
   years: string[];
-  categories: string[];
 };
 
 type DropdownProps = {
@@ -106,12 +103,15 @@ function Dropdown({ label, value, values, onChange }: DropdownProps) {
 
 /* ── Main Component ──────────────────────────────────────────────────────── */
 export default function CertificateFilters({
-  search, setSearch,
-  year, setYear,
-  category, setCategory,
-  years, categories,
+  search,
+  setSearch,
+  year,
+  setYear,
+  years,
 }: Props) {
-  const hasActiveFilter = search.trim() !== "" || year !== "All" || category !== "All";
+  const hasActiveFilter =
+  search.trim() !== "" ||
+  year !== "All";
 
   return (
     <div className="mb-10 space-y-4">
@@ -159,12 +159,7 @@ export default function CertificateFilters({
           values={["All", ...years]}
           onChange={setYear}
         />
-        <Dropdown
-          label="Category"
-          value={category}
-          values={["All", ...categories]}
-          onChange={setCategory}
-        />
+      
       </div>
 
       {/* Active filter strip */}
@@ -188,15 +183,14 @@ export default function CertificateFilters({
                   {year}
                 </span>
               )}
-              {category !== "All" && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] text-emerald-400 border border-emerald-500/25 bg-emerald-500/[0.06]">
-                  {category}
-                </span>
-              )}
+              
             </div>
 
             <button
-              onClick={() => { setSearch(""); setYear("All"); setCategory("All"); }}
+              onClick={() => {
+  setSearch("");
+  setYear("All");
+}}
               className="inline-flex items-center gap-1.5 font-mono text-[10px] text-neutral-600 hover:text-neutral-300 tracking-[0.1em] uppercase transition-colors duration-200 shrink-0 ml-4"
             >
               Clear all

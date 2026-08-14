@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Certificate } from "@/data/certificates";
+import type { Certificate } from "@/types/certificate";
 
 type Props = {
   certificates: Certificate[];
@@ -88,10 +88,10 @@ export default function CertificateImageModal({
 
           <div className="overflow-hidden rounded-2xl bg-[#111] border border-white/10">
 
-            {cert.image ? (
+            {cert.logo?.url ? (
               <div className="relative aspect-[1.414/1] w-full">
                 <Image
-                  src={cert.image}
+                  src={cert.logo.url}
                   alt={cert.title}
                   fill
                   className="object-contain"
@@ -123,7 +123,10 @@ export default function CertificateImageModal({
             </p>
 
             <p className="text-neutral-500 text-sm mt-1">
-              {cert.displayDate}
+              {new Date(cert.issueDate).toLocaleDateString("en-US", {
+  month: "long",
+  year: "numeric",
+})}
             </p>
 
           </div>

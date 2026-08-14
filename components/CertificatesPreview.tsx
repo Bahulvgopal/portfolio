@@ -1,11 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { certificates } from "@/data/certificates";
+import type { Certificate } from "@/types/certificate";
 
-export default function CertificatesPreview() {
+type Props = {
+  certificates: Certificate[];
+};
+
+export default function CertificatesPreview({
+  certificates,
+}: Props) {
 const preview = [...certificates]
   .sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) =>
+      new Date(b.issueDate).getTime() -
+      new Date(a.issueDate).getTime()
   )
   .slice(0, 1);
   return (
@@ -93,7 +101,7 @@ const preview = [...certificates]
             <div className="grid grid-cols-1">
             {preview.map((cert, i) => (
             <article
-              key={i}
+              key={cert._id}
               className="
                 group relative overflow-hidden
                 rounded-[22px] bg-[#0f0f10]
@@ -114,20 +122,21 @@ const preview = [...certificates]
               " />
 
               {/* image area */}
-              {cert.image ? (
-                <div className="relative w-full h-44 overflow-hidden">
-                  <Image
-                    src={cert.image}
-                    alt={cert.title}
-                    fill
-                    className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                    loading="lazy"
-                  />
-                  {/* image overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f10]/80 via-transparent to-transparent" />
-                </div>
-              ) : (
+              {/* image area */}
+{/* image area */}
+{cert.logo?.url ? (
+  <div className="relative w-full h-44 overflow-hidden">
+    <Image
+      src={cert.logo.url}
+      alt={cert.title}
+      fill
+      className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+      sizes="(max-width: 640px) 100vw, 50vw"
+      loading="lazy"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f10]/80 via-transparent to-transparent" />
+  </div>
+) : (
                 <div className="
                   w-full h-44
                   flex items-center justify-center
@@ -175,7 +184,10 @@ const preview = [...certificates]
                             text-neutral-600
                           "
                         >
-                          {cert.displayDate}
+                          {new Date(cert.issueDate).toLocaleDateString("en-US", {
+  month: "short",
+  year: "numeric",
+})}
                         </span>
                         
                       </p>

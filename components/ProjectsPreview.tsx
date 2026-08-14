@@ -1,9 +1,16 @@
 import Link from "next/link";
-import { projects } from "@/data/projects";
+// import { projects } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
+import { Project } from "@/types/project"; // or wherever your type is
 
-export default function ProjectsPreview() {
-  const featured = projects.slice(0, 2);
+interface ProjectsPreviewProps {
+  projects: Project[];
+}
+
+export default function ProjectsPreview({
+  projects,
+}: ProjectsPreviewProps) {
+const featured = projects.slice(0, 2);
 
   return (
     <section className="relative pb-28 pt-7 -mt-[6rem] px-5 sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">

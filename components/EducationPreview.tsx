@@ -1,8 +1,52 @@
-import Link from "next/link";
-import { education } from "@/data/education";
 
-export default function EducationPreview() {
-  const preview = education.slice(0, 2);
+import Image from "next/image";
+import Link from "next/link";
+import type { Education } from "@/types/education";
+
+type Props = {
+  education: Education[];
+};
+
+function formatPeriod(
+  startDate: string,
+  endDate?: string,
+  current?: boolean
+) {
+  const start = new Date(startDate).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      year: "numeric",
+    }
+  );
+
+  if (current) {
+    return `${start} – Present`;
+  }
+
+  if (!endDate) return start;
+
+  const end = new Date(endDate).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      year: "numeric",
+    }
+  );
+
+  return `${start} – ${end}`;
+}
+
+export default function EducationPreview({
+  education,
+}: Props) {
+  const preview = [...education]
+  .sort(
+    (a, b) =>
+      new Date(b.startDate).getTime() -
+      new Date(a.startDate).getTime()
+  )
+  .slice(0, 2);
 
   return (
     <section className="relative py-10 px-5 -mt-[6rem] sm:px-8 lg:px-0 bg-[#0a0a0b] overflow-hidden">
@@ -155,17 +199,22 @@ export default function EducationPreview() {
                         </p>
                       </div>
 
-                      {edu.period && (
-                        <span className="
-                          shrink-0 mt-0.5
-                          px-2.5 py-1 rounded-full
-                          border border-white/[0.07] bg-white/[0.03]
-                          font-mono text-[10px] text-neutral-600 tracking-wide
-                          whitespace-nowrap
-                        ">
-                          {edu.period}
-                        </span>
-                      )}
+                      {(edu.startDate || edu.endDate || edu.currentlyStudying) && (
+  <span
+    className="
+      shrink-0 mt-0.5
+      px-2.5 py-1 rounded-full
+    "
+  >
+    {new Date(edu.startDate).getFullYear()} –{" "}
+    {edu.currentlyStudying
+      ? "Present"
+      : edu.endDate
+        ? new Date(edu.endDate).getFullYear()
+        : ""}
+  </span>
+)}
+                        
                     </div>
 
                     {edu.description && (
