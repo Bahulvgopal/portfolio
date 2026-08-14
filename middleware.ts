@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
 
   console.log("========== MIDDLEWARE ==========");
   console.log("Path:", request.nextUrl.pathname);
-  console.log("Token:", token);
+  console.log("Token exists:", !!token);
 
   if (token) {
   try {
