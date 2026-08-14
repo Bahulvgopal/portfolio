@@ -53,7 +53,7 @@ export default function LoginForm() {
     }
 
     router.push("/admin");
-    router.refresh();
+    // router.refresh();
   }
 
   return (
