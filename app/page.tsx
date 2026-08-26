@@ -16,6 +16,8 @@ import { getEducation } from "@/lib/api/education";
 import { getExperiences } from "@/lib/api/experience";
 import { getSkills } from "@/lib/api/skills";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
 
   const profile = await getProfile();
