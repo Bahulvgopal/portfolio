@@ -17,27 +17,43 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname();
+
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => { setIsOpen(false); }, [pathname]);
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
-    const onResize = () => { if (window.innerWidth >= 768) setIsOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 768) setIsOpen(false);
+    };
+
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
+
     window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
+
+  // Don't render public navbar inside admin
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <>
