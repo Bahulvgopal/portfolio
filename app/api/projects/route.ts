@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import ProjectService from "@/services/ProjectService";
 import { ProjectSchema } from "@/validations/project";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -34,6 +35,9 @@ export async function POST(req: Request) {
 
     const project = await ProjectService.createProject(data);
 
+    revalidatePath("/projects");
+    revalidatePath("/projects/[slug]", "page");
+    
     return NextResponse.json(
       {
         success: true,
