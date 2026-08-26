@@ -44,13 +44,13 @@ export default function Topbar() {
       {/* RIGHT — actions */}
       <div className="relative z-10 flex items-center gap-2 sm:gap-4 lg:gap-5">
         {/* notification button */}
-        <button
+        {/* <button
           aria-label="Notifications"
           className="relative rounded-xl p-2 text-neutral-400 border border-transparent transition-all duration-200 hover:border-white/[0.08] hover:bg-white/[0.03] hover:text-sky-400"
         >
           <Bell size={19} />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-gradient-to-br from-rose-400 to-red-500 ring-2 ring-[#0a0a0b]" />
-        </button>
+        </button> */}
 
         {/* divider — hidden on mobile */}
         <div className="hidden sm:block h-8 w-px bg-white/[0.08]" />
