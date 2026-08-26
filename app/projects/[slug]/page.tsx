@@ -3,6 +3,8 @@ import ProjectService from "@/services/ProjectService";
 import ProjectDetails from "@/components/projects/ProjectDetails";
 import { connectDB } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectPage({
   params,
 }: {

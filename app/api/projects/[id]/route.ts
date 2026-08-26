@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import ProjectService from "@/services/ProjectService";
 import { ProjectSchema } from "@/validations/project";
+import { revalidatePath } from "next/cache";
 
 interface Context {
   params: Promise<{
@@ -107,6 +108,9 @@ export async function PATCH(
       );
     }
 
+    revalidatePath("/projects");
+    revalidatePath("/projects/[slug]", "page");
+
     return NextResponse.json({
       success: true,
       data: updated,
@@ -145,6 +149,8 @@ export async function DELETE(
       );
     }
 
+    revalidatePath("/projects");
+    revalidatePath("/projects/[slug]", "page");
     const deleted = await ProjectService.deleteProject(id);
 
     if (!deleted) {
