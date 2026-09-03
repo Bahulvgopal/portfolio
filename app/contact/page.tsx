@@ -23,7 +23,7 @@ const CONTACT_LINKS = [
   {
     label: "Email",
     value: "bahulvgopal@gmail.com",
-    href: "mailto:bahulvgopal@.com",
+    href: "mailto:bahulvgopal@gmail.com",
     icon: (
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
     ),
@@ -39,7 +39,7 @@ const CONTACT_LINKS = [
   {
     label: "GitHub",
     value: "github.com/bahul",
-    href: "https://github.com",
+    href: "https://github.com/Bahulvgopal",
     icon: (
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 6.77 5.07 5.07 0 0019.91 3S18.73 2.65 16 4.48a13.38 13.38 0 00-7 0C6.27 2.65 5.09 3 5.09 3A5.07 5.07 0 005 6.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0010 20.13V24" />
     ),
