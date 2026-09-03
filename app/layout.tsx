@@ -6,7 +6,7 @@ import Script from "next/script";
 import { Toaster } from "sonner";
 
 export const metadata = {
-  metadataBase: new URL("https://bahulvgopal.me"),
+  metadataBase: new URL("https://www.bahulvgopal.me"),
 
   title: {
     default: "Bahul V Gopal | Full Stack Developer Portfolio",
@@ -40,7 +40,7 @@ export const metadata = {
   authors: [
     {
       name: "Bahul V Gopal",
-      url: "https://bahulvgopal.me",
+      url: "https://www.bahulvgopal.me",
     },
   ],
 
@@ -49,8 +49,8 @@ export const metadata = {
   category: "Technology",
 
   alternates: {
-    canonical: "https://bahulvgopal.me",
-  },
+  canonical: "https://www.bahulvgopal.me",
+},
 
   robots: {
     index: true,
@@ -71,7 +71,7 @@ export const metadata = {
     description:
       "B.Tech Computer Science and Engineering student at University College of Engineering Kariavattom. Full Stack Developer building modern websites, scalable web applications, and digital experiences.",
 
-    url: "https://bahulvgopal.me",
+    url: "https://www.bahulvgopal.me",
     siteName: "Bahul V Gopal Portfolio",
     locale: "en_US",
     type: "website",
@@ -96,7 +96,7 @@ export const metadata = {
   },
 
   verification: {
-    google: "ADD_GOOGLE_VERIFICATION_CODE",
+    google: "JimeTRA5YFpfdpWZSYwIxVlC5ibzQLuSEawFcNnxPkE",
   },
 };
 
