@@ -239,12 +239,12 @@ export default function EducationPreview({
           </div>
         </div>
 
-        {/* archive hint */}
+        {/* archive hint
         {education.length > 2 && (
           <p className="mt-10 text-center text-[11px] font-mono text-neutral-700 tracking-[0.1em] uppercase">
             {education.length - 2} more {education.length - 2 === 1 ? "entry" : "entries"} in the full timeline
           </p>
-        )}
+        )} */}
 
       </div>
     </section>
