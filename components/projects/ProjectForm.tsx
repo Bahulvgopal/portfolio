@@ -241,6 +241,15 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
               register={register("description")}
               error={errors.description}
             />
+
+            <FormTextarea
+  label="Problem (Optional)"
+  rows={5}
+  register={register("problem")}
+  error={errors.problem}
+  placeholder="What problem, limitation, or gap existed before this project?"
+/>
+
           </FormSection>
 
           <FormSection
