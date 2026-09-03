@@ -18,7 +18,7 @@ interface Skill {
     | "DevOps"
     | "Tools"
     | "Other";
-  level: number;
+  
   order: number;
   icon?: {
     url: string;
