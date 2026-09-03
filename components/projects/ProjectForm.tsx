@@ -72,6 +72,7 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
   });
 
   const tags = useWatch({ control, name: "tags" });
+  const tech = useWatch({ control, name: "tech" });
 
   useEffect(() => {
     if (!initialData) return;
@@ -354,18 +355,39 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
           </FormSection>
 
           <FormSection
-            title="Tags"
-            description="Keywords used for filtering and search."
-          >
-            <ChipInput
-              label="Project Tags"
-              value={tags ?? []}
-              onChange={(newTags) =>
-                setValue("tags", newTags, { shouldDirty: true })
-              }
-              placeholder="Type a tag and press Enter"
-            />
-          </FormSection>
+  title="Technology"
+  description="Technologies used in this project. These power the project filters."
+>
+  <ChipInput
+    label="Tech Stack"
+    value={tech ?? []}
+    onChange={(newTech) =>
+      setValue("tech", newTech, { shouldDirty: true })
+    }
+    placeholder="Next.js, MongoDB, Tailwind..."
+  />
+
+  <div className="mt-3 text-xs text-neutral-500">
+    Use these exact names for filtering:
+    <span className="ml-1 text-neutral-400">
+      Next.js, MongoDB, Tailwind, Python, HTML, CSS, JS
+    </span>
+  </div>
+</FormSection>
+
+<FormSection
+  title="Tags"
+  description="Keywords used for search and project categorization."
+>
+  <ChipInput
+    label="Project Tags"
+    value={tags ?? []}
+    onChange={(newTags) =>
+      setValue("tags", newTags, { shouldDirty: true })
+    }
+    placeholder="Type a tag and press Enter"
+  />
+</FormSection>
 
           <FormSection
             title="Publishing"

@@ -24,21 +24,35 @@ interface ProjectsClientProps {
 export default function ProjectsClient({
   projects,
 }: ProjectsClientProps) {
+  console.log("PROJECT TECH DATA:", projects.map((p) => ({
+  title: p.title,
+  tech: p.tech,
+  tags: p.tags,
+})));
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
 
   const filteredProjects = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return projects.filter((p) => {
-      const matchesFilter = filter === "All" || p.tech.includes(filter);
-      const matchesSearch =
-        !q ||
-        p.title.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q) ||
-        p.tech.some((t) => t.toLowerCase().includes(q));
-      return matchesFilter && matchesSearch;
-    });
-  }, [filter, search]);
+  const q = search.trim().toLowerCase();
+
+  return projects.filter((p) => {
+    const normalizedTech = (p.tech ?? []).map((t) =>
+      t.trim().toLowerCase()
+    );
+
+    const matchesFilter =
+      filter === "All" ||
+      normalizedTech.includes(filter.trim().toLowerCase());
+
+    const matchesSearch =
+      !q ||
+      p.title.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      normalizedTech.some((t) => t.includes(q));
+
+    return matchesFilter && matchesSearch;
+  });
+}, [projects, filter, search]);
 
   const hasActiveFilter = filter !== "All" || search.trim() !== "";
 
