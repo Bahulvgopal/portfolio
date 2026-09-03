@@ -66,28 +66,29 @@ export default function WalkthroughItem({
       </motion.div>
 
       {/* Image */}
-      {step.image?.url && (
-        <motion.div
-          initial={{ opacity: 0, x: reverse ? -40 : 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          whileHover={{ scale: 1.02 }}
-          className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-2xl"
-        >
-          <div className="relative aspect-video overflow-hidden">
-            <Image
-              src={step.image.url}
-              alt={step.title}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
+{step.image?.url && (
+  <motion.div
+    initial={{ opacity: 0, x: reverse ? -40 : 40 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.6 }}
+    className="group overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] shadow-2xl"
+  >
+    <div className="relative overflow-hidden">
+      <Image
+        src={step.image.url}
+        alt={step.title}
+        width={1600}
+        height={1000}
+        className="h-auto w-full object-contain"
+        sizes="(max-width: 1024px) 100vw, 50vw"
+      />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          </div>
-        </motion.div>
-      )}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    </div>
+  </motion.div>
+)}
+      
     </motion.div>
   );
 }
