@@ -51,22 +51,7 @@ export default function SkillBasic() {
         />
       </div>
 
-      <div className="mt-6">
-        <label className="mb-2 block text-sm font-medium">
-          Proficiency ({watch("level")}%)
-        </label>
-
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={1}
-          {...register("level", {
-            valueAsNumber: true,
-          })}
-          className="w-full"
-        />
-      </div>
+     
 
       <FormImage
   label="Skill Icon"

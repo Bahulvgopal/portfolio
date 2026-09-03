@@ -350,32 +350,11 @@ export default function Skills({ skills }: SkillsProps) {
                             </div>
                           </div>
 
-                          {/* Percentage */}
-                          <div className="shrink-0 text-right">
-                            <h5 className="text-base sm:text-lg font-semibold text-white">
-                              {skill.level}%
-                            </h5>
-                            <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-neutral-600">
-                              Proficiency
-                            </p>
-                          </div>
+                          
                         </div>
 
                         {/* Progress */}
-                        <div className="mt-3 sm:mt-4">
-                          <div className="h-[6px] sm:h-[7px] overflow-hidden rounded-full bg-white/5">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${skill.level}%` }}
-                              viewport={{ once: true }}
-                              transition={{
-                                duration: 1,
-                                delay: 0.2 + skillIndex * 0.05,
-                              }}
-                              className={`h-full rounded-full bg-gradient-to-r ${config.accent}`}
-                            />
-                          </div>
-                        </div>
+                        
                       </motion.div>
                     ))}
                   </div>

@@ -14,7 +14,7 @@ export interface ISkill extends mongoose.Document {
     | "Tools"
     | "Other";
 
-  level: number;
+  
 
   icon?: {
     publicId: string;
@@ -54,12 +54,7 @@ const SkillSchema = new Schema<ISkill>(
       ],
     },
 
-    level: {
-      type: Number,
-      required: true,
-      min: 0,
-      max: 100,
-    },
+    
 
     icon: {
       publicId: String,
