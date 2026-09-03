@@ -287,12 +287,12 @@ export default function ExperiencePreview({
           </div>
         </div>
 
-        {/* count hint */}
+        {/* count hint
         <p className="mt-10 text-center text-[11px] font-mono text-neutral-700 tracking-[0.1em] uppercase">
           {experiences.length - 2 > 0
             ? `${experiences.length - 2} more role${experiences.length - 2 > 1 ? "s" : ""} in the full timeline`
             : "Full timeline on the experience page"}
-        </p>
+        </p> */}
 
       </div>
     </section>

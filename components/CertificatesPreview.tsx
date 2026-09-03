@@ -221,7 +221,7 @@ const preview = [...certificates]
           ))}
         </div>
 
-        {/* archive hint */}
+        {/* archive hint
         {certificates.length > 1 && (
   <p className="mt-10 text-center text-[11px] font-mono text-neutral-700 tracking-[0.1em] uppercase">
     {certificates.length - 1} more{" "}
@@ -230,7 +230,7 @@ const preview = [...certificates]
       : "certificates"}{" "}
     in the full archive
   </p>
-)}
+)} */}
 
       </div>
     </section>
