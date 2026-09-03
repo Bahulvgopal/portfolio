@@ -34,7 +34,7 @@ export default function SkillForm({
     defaultValues: {
       name: initialData?.name ?? "",
       category: initialData?.category ?? "Frontend",
-      level: initialData?.level ?? 80,
+      
       icon: initialData?.icon,
       order: initialData?.order ?? 0,
       status: initialData?.status ?? "published",

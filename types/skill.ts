@@ -17,7 +17,7 @@ export interface Skill {
 
   category: SkillCategory;
 
-  level: number; // 0-100
+  
 
   icon?: {
     publicId: string;

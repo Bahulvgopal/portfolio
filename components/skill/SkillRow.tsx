@@ -69,20 +69,7 @@ export default function SkillRow({
             {skill.category}
           </p>
 
-          <div className="mt-2.5 flex items-center gap-2.5">
-            <div className="w-40 sm:w-52 rounded-full bg-white/[0.06] h-1.5 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-sky-400 to-indigo-400 transition-all duration-500"
-                style={{
-                  width: `${skill.level}%`,
-                }}
-              />
-            </div>
-
-            <span className="text-xs font-mono text-neutral-500 shrink-0">
-              {skill.level}%
-            </span>
-          </div>
+          
         </div>
       </div>
 
