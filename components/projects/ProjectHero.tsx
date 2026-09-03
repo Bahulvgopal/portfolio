@@ -53,21 +53,25 @@ export default function ProjectHero({ project }: Props) {
         </Link>
       </motion.div>
 
-      {/* Hero Image */}
-      {project.image?.url && (
-        <motion.div
-          variants={item}
-          className="relative aspect-video overflow-hidden rounded-3xl border border-white/10 mb-10"
-        >
-          <Image
-            src={project.image.url}
-            alt={project.title}
-            fill
-            priority
-            className="object-cover"
-          />
-        </motion.div>
-      )}
+     {/* Hero image */}
+{project.image?.url && (
+  <motion.div
+  variants={item}
+  className="relative w-full mb-10 sm:mb-14 rounded-[18px] sm:rounded-[26px] overflow-hidden border border-white/[0.06] bg-[#0f0f10] shadow-[0_16px_48px_rgba(0,0,0,0.5)] sm:shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+>
+    <Image
+      src={project.image.url}
+      alt={project.title}
+      width={1600}
+      height={1000}
+      className="h-auto w-full object-contain"
+      priority
+      sizes="(max-width: 768px) 100vw, 768px"
+    />
+
+    <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0a0a0b]/20 via-transparent to-transparent" />
+  </motion.div>
+)}
 
       {/* Title */}
       <motion.h1
