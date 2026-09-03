@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
 import EducationService from "@/services/EducationService";
 import {
-  updateEducationSchema,
+  updateEducationApiSchema,
 } from "@/schemas/educationSchema";
 
 /* ================= GET ================= */
@@ -68,7 +68,7 @@ export async function PATCH(
     const body = await req.json();
 
     const data =
-      updateEducationSchema.parse(body);
+      updateEducationApiSchema.parse(body);
 
     const updated =
       await EducationService.updateEducation(

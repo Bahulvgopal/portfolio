@@ -1,7 +1,10 @@
 import cloudinary from "@/lib/cloudinary";
 
 import EducationRepository from "@/repositories/EducationRepository";
-import type { EducationFormData } from "@/schemas/educationSchema";
+import type {
+  EducationFormData,
+  EducationApiData,
+} from "@/schemas/educationSchema";
 
 class EducationService {
   /* ================= CREATE ================= */
@@ -40,9 +43,9 @@ class EducationService {
   /* ================= UPDATE ================= */
 
   async updateEducation(
-    id: string,
-    data: Partial<EducationFormData>
-  ) {
+  id: string,
+  data: Partial<EducationApiData>
+) {
     const education = await EducationRepository.findById(id);
 
     if (!education) {
@@ -68,12 +71,8 @@ class EducationService {
   endDate: data.endDate
     ? new Date(data.endDate)
     : undefined,
-  coursework: data.coursework
-    ? data.coursework.map((item) => item.value)
-    : undefined,
-  achievements: data.achievements
-    ? data.achievements.map((item) => item.value)
-    : undefined,
+  coursework: data.coursework,
+  achievements: data.achievements,
 });
   }
 
