@@ -92,12 +92,30 @@ export default function ProjectHero({ project }: Props) {
       )}
 
       {/* Description */}
-      <motion.p
-        variants={item}
-        className="mt-6 max-w-3xl text-neutral-400 leading-8"
-      >
-        {project.description}
-      </motion.p>
+<motion.p
+  variants={item}
+  className="mt-6 max-w-3xl text-neutral-400 leading-8"
+>
+  {project.description}
+</motion.p>
+
+{/* Problem */}
+{project.problem?.trim() && (
+  <motion.div
+    variants={item}
+    className="mt-10 max-w-3xl rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6 sm:p-7"
+  >
+    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">
+      Problem
+    </span>
+
+    <p className="mt-4 text-sm sm:text-base leading-8 text-neutral-400">
+      {project.problem}
+    </p>
+  </motion.div>
+)}
+
+{/* Tags */}
 
       {/* Tags */}
       {project.tags?.length > 0 && (
