@@ -15,19 +15,23 @@ export default function FormCheckbox({
   ...props
 }: FormCheckboxProps) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-all duration-200 hover:border-sky-500/25 hover:bg-white/[0.03]">
+    <label className="flex cursor-pointer items-start gap-3.5 rounded-2xl border border-white/15 bg-white/[0.03] backdrop-blur-xl p-4 transition-all duration-300 hover:border-orange-500/40 hover:bg-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group">
       <input
         type="checkbox"
         {...register}
         {...props}
-        className="mt-1 h-4 w-4 rounded border-white/[0.2] bg-white/[0.03] accent-sky-500 outline-none focus:ring-2 focus:ring-sky-500/30"
+        className="mt-1 h-4 w-4 rounded-md border-white/20 bg-white/[0.05] accent-orange-500 outline-none focus:ring-2 focus:ring-orange-500/30 cursor-pointer"
       />
 
       <div>
-        <p className="text-sm font-medium text-white">{label}</p>
+        <p className="font-rajdhani text-sm font-bold text-white group-hover:text-orange-300 transition-colors">
+          {label}
+        </p>
 
         {description && (
-          <p className="mt-1 text-sm text-neutral-500">{description}</p>
+          <p className="mt-0.5 font-rajdhani text-xs font-medium text-stone-400">
+            {description}
+          </p>
         )}
       </div>
     </label>

@@ -21,20 +21,26 @@ export default function FormImage({
   error,
 }: FormImageProps) {
   return (
-    <div>
-      <label className="mb-2 block text-sm font-medium text-neutral-300">
+    <div className="space-y-1.5">
+      <label className="block font-rajdhani text-sm font-bold text-stone-200 tracking-wide">
         {label}
       </label>
 
       {description && (
-        <p className="mb-4 text-sm text-neutral-500">{description}</p>
+        <p className="font-rajdhani text-xs font-medium text-stone-400 mb-2">
+          {description}
+        </p>
       )}
 
-      <div className="rounded-xl border border-dashed border-white/[0.12] bg-white/[0.02] p-4 transition-colors duration-200 hover:border-sky-500/30">
+      <div className="rounded-2xl border border-dashed border-white/20 bg-white/[0.03] backdrop-blur-xl p-4 transition-all duration-300 hover:border-orange-500/50 hover:bg-white/[0.05] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
         <ImageUploader folder={folder} value={value} onChange={onChange} />
       </div>
 
-      {error && <p className="mt-2 text-sm text-rose-400">{error.message}</p>}
+      {error && (
+        <p className="mt-1.5 font-rajdhani text-xs font-bold text-rose-400">
+          {error.message}
+        </p>
+      )}
     </div>
   );
 }

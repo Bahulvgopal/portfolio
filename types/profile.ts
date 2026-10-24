@@ -2,19 +2,19 @@ export interface SocialLinks {
   github?: string;
   linkedin?: string;
   instagram?: string;
-   facebook?: string; 
+  facebook?: string;
   twitter?: string;
   youtube?: string;
   leetcode?: string;
   hackerrank?: string;
-  website?: string; 
+  website?: string;
   portfolio?: string;
 }
 
 export interface Hero {
-  heading: string;
-  subtitle: string;
-  typingWords: string[];
+  heading?: string;
+  subtitle?: string;
+  typingWords?: string[];
 }
 
 export interface Resume {
@@ -25,29 +25,18 @@ export interface Resume {
 
 export interface Profile {
   _id: string;
-
   fullName: string;
-
-  title: string;
-
-  shortBio: string;
-
-  about: string;
-
+  title?: string;
+  shortBio?: string;
+  about?: string;
   profileImage?: {
     url: string;
     publicId: string;
   };
-
   email: string;
-
   phone?: string;
-
   location?: string;
-
   socials: SocialLinks;
-
-  hero: Hero;
-
+  hero?: Hero;
   resume: Resume;
 }

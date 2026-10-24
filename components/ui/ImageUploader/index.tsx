@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
+import { UploadCloud } from "lucide-react";
 
 import ImagePreview from "./ImagePreview";
 import UploadProgress from "./UploadProgress";
@@ -95,20 +96,24 @@ export default function ImageUploader({
       ) : (
         <div
           {...getRootProps()}
-          className={`cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition ${
+          className={`cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-300 ${
             isDragActive
-              ? "border-blue-500 bg-blue-950"
-              : "border-slate-700"
+              ? "border-orange-500 bg-orange-500/10 shadow-[0_0_20px_rgba(249,115,22,0.2)]"
+              : "border-white/20 bg-white/[0.03] backdrop-blur-xl hover:border-orange-500/50 hover:bg-white/[0.06]"
           }`}
         >
           <input {...getInputProps()} />
 
-          <p className="text-slate-300">
-            Drag & Drop an image here
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] text-orange-400">
+            <UploadCloud size={24} />
+          </div>
+
+          <p className="font-rajdhani text-sm font-bold text-stone-200">
+            Drag & Drop image artifact here
           </p>
 
-          <p className="mt-2 text-sm text-slate-500">
-            or click to browse
+          <p className="mt-1 font-rajdhani text-xs font-semibold text-stone-400">
+            or click to browse local files (JPG, PNG, WebP · Max 5MB)
           </p>
         </div>
       )}

@@ -15,21 +15,13 @@ const optionalUrl = z.preprocess(
 );
 
 export const profileApiSchema = z.object({
-  fullName: z.string().min(2),
+  fullName: z.string().min(2, "Full name is required"),
 
-  title: z.string().min(2),
-
-  shortBio: z.string().min(10).max(200),
-
-  about: z.string().min(30),
+  shortBio: z.string().min(10, "Short bio must be at least 10 characters").max(300),
 
   profileImage: imageSchema.optional(),
 
-  email: z.string().email(),
-
-  phone: z.string().optional(),
-
-  location: z.string().optional(),
+  email: z.string().email("Valid email address is required"),
 
   socials: z.object({
     github: optionalUrl,
@@ -37,24 +29,29 @@ export const profileApiSchema = z.object({
     instagram: optionalUrl,
     twitter: optionalUrl,
     youtube: optionalUrl,
-    leetcode: optionalUrl,
-    hackerrank: optionalUrl,
     portfolio: optionalUrl,
-  }),
-
-  hero: z.object({
-    heading: z.string(),
-    subtitle: z.string(),
-
-    // <-- THIS IS THE DIFFERENCE
-    typingWords: z.array(z.string()),
+    leetcode: optionalUrl.optional(),
+    hackerrank: optionalUrl.optional(),
   }),
 
   resume: z.object({
     url: z.string().optional(),
     publicId: z.string().optional(),
-    buttonText: z.string(),
+    buttonText: z.string().min(1, "Button text is required"),
   }),
+
+  // Optional legacy fields
+  title: z.string().optional(),
+  about: z.string().optional(),
+  phone: z.string().optional(),
+  location: z.string().optional(),
+  hero: z
+    .object({
+      heading: z.string().optional(),
+      subtitle: z.string().optional(),
+      typingWords: z.array(z.string()).optional(),
+    })
+    .optional(),
 });
 
 export type ProfileApiData = z.infer<typeof profileApiSchema>;

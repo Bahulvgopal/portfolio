@@ -45,12 +45,10 @@ export default async function ProjectPage({
     : null;
 
   return (
-    <div className="-mt-[5rem]">
     <ProjectDetails
-    project={serializedProject}
+      project={serializedProject}
       prev={serializedPrev}
       next={serializedNext}
     />
-    </div>
   );
 }

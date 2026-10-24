@@ -1,39 +1,30 @@
 "use client";
 
+import React, { useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { motion, useScroll, useSpring } from "framer-motion";
+import {
+  Briefcase,
+  Calendar,
+  MapPin,
+  ExternalLink,
+  CheckCircle2,
+  ArrowLeft,
+  Sparkles,
+} from "lucide-react";
+import {
+  QuestCompleteSticker,
+  AnimeChakraSticker,
+  MangaActionBadge,
+} from "@/components/AnimeStickers";
 import type { Experience } from "@/types/experience";
 
-/* ==========================================================================
-   ANIMATIONS
-   ========================================================================== */
+type Props = {
+  experiences: Experience[];
+};
 
-const reveal = (delay = 0, y = 28) => ({
-  initial: { opacity: 0, y },
-  animate: { opacity: 1, y: 0 },
-  transition: {
-    duration: 0.9,
-    ease: [0.16, 1, 0.3, 1] as const,
-    delay,
-  },
-});
-
-const revealInView = (delay = 0) => ({
-  initial: { opacity: 0, y: 26 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: {
-    duration: 0.8,
-    ease: [0.16, 1, 0.3, 1] as const,
-    delay,
-  },
-});
-
-const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
-
-/* ==========================================================================
-   HELPERS
-   ========================================================================== */
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 function formatPeriod(
   startDate: string,
@@ -46,7 +37,6 @@ function formatPeriod(
   });
 
   if (current) return `${start} – Present`;
-
   if (!endDate) return start;
 
   const end = new Date(endDate).toLocaleDateString("en-US", {
@@ -60,448 +50,389 @@ function formatPeriod(
 function employmentLabel(type: Experience["employmentType"]) {
   switch (type) {
     case "full-time":
-      return "Full Time";
-
+      return "Full-time";
     case "part-time":
-      return "Part Time";
-
+      return "Part-time";
     case "internship":
       return "Internship";
-
     case "freelance":
       return "Freelance";
-
     case "contract":
       return "Contract";
-
     case "leadership":
       return "Leadership";
-
     case "volunteer":
       return "Volunteer";
-
     default:
       return type;
   }
 }
 
-function employmentColor(type: Experience["employmentType"]) {
-  switch (type) {
-    case "full-time":
-      return "border-emerald-500/20 bg-emerald-500/10 text-emerald-300";
+export default function ExperiencePage({ experiences }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    case "internship":
-      return "border-sky-500/20 bg-sky-500/10 text-sky-300";
+  // Scroll Progress for Glowing Timeline Conduit
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 70%", "end 50%"],
+  });
 
-    case "leadership":
-      return "border-violet-500/20 bg-violet-500/10 text-violet-300";
+  const scaleY = useSpring(scrollYProgress, {
+    stiffness: 300,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
-    case "freelance":
-      return "border-amber-500/20 bg-amber-500/10 text-amber-300";
-
-    default:
-      return "border-white/10 bg-white/[0.04] text-neutral-300";
-  }
-}
-
-/* ==========================================================================
-   TYPES
-   ========================================================================== */
-
-type Props = {
-  experiences: Experience[];
-};
-
-/* ==========================================================================
-   PAGE
-   ========================================================================== */
-
-export default function ExperiencePage({
-  experiences,
-}: Props) {
   const sortedExperiences = [...experiences].sort(
     (a, b) =>
-      new Date(b.startDate).getTime() -
-      new Date(a.startDate).getTime()
+      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   );
 
   return (
-    <main className="relative -mt-[5rem] min-h-screen overflow-hidden bg-[#0a0a0b] px-5 pb-28 pt-28 sm:px-8 sm:pt-32 lg:px-0">
+    <main
+      ref={containerRef}
+      className="relative min-h-screen overflow-hidden bg-[#FAF8F5] px-4 pt-28 pb-32 sm:px-6 sm:pt-32 lg:px-8"
+    >
+      {/* ── 1. AMBIENT BACKGROUND GLOWS & ANIME CYBER GRID ───────────── */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Amber Radiant Glow Orb */}
+        <div
+          className="absolute -top-24 left-1/2 -translate-x-1/2 w-[750px] sm:w-[950px] h-[500px] rounded-full blur-[150px] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(234, 88, 12, 0.22) 0%, rgba(245, 158, 11, 0.12) 50%, transparent 80%)",
+          }}
+        />
 
-      {/* Grain */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.035]"
-        style={{
-          backgroundImage: GRAIN_URL,
-          backgroundRepeat: "repeat",
-          backgroundSize: "128px",
-        }}
-      />
+        {/* Burnt Orange Dawn Orb (Bottom Right) */}
+        <div
+          className="absolute bottom-10 right-0 w-[550px] h-[550px] rounded-full blur-[150px] opacity-35 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(234, 88, 12, 0.1) 60%, transparent 80%)",
+          }}
+        />
 
-      {/* Background blobs */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-32 -top-40 h-[520px] w-[520px] rounded-full bg-sky-600/[0.07] blur-[160px]"
-      />
+        {/* Violet Tech Aura (Bottom Left) */}
+        <div
+          className="absolute -bottom-20 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] opacity-25 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(234, 88, 12, 0.08) 60%, transparent 80%)",
+          }}
+        />
 
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 h-[420px] w-[420px] rounded-full bg-violet-600/[0.06] blur-[150px]"
-      />
+        {/* Stylized Anime Cyber Grid Pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.035] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(234,88,12,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(234,88,12,0.4) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+          }}
+        />
 
-      {/* Decorative word */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-[3%] top-[4%] hidden select-none text-[13vw] font-black leading-none tracking-tighter text-white/[0.025] lg:block"
-        style={{ fontFamily: "'Georgia', serif" }}
-      >
-        Work
+        {/* Large Anime Kanji Ghost Watermark */}
+        <div className="absolute top-28 right-8 select-none pointer-events-none font-black text-stone-900/[0.03] text-[130px] lg:text-[230px] leading-none tracking-tighter">
+          経歴
+        </div>
+        <div className="absolute bottom-28 left-8 select-none pointer-events-none font-black text-orange-600/[0.03] text-[110px] lg:text-[200px] leading-none tracking-tighter">
+          実績
+        </div>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-4xl">
-
-        {/* Header */}
-        <motion.div {...reveal()} className="mb-20">
-
-          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-400/[0.05] px-3 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-sky-400">
-
-            <span className="h-[5px] w-[5px] animate-pulse rounded-full bg-sky-400" />
-
-            Experience
-
-          </span>
-
-          <h1
-            className="text-[clamp(2.5rem,6vw,4.4rem)] font-normal leading-[1.05] tracking-tight text-white"
-            style={{
-              fontFamily:
-                "'Georgia','Times New Roman',serif",
-            }}
+      <div className="relative z-10 mx-auto max-w-5xl">
+        {/* ── 2. PAGE HEADER (MANGA TEMPLE & GLASSMORPHISM) ───────────── */}
+        <div className="mb-12 sm:mb-16">
+          {/* Back Button */}
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="mb-6"
           >
-            My{" "}
-            <em
-              className="italic"
-              style={{
-                background:
-                  "linear-gradient(90deg,#38bdf8,#818cf8)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+            <Link
+              href="/"
+              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/75 backdrop-blur-xl border border-white/85 text-stone-700 font-orbitron text-[11px] font-bold uppercase tracking-wider hover:border-orange-500/50 hover:text-orange-600 hover:bg-orange-50/70 shadow-xs transition-all duration-200"
             >
-              journey
-            </em>
-          </h1>
+              <ArrowLeft
+                size={13}
+                className="transition-transform duration-200 group-hover:-translate-x-1 text-orange-600"
+              />
+              <span>Back to Overview</span>
+            </Link>
+          </motion.div>
 
-          <p className="mt-5 max-w-xl leading-8 text-neutral-500">
-            A timeline of internships, leadership
-            positions, freelance work, and professional
-            experiences that have shaped my growth as a
-            developer.
-          </p>
+          {/* Main Title in Manga Temple Font with Quest Sticker */}
+          <div className="flex flex-wrap items-center gap-3">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE, delay: 0.05 }}
+              className="font-manga text-[clamp(2.5rem,6.5vw,4.8rem)] font-bold tracking-wide uppercase text-stone-900 leading-[1.05]"
+            >
+              WHERE I&apos;VE{" "}
+              <span className="bg-gradient-to-r from-orange-600 via-amber-500 to-red-600 bg-clip-text text-transparent filter drop-shadow-[0_2px_14px_rgba(234,88,12,0.22)]">
+                WORKED
+              </span>
+            </motion.h1>
 
-        </motion.div>
+            <div className="hidden sm:inline-block">
+              <QuestCompleteSticker />
+            </div>
+            <div className="hidden md:inline-block">
+              <AnimeChakraSticker size={50} />
+            </div>
+          </div>
 
-        {/* Timeline */}
-        <div className="relative">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.12 }}
+            className="mt-3.5 max-w-2xl font-rajdhani text-sm sm:text-base font-medium text-stone-600 tracking-wide leading-relaxed"
+          >
+            A chronicle of professional experiences, engineering roles, and team leadership positions that have shaped my technical mastery.
+          </motion.p>
+        </div>
 
+        {/* Decorative Anime Blade Divider */}
+        <div className="relative mb-14">
           <div
-            className="absolute bottom-3 left-[7px] top-3 hidden w-px sm:block"
+            className="h-px w-full"
             style={{
               background:
-                "linear-gradient(to bottom, rgba(56,189,248,.35), rgba(129,140,248,.18), transparent)",
+                "linear-gradient(90deg, transparent 0%, rgba(234,88,12,0.25) 20%, rgba(245,158,11,0.4) 50%, rgba(234,88,12,0.25) 80%, transparent 100%)",
             }}
           />
+        </div>
 
-          <div className="space-y-6">
+        {/* ── 3. TIMELINE CONDUIT & FULL EXPERIENCE CARDS ─────────────── */}
+        <div className="relative">
+          {/* Background Static Track */}
+          <div className="absolute left-[15px] sm:left-[23px] top-6 bottom-6 w-[2px] bg-stone-200/80 rounded-full" />
 
+          {/* Animated Glowing Laser Energy Beam (Charges on Scroll) */}
+          <motion.div
+            style={{ scaleY, originY: 0 }}
+            className="absolute left-[15px] sm:left-[23px] top-6 bottom-6 w-[2px] rounded-full bg-gradient-to-b from-orange-500 via-amber-500 to-red-500 shadow-[0_0_12px_rgba(234,88,12,0.9)] z-10"
+          />
+
+          <div className="space-y-8 sm:space-y-10">
             {sortedExperiences.map((exp, index) => {
-
               const current = exp.currentlyWorking;
 
               return (
-
                 <motion.div
                   key={exp._id ?? index}
-                  {...revealInView(index * 0.08)}
-                  className="relative sm:pl-10"
+                  initial={{ opacity: 0, x: 25, y: 15 }}
+                  whileInView={{ opacity: 1, x: 0, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
+                  className="relative pl-10 sm:pl-16 group"
                 >
-                                    {/* Timeline Dot */}
-                  <span
-                    className={[
-                      "absolute left-0 top-7 hidden h-3 w-3 rounded-full border-2 sm:block",
-                      current
-                        ? "border-sky-400 bg-sky-400 shadow-[0_0_0_4px_rgba(56,189,248,.12)]"
-                        : "border-white/20 bg-[#0a0a0b]",
-                    ].join(" ")}
-                  />
+                  {/* Glowing Anime Conduit Node */}
+                  <div className="absolute left-[5px] sm:left-[13px] top-[1.8rem] z-20 flex items-center justify-center">
+                    <div className="relative flex items-center justify-center w-[22px] h-[22px] rounded-full bg-white/90 backdrop-blur-md border border-white/95 shadow-[0_2px_8px_rgba(0,0,0,0.08),inset_0_1px_1.5px_rgba(255,255,255,0.9)] group-hover:scale-115 transition-transform duration-300">
+                      <div
+                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                          current
+                            ? "bg-[#EA580C] shadow-[0_0_10px_#EA580C] animate-pulse"
+                            : "bg-stone-400 group-hover:bg-[#EA580C] group-hover:shadow-[0_0_8px_#EA580C]"
+                        }`}
+                      />
+                    </div>
+                  </div>
 
-                  <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm transition-all duration-300 hover:border-white/[0.10] hover:bg-white/[0.05]">
+                  {/* Crystal Glassmorphic Card */}
+                  <article className="relative overflow-hidden rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/85 shadow-[0_12px_36px_rgba(234,88,12,0.05),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:border-orange-500/40 hover:shadow-[0_20px_50px_rgba(234,88,12,0.16)] transition-all duration-300 p-6 sm:p-8">
+                    {/* Top Radiant Anime Blade Line */}
+                    <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
 
-                    {/* Top Accent */}
-                    <div className="h-px bg-gradient-to-r from-sky-500 via-indigo-500 to-transparent" />
+                    {/* Ambient Glow */}
+                    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_25%_0%,rgba(234,88,12,0.08)_0%,transparent_60%)]" />
 
-                    <div className="p-6 sm:p-7">
-
-                      {/* Header */}
-                      <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-
-                        {/* Logo */}
-                        <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.03]">
-
-                          {exp.logo?.url ? (
-                            <Image
-                              src={exp.logo.url}
-                              alt={exp.company}
-                              fill
-                              className="object-contain p-2"
-                              sizes="64px"
-                            />
-                          ) : (
-                            <span className="text-2xl font-bold text-neutral-500">
-                              {exp.company.charAt(0)}
-                            </span>
-                          )}
-
-                        </div>
-
-                        {/* Title */}
-                        <div className="flex-1">
-
-                          <h2
-                            className="text-2xl font-normal leading-tight tracking-tight text-white"
-                            style={{
-                              fontFamily:
-                                "'Georgia','Times New Roman',serif",
-                            }}
-                          >
-                            {exp.role}
-                          </h2>
-
-                          <p className="mt-1 text-neutral-400">
-                            {exp.company}
-                          </p>
-
-                          {/* Badges */}
-                          <div className="mt-4 flex flex-wrap gap-2">
-
-                            <span
-                              className={`rounded-full border px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] ${employmentColor(
-                                exp.employmentType
-                              )}`}
-                            >
-                              {employmentLabel(exp.employmentType)}
-                            </span>
-
-                            {exp.location && (
-                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-neutral-400">
-                                📍 {exp.location}
+                    <div className="relative z-10">
+                      {/* Top Header Row */}
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-5 mb-5">
+                        <div className="flex items-start gap-4">
+                          {/* Company Logo Lens */}
+                          <div className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-2xl border border-white/90 bg-white/80 backdrop-blur-md shadow-[0_6px_18px_rgba(0,0,0,0.05),inset_0_1px_1.5px_rgba(255,255,255,0.9)] flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                            {exp.logo?.url ? (
+                              <Image
+                                src={exp.logo.url}
+                                alt={exp.company}
+                                fill
+                                className="object-contain p-2"
+                                sizes="64px"
+                              />
+                            ) : (
+                              <span className="font-manga text-2xl font-bold text-orange-600">
+                                {exp.company.charAt(0)}
                               </span>
                             )}
-
-                            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-sky-300">
-                              {formatPeriod(
-                                exp.startDate,
-                                exp.endDate,
-                                exp.currentlyWorking
-                              )}
-                            </span>
-
-                            {current && (
-                              <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.12em] text-emerald-300">
-                                Current
-                              </span>
-                            )}
-
                           </div>
 
+                          {/* Role & Company */}
+                          <div>
+                            <h2 className="font-rajdhani text-2xl sm:text-3xl font-bold text-stone-900 group-hover:text-orange-600 transition-colors tracking-tight leading-snug">
+                              {exp.role}
+                            </h2>
+
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="font-rajdhani text-base sm:text-lg font-semibold text-stone-700">
+                                {exp.company}
+                              </span>
+                              {exp.website && (
+                                <a
+                                  href={exp.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-stone-400 hover:text-orange-600 transition-colors"
+                                  aria-label={`Visit ${exp.company} website`}
+                                >
+                                  <ExternalLink size={14} />
+                                </a>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
+                        {/* Badges Column */}
+                        <div className="flex flex-wrap sm:flex-col sm:items-end gap-2 shrink-0">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-orange-500/25 bg-orange-500/10 font-orbitron text-[10px] font-bold text-orange-600 uppercase tracking-wider">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-600" />
+                            {employmentLabel(exp.employmentType)}
+                          </span>
+
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-stone-200/80 bg-white/80 backdrop-blur-md font-orbitron text-[10px] text-stone-600 tracking-wide whitespace-nowrap">
+                            <Calendar size={11} className="text-stone-400" />
+                            {formatPeriod(
+                              exp.startDate,
+                              exp.endDate,
+                              exp.currentlyWorking
+                            )}
+                          </span>
+                        </div>
                       </div>
 
+                      {/* Location & Current Status Tags */}
+                      {(exp.location || current) && (
+                        <div className="flex items-center gap-3 mb-4">
+                          {exp.location && (
+                            <span className="inline-flex items-center gap-1 font-orbitron text-[10px] text-stone-500 uppercase tracking-wider">
+                              <MapPin size={11} className="text-orange-500" />
+                              {exp.location}
+                            </span>
+                          )}
+                          {current && (
+                            <span className="inline-flex items-center gap-1 font-orbitron text-[10px] font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              Active Role
+                            </span>
+                          )}
+                        </div>
+                      )}
+
                       {/* Divider */}
-                      <div className="my-6 h-px bg-white/[0.06]" />
+                      <div className="h-px bg-stone-200/70 my-4" />
 
                       {/* Description */}
                       {exp.description && (
-                        <p className="leading-8 text-neutral-400">
+                        <p className="font-rajdhani text-base font-medium text-stone-600 leading-relaxed mb-6">
                           {exp.description}
                         </p>
                       )}
 
-                      {/* Responsibilities */}
+                      {/* Key Responsibilities */}
                       {exp.responsibilities?.filter(Boolean).length ? (
-                        <div className="mt-8">
-
-                          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.15em] text-sky-300">
-                            Responsibilities
-                          </h3>
-
-                          <ul className="space-y-3">
-
+                        <div className="mt-6 mb-6">
+                          <h4 className="font-orbitron text-xs font-bold uppercase tracking-wider text-orange-600 mb-3">
+                            Key Responsibilities
+                          </h4>
+                          <ul className="space-y-2.5">
                             {exp.responsibilities
                               .filter(Boolean)
                               .map((item, i) => (
                                 <li
                                   key={i}
-                                  className="flex items-start gap-3 text-neutral-400"
+                                  className="flex items-start gap-2.5 font-rajdhani text-sm sm:text-base font-medium text-stone-700 leading-relaxed"
                                 >
-                                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
+                                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0 shadow-[0_0_6px_#EA580C]" />
                                   <span>{item}</span>
                                 </li>
                               ))}
-
                           </ul>
-
                         </div>
-                      ) : null}  
-                                            {/* Skills */}
+                      ) : null}
+
+                      {/* Skills Tags */}
                       {exp.skills?.filter(Boolean).length ? (
-                        <div className="mt-8">
-
-                          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.15em] text-sky-300">
-                            Skills
-                          </h3>
-
+                        <div className="mt-5 mb-5">
+                          <h4 className="font-orbitron text-xs font-bold uppercase tracking-wider text-orange-600 mb-2.5">
+                            Technologies &amp; Domain Expertise
+                          </h4>
                           <div className="flex flex-wrap gap-2">
-
-                            {exp.skills
-                              .filter(Boolean)
-                              .map((skill) => (
-                                <span
-                                  key={skill}
-                                  className="rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-xs text-neutral-300 transition hover:border-sky-500/30 hover:bg-sky-500/[0.08]"
-                                >
-                                  {skill}
-                                </span>
-                              ))}
-
+                            {exp.skills.filter(Boolean).map((skill) => (
+                              <span
+                                key={skill}
+                                className="px-3 py-1 rounded-lg bg-stone-100/90 group-hover:bg-orange-50/70 border border-stone-200/80 group-hover:border-orange-500/30 font-rajdhani text-xs sm:text-sm font-semibold text-stone-700 group-hover:text-orange-700 transition-colors shadow-2xs"
+                              >
+                                {skill}
+                              </span>
+                            ))}
                           </div>
-
                         </div>
                       ) : null}
 
                       {/* Achievements */}
                       {exp.achievements?.filter(Boolean).length ? (
-                        <div className="mt-8">
-
-                          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.15em] text-sky-300">
-                            Achievements
-                          </h3>
-
-                          <div className="space-y-3">
-
+                        <div className="mt-6">
+                          <h4 className="font-orbitron text-xs font-bold uppercase tracking-wider text-orange-600 mb-3">
+                            Key Achievements
+                          </h4>
+                          <div className="space-y-2.5">
                             {exp.achievements
                               .filter(Boolean)
                               .map((achievement, i) => (
                                 <div
                                   key={i}
-                                  className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4"
+                                  className="flex items-start gap-3 p-3.5 rounded-2xl bg-white/80 border border-emerald-500/20 shadow-2xs"
                                 >
-                                  <div className="flex items-start gap-3">
-
-                                    <div className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
-
-                                    <p className="leading-7 text-neutral-400">
-                                      {achievement}
-                                    </p>
-
-                                  </div>
+                                  <CheckCircle2
+                                    size={16}
+                                    className="text-emerald-500 shrink-0 mt-0.5"
+                                  />
+                                  <p className="font-rajdhani text-sm sm:text-base font-medium text-stone-700 leading-relaxed">
+                                    {achievement}
+                                  </p>
                                 </div>
                               ))}
-
                           </div>
-
                         </div>
                       ) : null}
-
-                      {/* Website */}
-                      {exp.website && (
-                        <div className="mt-8">
-
-                          <a
-                            href={exp.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-xl border border-sky-500/20 bg-sky-500/10 px-4 py-2 text-sm text-sky-300 transition hover:border-sky-400 hover:bg-sky-500/20"
-                          >
-                            Visit Company Website
-
-                            <svg
-                              className="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M7 17L17 7M17 7H9M17 7v8"
-                              />
-                            </svg>
-
-                          </a>
-
-                        </div>
-                      )}
-
                     </div>
-                  </div>
-
+                  </article>
                 </motion.div>
-
               );
             })}
-
-            {/* Empty State */}
-            {sortedExperiences.length === 0 && (
-              <motion.div
-                {...reveal()}
-                className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-16 text-center"
-              >
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.03]">
-
-                  <svg
-                    className="h-9 w-9 text-neutral-600"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9.75 17L8 21l4-2 4 2-1.75-4M4 4h16v11H4V4z"
-                    />
-                  </svg>
-
-                </div>
-
-                <h2
-                  className="mt-8 text-2xl text-white"
-                  style={{
-                    fontFamily:
-                      "'Georgia','Times New Roman',serif",
-                  }}
-                >
-                  No experience found
-                </h2>
-
-                <p className="mx-auto mt-3 max-w-md leading-7 text-neutral-500">
-                  Published experience entries from your CMS
-                  will appear here automatically.
-                </p>
-
-              </motion.div>
-            )}
-
           </div>
-
         </div>
 
+        {/* Empty State */}
+        {sortedExperiences.length === 0 && (
+          <div className="flex flex-col items-center justify-center p-12 rounded-3xl bg-white/70 backdrop-blur-2xl border border-white/85 text-center shadow-lg">
+            <div className="w-14 h-14 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-600 mb-4 animate-pulse">
+              <Briefcase size={24} />
+            </div>
+            <h3 className="font-manga text-2xl font-bold uppercase text-stone-900">
+              EXPERIENCE TIMELINE PENDING
+            </h3>
+            <p className="font-rajdhani text-sm text-stone-600 mt-2 max-w-md">
+              Career protocols will be loaded once published from the CMS.
+            </p>
+          </div>
+        )}
       </div>
-
     </main>
   );
 }

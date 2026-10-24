@@ -1,5 +1,26 @@
 import { z } from "zod";
 
+export function cleanVideoUrl(val: unknown): string {
+  if (!val || typeof val !== "string") return "";
+  let str = val.trim();
+  if (!str) return "";
+
+  // Check if user pasted an <iframe> embed snippet
+  const iframeMatch = str.match(/src=["']([^"']+)["']/i);
+  if (iframeMatch) {
+    str = iframeMatch[1].trim();
+  }
+
+  // Prepend https:// if protocol is missing
+  if (!/^https?:\/\//i.test(str)) {
+    if (/^(www\.|youtube\.com|youtu\.be|vimeo\.com|player\.vimeo\.com|loom\.com)/i.test(str)) {
+      str = `https://${str}`;
+    }
+  }
+
+  return str;
+}
+
 const CloudinaryImageSchema = z.object({
   url: z.string().url(),
   publicId: z.string(),
@@ -41,12 +62,10 @@ export const ProjectSchema = z.object({
     .trim()
     .min(20, "Description must be at least 20 characters"),
 
-  // ================= NEW FIELDS =================
-
   tagline: z
     .string()
     .trim()
-    .max(120, "Tagline cannot exceed 120 characters")
+    .max(140, "Tagline cannot exceed 140 characters")
     .default(""),
 
   role: z
@@ -86,19 +105,75 @@ export const ProjectSchema = z.object({
     .number()
     .default(0),
 
-  // ================= EXISTING =================
-
   image: CloudinaryImageSchema.nullable().optional(),
+
+  videoUrl: z
+    .string()
+    .transform((val) => cleanVideoUrl(val))
+    .refine(
+      (val) => {
+        if (!val || val === "") return true;
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Please provide a valid URL (e.g. https://www.youtube.com/watch?v=...)" }
+    )
+    .optional()
+    .or(z.literal("")),
 
   github: z
     .string()
-    .url()
+    .trim()
+    .transform((val) => {
+      if (!val) return "";
+      let s = val.trim();
+      if (!/^https?:\/\//i.test(s) && (s.startsWith("github.com") || s.startsWith("www.github.com"))) {
+        s = `https://${s}`;
+      }
+      return s;
+    })
+    .refine(
+      (val) => {
+        if (!val || val === "") return true;
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Invalid GitHub URL" }
+    )
     .optional()
     .or(z.literal("")),
 
   live: z
     .string()
-    .url()
+    .trim()
+    .transform((val) => {
+      if (!val) return "";
+      let s = val.trim();
+      if (!/^https?:\/\//i.test(s) && (s.startsWith("www.") || (s.includes(".") && !s.includes(" ")))) {
+        s = `https://${s}`;
+      }
+      return s;
+    })
+    .refine(
+      (val) => {
+        if (!val || val === "") return true;
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Invalid Live URL" }
+    )
     .optional()
     .or(z.literal("")),
 
@@ -108,9 +183,15 @@ export const ProjectSchema = z.object({
 
   features: z.array(z.string()).default([]),
 
+  highlights: z.array(z.string()).default([]),
+
   problem: z.string().default(""),
 
   solution: z.string().default(""),
+
+  challenges: z.string().default(""),
+
+  architecture: z.string().default(""),
 
   learnings: z.string().default(""),
 

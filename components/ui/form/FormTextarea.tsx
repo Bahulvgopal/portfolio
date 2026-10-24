@@ -15,23 +15,34 @@ export default function FormTextarea({
   error,
   required,
   className = "",
+  rows = 4,
   ...props
 }: FormTextareaProps) {
   return (
-    <div>
-      <label className="mb-2 block text-sm font-medium text-neutral-300">
+    <div className="space-y-1.5">
+      <label className="block font-rajdhani text-sm font-bold text-stone-200 tracking-wide">
         {label}
-        {required && <span className="ml-1 text-rose-400">*</span>}
+        {required && <span className="ml-1 text-orange-400 font-bold">*</span>}
       </label>
 
       <textarea
         {...register}
+        rows={rows}
         {...props}
-        className={`min-h-[140px] w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 text-sm text-white placeholder:text-neutral-600 outline-none transition-all duration-200 focus:border-sky-500/40 focus:bg-white/[0.05] focus:shadow-[0_0_0_3px_rgba(56,189,248,0.08)] ${className}`}
+        className={`
+          w-full rounded-2xl border border-white/15
+          bg-white/[0.04] backdrop-blur-xl
+          p-4 text-sm text-white placeholder:text-stone-500
+          outline-none transition-all duration-300 leading-relaxed
+          shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)]
+          hover:border-white/25 hover:bg-white/[0.06]
+          focus:border-orange-500 focus:bg-white/[0.08] focus:ring-2 focus:ring-orange-500/25
+          ${className}
+        `}
       />
 
       {error && (
-        <p className="mt-2 text-sm text-rose-400">
+        <p className="mt-1.5 font-rajdhani text-xs font-bold text-rose-400">
           {typeof error === "string" ? error : error.message}
         </p>
       )}

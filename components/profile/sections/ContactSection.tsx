@@ -11,9 +11,7 @@ interface Props {
   form: UseFormReturn<ProfileFormData>;
 }
 
-export default function ContactSection({
-  form,
-}: Props) {
+export default function ContactSection({ form }: Props) {
   const {
     register,
     formState: { errors },
@@ -22,24 +20,14 @@ export default function ContactSection({
   return (
     <FormSection
       title="Contact"
-      description="Contact details."
+      description="Direct contact details used across your public profile."
     >
       <FormInput
-        label="Email"
+        label="Email Address"
         register={register("email")}
         error={errors.email}
-      />
-
-      <FormInput
-        label="Phone"
-        register={register("phone")}
-        error={errors.phone}
-      />
-
-      <FormInput
-        label="Location"
-        register={register("location")}
-        error={errors.location}
+        placeholder="bahulvgopal@gmail.com"
+        required
       />
     </FormSection>
   );

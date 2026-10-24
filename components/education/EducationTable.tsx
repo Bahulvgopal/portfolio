@@ -1,88 +1,94 @@
 "use client";
 
 import Link from "next/link";
-import { Plus, GraduationCap, Loader2 } from "lucide-react";
+import { Plus, GraduationCap } from "lucide-react";
 
 import { useEducation } from "@/hooks/useEducation";
 import EducationRow from "./EducationRow";
+import Loader from "@/components/ui/Loader";
 
 export default function EducationTable() {
-  const {
-    educations,
-    loading,
-    removeEducation,
-  } = useEducation();
+  const { educations, loading, removeEducation } = useEducation();
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-12 text-center">
-        <Loader2 className="animate-spin text-sky-400" size={22} />
-        <p className="text-sm text-neutral-400">Loading education...</p>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (educations.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-white/[0.12] bg-white/[0.02] p-10 sm:p-12 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03]">
-          <GraduationCap className="text-neutral-600" size={24} />
+      <div className="relative overflow-hidden rounded-[32px] border border-white/20 bg-slate-950/40 backdrop-blur-3xl p-10 text-center sm:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-0 h-[240px] w-[240px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/15 blur-[100px]"
+        />
+
+        <div className="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/20 bg-white/[0.05] shadow-[0_4px_20px_rgba(249,115,22,0.3)]">
+          <GraduationCap size={28} className="text-orange-400" />
         </div>
 
-        <h2
-          className="text-xl font-black tracking-tight text-white"
-          style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-        >
-          No Education Added
+        <h2 className="relative font-orbitron text-xl sm:text-2xl font-black text-white uppercase tracking-wide">
+          NO EDUCATION RECORDS FOUND
         </h2>
 
-        <p className="mt-2 text-sm text-neutral-400 max-w-sm mx-auto">
-          Add your first education record to display it on your portfolio.
+        <p className="relative mx-auto mt-2 max-w-sm font-rajdhani text-sm sm:text-base font-semibold text-stone-300">
+          Add your degrees, certifications, and academic background to display on your portfolio.
         </p>
 
         <Link
           href="/admin/education/new"
-          className="group mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-neutral-900 shadow-[0_0_24px_rgba(255,255,255,0.06)] transition-all duration-200 hover:bg-neutral-100 hover:shadow-[0_0_36px_rgba(255,255,255,0.1)]"
+          className="relative mt-7 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-500 to-rose-600 px-6 py-3.5 font-orbitron text-xs font-black uppercase tracking-wider text-white shadow-[0_4px_24px_rgba(249,115,22,0.45)] transition-all duration-300 hover:scale-105 border border-white/25"
         >
-          <Plus size={17} className="transition-transform duration-200 group-hover:rotate-90" />
-          Add Education
+          <Plus size={16} />
+          ADD EDUCATION
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] p-5">
-        <h2
-          className="text-lg font-black tracking-tight text-white"
-          style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-        >
-          Education
-        </h2>
+    <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] border border-white/20 bg-slate-950/40 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]">
+      {/* Top Glass Glare Line */}
+      <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent z-10" />
+
+      {/* Header Bar */}
+      <div className="flex flex-col gap-4 border-b border-white/10 p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-orbitron text-[10px] font-bold text-orange-400 tracking-widest uppercase">
+              // ACADEMIC TIMELINE // 「学歴」
+            </span>
+            <span className="text-stone-500 font-mono text-xs hidden sm:inline">· · ·</span>
+          </div>
+          <h2 className="font-orbitron text-lg sm:text-xl font-black text-white uppercase tracking-wide">
+            EDUCATION
+          </h2>
+          <p className="mt-0.5 font-rajdhani text-xs sm:text-sm font-semibold text-stone-400">
+            {educations.length} academic milestones on your portfolio
+          </p>
+        </div>
 
         <Link
           href="/admin/education/new"
-          className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-[0_0_24px_rgba(255,255,255,0.06)] transition-all duration-200 hover:bg-neutral-100 hover:shadow-[0_0_36px_rgba(255,255,255,0.1)] w-fit"
+          className="inline-flex items-center justify-center gap-2 self-start rounded-2xl bg-gradient-to-r from-orange-600 via-amber-500 to-rose-600 px-5 py-3 font-orbitron text-xs font-black uppercase tracking-wider text-white shadow-[0_4px_20px_rgba(249,115,22,0.4)] transition-all duration-300 hover:scale-105 border border-white/25 sm:self-auto"
         >
-          <Plus size={17} className="transition-transform duration-200 group-hover:rotate-90" />
-          Add Education
+          <Plus size={16} />
+          ADD EDUCATION
         </Link>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px]">
-          <thead className="text-left text-xs font-mono uppercase tracking-wider text-neutral-500 border-b border-white/[0.08]">
-            <tr>
-              <th className="p-4 font-medium">Institution</th>
-              <th className="font-medium">Degree</th>
-              <th className="font-medium">Duration</th>
-              <th className="font-medium">Status</th>
-              <th className="w-32 font-medium">Actions</th>
+          <thead>
+            <tr className="border-b border-white/10 bg-white/[0.02] text-left font-orbitron text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              <th className="p-4 sm:p-5 font-bold">Degree & Institution</th>
+              <th className="p-4 sm:p-5 font-bold hidden md:table-cell">Field</th>
+              <th className="p-4 sm:p-5 font-bold">Timeline</th>
+              <th className="p-4 sm:p-5 font-bold">Status</th>
+              <th className="w-28 p-4 sm:p-5 font-bold">Actions</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-white/[0.06]">
+          <tbody className="divide-y divide-white/[0.08]">
             {educations.map((education) => (
               <EducationRow
                 key={education._id}

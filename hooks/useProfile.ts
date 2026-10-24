@@ -26,33 +26,38 @@ export function useProfile() {
   }
 
   async function updateProfile(data: ProfileFormData) {
-  setIsUpdating(true);
+    setIsUpdating(true);
 
-  try {
-    const payload = {
-      ...data,
+    try {
+      const payload: any = {
+        ...data,
+      };
 
-      hero: {
-        ...data.hero,
-        typingWords: data.hero.typingWords.map(
-          (item) => item.value
-        ),
-      },
-    };
+      if (data.hero?.typingWords) {
+        payload.hero = {
+          ...data.hero,
+          typingWords: data.hero.typingWords.map((item) => item.value),
+        };
+      }
 
-    await fetch("/api/profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    await loadProfile();
-  } finally {
-    setIsUpdating(false);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to update profile");
+      }
+
+      await loadProfile();
+    } finally {
+      setIsUpdating(false);
+    }
   }
-}
 
   return {
     profile,

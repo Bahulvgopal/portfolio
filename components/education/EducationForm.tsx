@@ -6,6 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useAnimeConfirm } from "@/components/ui/AnimeConfirmModal";
 
 import { educationSchema, type EducationFormData } from "@/schemas/educationSchema";
 import type { Education } from "@/types/education";
@@ -16,18 +17,15 @@ import EducationAcademic from "./EducationAcademic";
 import EducationDescription from "./EducationDescription";
 import EducationLists from "./EducationLists";
 import EducationPublishing from "./EducationPublishing";
-
 import FormActions from "@/components/ui/form/FormActions";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 const reveal = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 15 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, ease: EASE, delay },
+  transition: { duration: 0.6, ease: EASE, delay },
 });
-
-const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
 interface Props {
   mode: "create" | "edit";
@@ -41,6 +39,7 @@ function formatDate(date?: string | Date | null) {
 
 export default function EducationForm({ mode, initialData }: Props) {
   const router = useRouter();
+  const confirm = useAnimeConfirm();
 
   const methods = useForm<EducationFormData>({
     resolver: zodResolver(educationSchema),
@@ -120,7 +119,15 @@ export default function EducationForm({ mode, initialData }: Props) {
 
   async function handleDelete() {
     if (!initialData?._id) return;
-    if (!confirm("Delete this education?")) return;
+    const ok = await confirm({
+      title: "PURGE EDUCATION RECORD",
+      subtitle: "TACTICAL PURGE DECREE // 「緊急消去警告」",
+      message: `Delete education record for "${initialData.degree || "Degree"}" at "${initialData.institution || "Institution"}"? This operation cannot be reversed.`,
+      confirmText: "EXECUTE PURGE // 削除実行",
+      cancelText: "ABORT // 中止",
+      variant: "danger",
+    });
+    if (!ok) return;
 
     try {
       const response = await fetch(`/api/education/${initialData._id}`, {
@@ -142,77 +149,68 @@ export default function EducationForm({ mode, initialData }: Props) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#0a0a0b] px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      {/* grain */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]"
-        style={{ backgroundImage: GRAIN_URL, backgroundRepeat: "repeat", backgroundSize: "128px" }}
-      />
+    <div className="space-y-8">
+      {/* Header Glass Card */}
+      <motion.div
+        {...reveal(0)}
+        className="relative overflow-hidden rounded-[30px] sm:rounded-[34px] border border-white/20 bg-slate-950/40 backdrop-blur-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-10 -left-10 w-36 h-36 rounded-3xl bg-gradient-to-br from-[#FF5E3A]/30 to-[#FF2A54]/25 blur-2xl z-0"
+        />
 
-      {/* glow blobs — smaller on mobile so they never force horizontal scroll */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 -right-20 h-[240px] w-[240px] rounded-full bg-blue-600/[0.08] blur-[100px] sm:-top-32 sm:-right-32 sm:h-[420px] sm:w-[420px] sm:blur-[140px]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 h-[200px] w-[200px] rounded-full bg-violet-600/[0.06] blur-[90px] sm:h-[340px] sm:w-[340px] sm:blur-[120px]"
-      />
-
-      <div className="relative z-10 mx-auto max-w-4xl">
-        <motion.div {...reveal(0)} className="mb-6 sm:mb-8">
-          <h1
-            className="text-[clamp(1.6rem,6vw,2.4rem)] font-black tracking-tight text-white"
-            style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-          >
-            {mode === "create" ? (
-              <>
-                Add{" "}
-                <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Education
-                </span>
-              </>
-            ) : (
-              <>
-                Edit{" "}
-                <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Education
-                </span>
-              </>
-            )}
-          </h1>
-          <p className="mt-2 text-sm text-neutral-400">
-            {mode === "create"
-              ? "Add a new academic entry to your profile."
-              : "Update the details of this academic entry."}
-          </p>
-        </motion.div>
-
-        <FormProvider {...methods}>
-          <motion.form
-            {...reveal(0.08)}
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-5 sm:space-y-6"
-          >
-            <EducationBasic />
-            <EducationTimeline />
-            <EducationAcademic />
-            <EducationDescription />
-            <EducationLists />
-            <EducationPublishing />
-
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-6">
-              <FormActions
-                mode={mode}
-                entity="Education"
-                isSubmitting={isSubmitting}
-                onDelete={mode === "edit" ? handleDelete : undefined}
-              />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-orbitron text-[9px] font-bold text-orange-400 tracking-widest uppercase">
+                // ACADEMIC STUDIO // 「学歴管理」
+              </span>
+              <span className="px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-600 text-white font-orbitron text-[9px] font-black uppercase tracking-wider shadow-[0_2px_10px_rgba(249,115,22,0.4)]">
+                {mode === "create" ? "NEW RECORD" : "EDIT ENTRY"}
+              </span>
             </div>
-          </motion.form>
-        </FormProvider>
-      </div>
+
+            <h1 className="font-orbitron text-2xl sm:text-3xl font-black text-white uppercase tracking-wide">
+              {mode === "create" ? "ADD EDUCATION ENTRY" : "UPDATE EDUCATION PARAMETERS"}
+            </h1>
+
+            <p className="mt-2 font-rajdhani text-sm sm:text-base font-semibold text-stone-300">
+              {mode === "create"
+                ? "Document a new degree, university program, GPA, and coursework."
+                : `Update academic records and achievements for ${initialData?.institution || "this entry"}.`}
+            </p>
+          </div>
+
+          <div className="text-stone-500 font-mono text-xs hidden sm:block tracking-widest self-start">
+            · · ·
+          </div>
+        </div>
+      </motion.div>
+
+      <FormProvider {...methods}>
+        <motion.form
+          {...reveal(0.08)}
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6 sm:space-y-8"
+        >
+          <EducationBasic />
+          <EducationTimeline />
+          <EducationAcademic />
+          <EducationDescription />
+          <EducationLists />
+          <EducationPublishing />
+
+          <div className="rounded-[28px] border border-white/20 bg-slate-950/40 backdrop-blur-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]">
+            <FormActions
+              mode={mode}
+              entity="Education"
+              isSubmitting={isSubmitting}
+              onDelete={mode === "edit" ? handleDelete : undefined}
+            />
+          </div>
+        </motion.form>
+      </FormProvider>
     </div>
   );
 }
