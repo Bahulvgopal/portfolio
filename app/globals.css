@@ -1,3 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&family=Russo+One&family=Bangers&display=swap');
+
+/* Authentic Anime Fonts from Reference Image */
+@font-face {
+  font-family: 'NinjaNaruto';
+  src: url('/fonts/njnaruto.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MangaTemple';
+  src: url('/fonts/mangat.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DeathNote';
+  src: url('/fonts/DeathNote.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,13 +34,48 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Better base styling */
+/* Better base styling - Off-white background, black/dark-stone text */
 body {
-  @apply bg-gradient-to-br from-white via-gray-100 to-gray-200 
-         dark:from-gray-900 dark:via-gray-800 dark:to-black 
-         text-gray-900 dark:text-gray-100 
-         antialiased;
-         @apply overflow-x-hidden;
+  background-color: #FAF8F5;
+  color: #1c1917;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Anime Font Utility Classes */
+.font-naruto {
+  font-family: 'NinjaNaruto', cursive, sans-serif;
+}
+
+.font-manga {
+  font-family: 'MangaTemple', 'Bangers', cursive, sans-serif;
+}
+
+.font-deathnote {
+  font-family: 'DeathNote', cursive, sans-serif;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', system-ui, sans-serif;
+}
+
+.font-rajdhani {
+  font-family: 'Rajdhani', system-ui, sans-serif;
+}
+
+.font-russo {
+  font-family: 'Russo One', 'Orbitron', system-ui, sans-serif;
+}
+
+/* Custom Scrollbar utilities - Hide scrollbar everywhere requested */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Container */
@@ -21,16 +83,50 @@ body {
   @apply max-w-6xl mx-auto px-4;
 }
 
-/* Optional: nicer scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #d6d3d1;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #ea580c;
 }
+
+/* Anime Cyber Toast Aesthetics */
+.anime-cyber-toast {
+  position: relative;
+  overflow: hidden !important;
+}
+
+.anime-cyber-toast::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ea580c, #f59e0b, transparent);
+  opacity: 0.8;
+}
+
+.anime-cyber-toast[data-type="success"]::before {
+  background: linear-gradient(90deg, transparent, #10b981, #34d399, transparent);
+}
+
+.anime-cyber-toast[data-type="error"]::before {
+  background: linear-gradient(90deg, transparent, #f43f5e, #fb7185, transparent);
+}
+
+.anime-cyber-toast[data-type="warning"]::before {
+  background: linear-gradient(90deg, transparent, #f59e0b, #fbbf24, transparent);
+}
+
+.anime-cyber-toast[data-type="info"]::before {
+  background: linear-gradient(90deg, transparent, #06b6d4, #38bdf8, transparent);
+}
+

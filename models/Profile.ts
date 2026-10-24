@@ -3,11 +3,11 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IProfile extends Document {
   fullName: string;
 
-  title: string;
+  title?: string;
 
-  shortBio: string;
+  shortBio?: string;
 
-  about: string;
+  about?: string;
 
   profileImage?: {
     url: string;
@@ -31,10 +31,10 @@ export interface IProfile extends Document {
     portfolio?: string;
   };
 
-  hero: {
-    heading: string;
-    subtitle: string;
-    typingWords: string[];
+  hero?: {
+    heading?: string;
+    subtitle?: string;
+    typingWords?: string[];
   };
 
   resume: {
@@ -58,9 +58,9 @@ const ProfileSchema = new Schema(
     about: String,
 
     profileImage: {
-    url: String,
-    publicId: String,
-},
+      url: String,
+      publicId: String,
+    },
 
     email: {
       type: String,
@@ -88,9 +88,9 @@ const ProfileSchema = new Schema(
       typingWords: [String],
     },
 
-    resume:{
-    url:String,
-    publicId:String,
+    resume: {
+      url: String,
+      publicId: String,
       buttonText: {
         type: String,
         default: "Download Resume",

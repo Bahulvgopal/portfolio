@@ -1,9 +1,12 @@
 import "./globals.css";
+import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Providers } from "./providers";
 import Script from "next/script";
-import { Toaster } from "sonner";
+import AnimeToaster from "@/components/ui/AnimeToaster";
+import AnimeInitialLoader from "@/components/loaders/AnimeInitialLoader";
+import AnimeClickLoader from "@/components/loaders/AnimeClickLoader";
 
 export const metadata = {
   metadataBase: new URL("https://www.bahulvgopal.me"),
@@ -48,40 +51,40 @@ export const metadata = {
   publisher: "Bahul V Gopal",
   category: "Technology",
 
-  alternates: {
-  canonical: "https://www.bahulvgopal.me",
-},
-
   robots: {
     index: true,
     follow: true,
-    nocache: false,
     googleBot: {
       index: true,
       follow: true,
-      noimageindex: false,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
     },
   },
 
-  openGraph: {
-    title: "Bahul V Gopal | Full Stack Developer Portfolio",
-    description:
-      "B.Tech Computer Science and Engineering student at University College of Engineering Kariavattom. Full Stack Developer building modern websites, scalable web applications, and digital experiences.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 
+  manifest: "/site.webmanifest",
+
+  openGraph: {
+    type: "website",
+    locale: "en_US",
     url: "https://www.bahulvgopal.me",
     siteName: "Bahul V Gopal Portfolio",
-    locale: "en_US",
-    type: "website",
-
+    title: "Bahul V Gopal | Full Stack Developer Portfolio",
+    description:
+      "B.Tech CSE Student & Full Stack Web Developer skilled in React, Next.js, Node.js, Express, MongoDB, TypeScript, and modern UI engineering.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Bahul V Gopal Portfolio",
+        alt: "Bahul V Gopal - Full Stack Developer",
       },
     ],
   },
@@ -131,9 +134,17 @@ export default function RootLayout({
         </Script>
 
         <Providers>
+          {/* 1. Dramatic Anime Entrance Loader (Shows only on initial site open) */}
+          <AnimeInitialLoader />
+
+          {/* 2. Anime Route / Click Teleport Loader */}
+          <Suspense fallback={null}>
+            <AnimeClickLoader />
+          </Suspense>
+
           <Navbar />
           {children}
-          <Toaster richColors position="top-right" />
+          <AnimeToaster />
           <Footer />
         </Providers>
       </body>

@@ -13,9 +13,7 @@ interface Props {
   form: UseFormReturn<ProfileFormData>;
 }
 
-export default function PersonalSection({
-  form,
-}: Props) {
+export default function PersonalSection({ form }: Props) {
   const {
     register,
     watch,
@@ -26,15 +24,13 @@ export default function PersonalSection({
   return (
     <FormSection
       title="Personal Information"
-      description="Manage your basic profile details."
+      description="Manage your identity, profile photo, and intro bio."
     >
       <FormImage
         label="Profile Image"
         folder="portfolio/profile"
         value={watch("profileImage") ?? null}
-        onChange={(image) =>
-          setValue("profileImage", image as any)
-        }
+        onChange={(image) => setValue("profileImage", image as any)}
       />
 
       <FormInput
@@ -45,26 +41,11 @@ export default function PersonalSection({
         required
       />
 
-      <FormInput
-        label="Professional Title"
-        register={register("title")}
-        error={errors.title}
-        placeholder="Full Stack Developer"
-        required
-      />
-
       <FormTextarea
         label="Short Bio"
         register={register("shortBio")}
         error={errors.shortBio}
-        placeholder="Write a short introduction..."
-      />
-
-      <FormTextarea
-        label="About Me"
-        register={register("about")}
-        error={errors.about}
-        placeholder="Tell visitors more about yourself..."
+        placeholder="Write a concise introduction that appears on your hero..."
       />
     </FormSection>
   );

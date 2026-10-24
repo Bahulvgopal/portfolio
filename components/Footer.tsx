@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { MangaSpeechBubble } from "./AnimeStickers";
 
 const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
@@ -8,6 +10,7 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Projects", href: "/projects" },
   { name: "About", href: "/about" },
+  { name: "Experience", href: "/experience" },
   { name: "Education", href: "/education" },
   { name: "Certificates", href: "/certificates" },
   { name: "Contact", href: "/contact" },
@@ -53,164 +56,179 @@ const socials = [
 ];
 
 export default function Footer() {
-  return (
-    <footer className="relative bg-[#0a0a0b] px-5 sm:px-8 lg:px-0 pt-0 pb-10 overflow-hidden">
+  const pathname = usePathname();
 
+  // Hide footer on admin and login routes
+  if (pathname.startsWith("/admin") || pathname === "/login") {
+    return null;
+  }
+
+  return (
+    <footer className="relative bg-[#FAF8F5] px-5 sm:px-8 lg:px-0 pt-6 pb-14 overflow-hidden">
       {/* Grain */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
         style={{ backgroundImage: GRAIN_URL, backgroundSize: "128px" }}
       />
 
-      {/* Ambient blobs */}
-      <div className="pointer-events-none absolute bottom-0 left-1/4 w-[500px] h-[300px] rounded-full bg-sky-700/5 blur-[130px]" />
-      <div className="pointer-events-none absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full bg-indigo-700/5 blur-[120px]" />
+      {/* Ambient Blobs */}
+      <div className="pointer-events-none absolute bottom-0 left-1/4 w-[500px] h-[300px] rounded-full bg-orange-500/[0.04] blur-[130px]" />
+      <div className="pointer-events-none absolute bottom-0 right-1/4 w-[400px] h-[300px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
-
-        {/* Top gradient rule */}
+        {/* -- Floating Glassmorphic Container Card -- */}
         <div
-          className="h-px mb-16"
-          style={{
-            background: "linear-gradient(90deg, transparent, rgba(56,189,248,0.15) 35%, rgba(129,140,248,0.15) 65%, transparent)",
-          }}
-        />
+          className="
+            relative overflow-hidden
+            rounded-[34px] sm:rounded-[42px]
+            bg-white/60 backdrop-blur-2xl
+            border border-white/85
+            p-8 sm:p-12
+            shadow-[0_20px_50px_rgba(0,0,0,0.05),inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_4px_rgba(0,0,0,0.03)]
+          "
+        >
+          {/* Top Blade Accent */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 opacity-80" />
 
-        {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 mb-16">
+          {/* Main Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12">
+            {/* Brand Column */}
+            <div className="lg:col-span-2">
+              <div className="flex items-center gap-3.5 mb-5">
+                <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-orange-600 via-amber-500 to-red-600 flex items-center justify-center text-white font-orbitron font-extrabold text-lg shadow-md border border-white/30">
+                  BG
+                </div>
+                <div>
+                  <h3 className="font-manga text-2xl sm:text-3xl font-bold text-stone-900 tracking-wide uppercase leading-none">
+                    BAHUL V GOPAL
+                  </h3>
+                  <span className="font-orbitron text-[10px] font-bold text-orange-600 tracking-widest uppercase">
+                    CYBERNETIC FULLSTACK ENGINEER // 「特級開発者」
+                  </span>
+                </div>
+              </div>
 
-          {/* Brand column */}
-          <div>
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center mb-6 text-white font-black text-sm tracking-wide"
-              style={{
-                background: "linear-gradient(135deg, #38bdf8, #818cf8)",
-                fontFamily: "'Georgia', serif",
-              }}
-            >
-              BG
-            </div>
+              <p className="font-rajdhani text-sm sm:text-base font-medium text-stone-600 leading-relaxed max-w-md mb-6">
+                Designing high-performance web products, scalable cloud architectures, and interactive digital
+                experiences with obsessive attention to UI physics and performance.
+              </p>
 
-            <h3
-              className="text-2xl font-normal text-white tracking-tight mb-3"
-              style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-            >
-              Bahul V Gopal
-            </h3>
-
-            <p className="text-[13px] text-neutral-500 leading-[1.8] max-w-xs mb-6">
-              Computer Science student building modern web products,
-              scalable systems, and meaningful digital experiences.
-            </p>
-
-            <a
-              href="mailto:bahulvgopal@gmail.com"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.07] bg-white/[0.02] text-[12px] font-mono text-neutral-500 hover:border-sky-500/30 hover:text-sky-400 hover:bg-sky-500/[0.04] transition-all duration-300"
-            >
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-              bahulvgopal@gmail.com
-            </a>
-          </div>
-
-          {/* Nav column */}
-          <div>
-            <span className="inline-flex items-center gap-1.5 mb-6 text-sky-400 font-mono text-[10px] font-medium tracking-[0.15em] uppercase">
-              <span className="w-[5px] h-[5px] rounded-full bg-sky-400" />
-              Navigation
-            </span>
-
-            <ul className="space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="group inline-flex items-center gap-2 text-[13px] text-neutral-500 hover:text-white transition-colors duration-200"
-                  >
-                    <span className="w-px h-3 bg-white/10 group-hover:bg-sky-400/60 transition-all duration-300" />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* CTA column */}
-          <div>
-            <span className="inline-flex items-center gap-1.5 mb-6 text-sky-400 font-mono text-[10px] font-medium tracking-[0.15em] uppercase">
-              <span className="w-[5px] h-[5px] rounded-full bg-sky-400" />
-              {"Let's Connect"}
-            </span>
-
-            <p className="text-[13px] text-neutral-500 leading-[1.8] mb-6">
-              Open to internships, freelance work, and interesting collaborations.
-            </p>
-
-            <Link
-              href="/contact"
-              className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 transition-all duration-200 shadow-[0_0_24px_rgba(255,255,255,0.06)] hover:shadow-[0_0_40px_rgba(255,255,255,0.12)] mb-8"
-            >
-              Get in touch
-              <svg
-                className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-
-            {/* Socials */}
-            <div className="flex items-center gap-2">
-              {socials.map(({ name, href, icon }) => (
+              <div className="flex flex-wrap items-center gap-3">
                 <a
-                  key={name}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={name}
-                  className="w-9 h-9 rounded-xl border border-white/[0.07] bg-white/[0.02] flex items-center justify-center text-neutral-600 hover:text-sky-400 hover:border-sky-500/30 hover:bg-sky-500/[0.04] transition-all duration-200"
+                  href="mailto:bahulvgopal@gmail.com"
+                  className="
+                    inline-flex items-center gap-2
+                    px-4 py-2 rounded-full
+                    bg-white/80 backdrop-blur-md border border-stone-200/90
+                    font-orbitron text-[11px] font-bold text-stone-800
+                    hover:border-orange-500 hover:text-orange-600 hover:bg-orange-50/50
+                    shadow-xs transition-all duration-300
+                  "
                 >
-                  {icon}
+                  <svg className="w-3.5 h-3.5 text-orange-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  bahulvgopal@gmail.com
                 </a>
-              ))}
+                <MangaSpeechBubble text="ALWAYS OPEN ⚡" className="hidden sm:inline-block" />
+              </div>
+            </div>
+
+            {/* Navigation Column */}
+            <div>
+              <span className="inline-flex items-center gap-2 mb-4 font-orbitron text-[10px] font-bold tracking-[0.16em] uppercase text-orange-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
+                NAVIGATION // 「道」
+              </span>
+
+              <ul className="space-y-2.5">
+                {navLinks.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="group inline-flex items-center gap-2 font-orbitron text-xs font-semibold text-stone-700 hover:text-orange-600 transition-colors duration-200 tracking-wide"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-stone-300 group-hover:bg-orange-500 group-hover:scale-150 transition-all duration-200" />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Connect Column */}
+            <div>
+              <span className="inline-flex items-center gap-2 mb-4 font-orbitron text-[10px] font-bold tracking-[0.16em] uppercase text-orange-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
+                CONNECT // 「交信」
+              </span>
+
+              <p className="font-rajdhani text-sm font-medium text-stone-600 mb-5 leading-normal">
+                Available for internships, high-impact projects, and interesting collaborations.
+              </p>
+
+              <Link
+                href="/contact"
+                className="
+                  group inline-flex items-center gap-2
+                  px-5 py-2.5 rounded-xl
+                  font-orbitron text-xs font-bold tracking-wider uppercase
+                  bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 text-white
+                  hover:shadow-[0_8px_25px_rgba(234,88,12,0.35)]
+                  hover:scale-[1.02]
+                  transition-all duration-200
+                  mb-6
+                "
+              >
+                <span>INITIATE CONTACT</span>
+                <svg className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+
+              {/* Social Buttons */}
+              <div className="flex items-center gap-2.5">
+                {socials.map(({ name, href, icon }) => (
+                  <a
+                    key={name}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={name}
+                    className="
+                      w-9 h-9 rounded-xl
+                      bg-white/80 backdrop-blur-md
+                      border border-stone-200/90
+                      flex items-center justify-center
+                      text-stone-700 hover:text-orange-600 hover:border-orange-500 hover:bg-orange-50/50
+                      shadow-2xs transition-all duration-200
+                    "
+                  >
+                    {icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent mb-6" />
+
+          {/* Bottom Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="font-orbitron text-[10px] text-stone-500 tracking-[0.1em] uppercase">
+              © {new Date().getFullYear()} BAHUL V GOPAL — ALL MISSIONS ACTIVE
+            </p>
+
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <span className="font-orbitron text-[9px] font-extrabold text-emerald-700 tracking-widest uppercase">
+                READY FOR WORK // 「特級・即戦力」
+              </span>
             </div>
           </div>
         </div>
-
-        {/* Bottom divider */}
-        <div className="h-px bg-white/[0.05] mb-8" />
-
-        {/* Bottom bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-[11px] text-neutral-700 tracking-[0.08em]">
-            {"© "}
-            {new Date().getFullYear()}
-            {" Bahul V Gopal — Built with Next.js & Tailwind"}
-          </p>
-
-          <div className="flex items-center gap-1.5">
-            <span className="w-[5px] h-[5px] rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-[10px] text-neutral-600 tracking-[0.1em] uppercase">
-              Open to work
-            </span>
-          </div>
-        </div>
-
       </div>
     </footer>
   );

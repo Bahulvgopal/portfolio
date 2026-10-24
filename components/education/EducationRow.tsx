@@ -3,15 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  GraduationCap,
-  Pencil,
-  Trash2,
-  Loader2,
-} from "lucide-react";
+import { GraduationCap, Pencil, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Education } from "@/types/education";
+import { useAnimeConfirm } from "@/components/ui/AnimeConfirmModal";
 
 interface Props {
   education: Education;
@@ -19,8 +15,7 @@ interface Props {
 }
 
 function formatDate(date?: string | Date) {
-  if (!date) return "-";
-
+  if (!date) return "—";
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",
@@ -31,148 +26,120 @@ export default function EducationRow({
   education,
   onDelete,
 }: Props) {
+  const confirm = useAnimeConfirm();
   const [deleting, setDeleting] = useState(false);
-
   const published = education.status === "published";
 
   async function handleDelete() {
-    const confirmed = window.confirm(
-      `Delete "${education.degree}" at "${education.institution}"?`
-    );
-
+    const confirmed = await confirm({
+      title: "PURGE ACADEMIC RECORD",
+      subtitle: "TACTICAL PURGE DECREE // 「緊急消去警告」",
+      message: `Delete "${education.degree}" at "${education.institution}"? This record cannot be undone.`,
+      confirmText: "EXECUTE PURGE // 削除実行",
+      cancelText: "ABORT // 中止",
+      variant: "danger",
+    });
     if (!confirmed) return;
 
     try {
       setDeleting(true);
-
-      const res = await fetch(
-        `/api/education/${education._id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
+      const res = await fetch(`/api/education/${education._id}`, {
+        method: "DELETE",
+      });
       const result = await res.json();
-
       if (!res.ok || !result.success) {
         throw new Error(result.message);
       }
-
-      toast.success("Education deleted successfully.");
-
+      toast.success("Education record deleted successfully.");
       onDelete(education._id);
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong."
-      );
+      toast.error(error instanceof Error ? error.message : "Something went wrong.");
     } finally {
       setDeleting(false);
     }
   }
 
   return (
-    <tr className="border-t border-slate-800 transition hover:bg-slate-900/60">
-      <td className="p-4">
-        <div className="flex items-center gap-4">
-          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-800">
+    <tr className="border-b border-white/[0.08] transition-colors duration-200 last:border-b-0 hover:bg-white/[0.05]">
+      {/* Degree & Major */}
+      <td className="p-4 sm:p-5">
+        <div className="flex items-center gap-3.5">
+          <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-white/[0.04] shadow-inner">
             {education.logo?.url ? (
               <Image
                 src={education.logo.url}
                 alt={education.institution}
                 fill
-                sizes="56px"
+                sizes="48px"
                 className="object-cover"
               />
             ) : (
-              <GraduationCap
-                size={22}
-                className="text-slate-500"
-              />
+              <GraduationCap size={20} className="text-orange-400" />
             )}
           </div>
 
-          <div>
-            <h3 className="font-semibold text-white">
+          <div className="min-w-0">
+            <h3 className="truncate font-rajdhani text-base font-bold text-white">
               {education.degree}
             </h3>
-
-            <p className="text-sm text-slate-400">
+            <p className="font-rajdhani text-xs sm:text-sm font-semibold text-stone-300">
               {education.institution}
             </p>
-
-            {education.fieldOfStudy && (
-              <p className="text-xs text-slate-500">
-                {education.fieldOfStudy}
-              </p>
-            )}
           </div>
         </div>
       </td>
 
-      <td className="text-sm text-slate-300">
-        {education.grade
-          ? `${education.grade}${
-              education.gradeType
-                ? ` ${education.gradeType}`
-                : ""
-            }`
-          : "N/A"}
+      {/* Field of Study */}
+      <td className="p-4 sm:p-5 font-rajdhani text-sm font-semibold text-stone-300 hidden md:table-cell">
+        <span className="px-2.5 py-1 rounded-lg border border-white/10 bg-white/[0.03]">
+          {education.fieldOfStudy || "Engineering"}
+        </span>
       </td>
 
-      <td className="text-sm text-slate-300">
-        <div className="flex flex-col">
-          <span>
-            {formatDate(education.startDate)} —{" "}
-            {education.currentlyStudying
-              ? "Present"
-              : formatDate(education.endDate)}
-          </span>
-
-          <span className="mt-1 text-xs text-slate-500">
-            {education.currentlyStudying
-              ? "Currently Studying"
-              : "Completed"}
-          </span>
-        </div>
+      {/* Timeline */}
+      <td className="p-4 sm:p-5 font-mono text-xs text-stone-400">
+        {formatDate(education.startDate)} — {education.currentlyStudying ? "Present" : formatDate(education.endDate)}
       </td>
 
-      <td>
+      {/* Status */}
+      <td className="p-4 sm:p-5">
         <span
-          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-orbitron text-[10px] font-bold uppercase tracking-wider ${
             published
-              ? "bg-green-500/20 text-green-400"
-              : "bg-yellow-500/20 text-yellow-400"
+              ? "border-emerald-500/30 bg-emerald-500/[0.12] text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+              : "border-amber-500/30 bg-amber-500/[0.12] text-amber-300"
           }`}
         >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              published ? "bg-emerald-400 animate-pulse" : "bg-amber-400"
+            }`}
+          />
           {education.status}
         </span>
       </td>
 
-      <td>
+      {/* Actions */}
+      <td className="p-4 sm:p-5">
         <div className="flex items-center gap-2">
           <Link
             href={`/admin/education/${education._id}`}
-            className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-blue-400"
-            title="Edit"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] text-stone-300 transition-all duration-200 hover:border-orange-500/50 hover:bg-orange-500/15 hover:text-orange-300 hover:scale-105"
+            aria-label={`Edit ${education.degree}`}
           >
-            <Pencil size={18} />
+            <Pencil size={15} />
           </Link>
 
           <button
-            onClick={handleDelete}
             disabled={deleting}
-            title="Delete"
-            className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={handleDelete}
+            aria-label={`Delete ${education.degree}`}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] text-stone-400 transition-all duration-200 hover:border-rose-500/50 hover:bg-rose-500/15 hover:text-rose-300 hover:scale-105 disabled:opacity-50"
           >
             {deleting ? (
-              <Loader2
-                size={18}
-                className="animate-spin"
-              />
+              <Loader2 size={15} className="animate-spin text-rose-400" />
             ) : (
-              <Trash2 size={18} />
+              <Trash2 size={15} />
             )}
           </button>
         </div>

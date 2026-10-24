@@ -11,9 +11,7 @@ interface Props {
   form: UseFormReturn<ProfileFormData>;
 }
 
-export default function SocialSection({
-  form,
-}: Props) {
+export default function SocialSection({ form }: Props) {
   const {
     register,
     formState: { errors },
@@ -21,8 +19,8 @@ export default function SocialSection({
 
   return (
     <FormSection
-      title="Social Links"
-      description="Links displayed on your portfolio."
+      title="Social Networks"
+      description="Direct links displayed on your floating interactive social dial."
     >
       <FormInput
         label="GitHub"
@@ -60,21 +58,7 @@ export default function SocialSection({
       />
 
       <FormInput
-        label="LeetCode"
-        register={register("socials.leetcode")}
-        error={errors.socials?.leetcode}
-        placeholder="https://leetcode.com/u/username"
-      />
-
-      <FormInput
-        label="HackerRank"
-        register={register("socials.hackerrank")}
-        error={errors.socials?.hackerrank}
-        placeholder="https://hackerrank.com/profile/username"
-      />
-
-      <FormInput
-        label="Portfolio"
+        label="Portfolio / Website"
         register={register("socials.portfolio")}
         error={errors.socials?.portfolio}
         placeholder="https://bahulvgopal.me"

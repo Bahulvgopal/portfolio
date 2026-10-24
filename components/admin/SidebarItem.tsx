@@ -4,7 +4,6 @@ import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 
 interface SidebarItemProps {
   href: string;
@@ -20,35 +19,33 @@ export default function SidebarItem({
   const pathname = usePathname();
 
   const active =
-    pathname === href || pathname.startsWith(`${href}/`);
+    href === "/admin"
+      ? pathname === "/admin"
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Link
       href={href}
       className={clsx(
-        "group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200",
+        "group relative flex items-center gap-3.5 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-300 font-rajdhani tracking-wide overflow-hidden",
         active
-          ? "text-white bg-gradient-to-r from-sky-500/15 via-blue-500/10 to-transparent border border-sky-500/20 shadow-[0_0_20px_rgba(56,189,248,0.08)]"
-          : "text-neutral-400 border border-transparent hover:border-white/[0.08] hover:bg-white/[0.03] hover:text-white"
+          ? "text-white bg-white/[0.08] backdrop-blur-xl border border-orange-500/40 shadow-[0_8px_25px_rgba(234,88,12,0.18),inset_0_1px_1px_rgba(255,255,255,0.25)]"
+          : "text-stone-400 border border-transparent hover:border-white/[0.14] hover:bg-white/[0.04] hover:text-stone-100 hover:backdrop-blur-lg"
       )}
     >
-      {/* active indicator bar */}
+      {/* Floating diffuse glow dot on active */}
       {active && (
-        <motion.span
-          layoutId="sidebar-active-bar"
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-full bg-gradient-to-b from-sky-400 to-indigo-400"
-        />
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.9)] animate-pulse" />
       )}
 
       <Icon
         size={19}
         className={clsx(
           "transition-colors duration-200 shrink-0",
-          active ? "text-sky-400" : "text-neutral-500 group-hover:text-sky-400"
+          active ? "text-orange-400 drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]" : "text-stone-500 group-hover:text-orange-400"
         )}
       />
-      <span className="truncate">{label}</span>
+      <span className="truncate text-[15px] font-bold">{label}</span>
     </Link>
   );
 }

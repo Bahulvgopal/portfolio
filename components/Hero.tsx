@@ -1,457 +1,463 @@
 "use client";
 
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import {
-  SiInstagram,
-  SiX,
-  SiFacebook,
-  SiYoutube,
-  SiGithub,
-  SiHackerrank,
-} from "react-icons/si";
-import type { ReactNode } from "react";
-import { FaLinkedin } from "react-icons/fa";
-import { TbApi } from "react-icons/tb";
-import { FaGlobe, FaLaptopCode } from "react-icons/fa";
-import type { ReactElement } from "react";
-
+  Sparkles,
+  Terminal,
+  ArrowRight,
+  Download,
+  Flame,
+  Eye,
+} from "lucide-react";
 import { Profile } from "@/types/profile";
-
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const reveal = (delay = 0, y = 32) => ({
-  initial: { opacity: 0, y },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.9, ease: EASE, delay },
-});
-
-const revealInView = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.75, ease: EASE, delay },
-});
-
-const slideIn = (delay = 0) => ({
-  initial: { opacity: 0, x: -60 },
-  animate: { opacity: 1, x: 0 },
-  transition: { duration: 1, ease: EASE, delay },
-});
-
-const TAGS = ["React", "Next.js", "MongoDB", "TypeScript", "TailwindCSS"];
-
-
-
-// const skillGroups = [
-//   {
-//     title: "Frontend",
-//     description: "Fast, responsive, and delightful user interfaces.",
-//     gradientFrom: "#38bdf8",
-//     gradientTo: "#818cf8",
-//     glowColor: "rgba(56,189,248,0.07)",
-//     borderHover: "hover:border-sky-500/25",
-//     skills: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS"],
-//   },
-//   {
-//     title: "Backend",
-//     description: "Scalable APIs and solid application logic.",
-//     gradientFrom: "#a78bfa",
-//     gradientTo: "#e879f9",
-//     glowColor: "rgba(167,139,250,0.07)",
-//     borderHover: "hover:border-violet-500/25",
-//     skills: ["Node.js", "Express.js", "REST APIs"],
-//   },
-//   {
-//     title: "Database",
-//     description: "Structured, efficient data at any scale.",
-//     gradientFrom: "#4ade80",
-//     gradientTo: "#2dd4bf",
-//     glowColor: "rgba(74,222,128,0.07)",
-//     borderHover: "hover:border-emerald-500/25",
-//     skills: ["MongoDB", "Mongoose"],
-//   },
-//   {
-//     title: "Tools & Workflow",
-//     description: "The daily toolkit for building and shipping.",
-//     gradientFrom: "#fb923c",
-//     gradientTo: "#f43f5e",
-//     glowColor: "rgba(251,146,60,0.07)",
-//     borderHover: "hover:border-orange-500/25",
-//     skills: ["Git", "GitHub", "VS Code", "Vercel", "Postman"],
-//   },
-// ];
-
-const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
-
-type SocialItem = {
-  icon: React.ReactNode;
-  href: string;
-  label: string;
-};
-
-function SocialRow({
-  profile,
-  className = "",
-}: {
-  profile: Profile;
-  className?: string;
-}) {
-
-const SOCIALS: {
-  icon: ReactElement;
-  href: string;
-  label: string;
-}[] = [];
-
-if (profile.socials.github) {
-  SOCIALS.push({
-    icon: <SiGithub />,
-    href: profile.socials.github,
-    label: "GitHub",
-  });
-}
-
-if (profile.socials.linkedin) {
-  SOCIALS.push({
-    icon: <FaLinkedin />,
-    href: profile.socials.linkedin,
-    label: "LinkedIn",
-  });
-}
-
-if (profile.socials.instagram) {
-  SOCIALS.push({
-    icon: <SiInstagram />,
-    href: profile.socials.instagram,
-    label: "Instagram",
-  });
-}
-
-if (profile.socials.facebook) {
-  SOCIALS.push({
-    icon: <SiFacebook />,
-    href: profile.socials.facebook,
-    label: "Facebook",
-  });
-}
-
-if (profile.socials.twitter) {
-  SOCIALS.push({
-    icon: <SiX />,
-    href: profile.socials.twitter,
-    label: "X",
-  });
-}
-
-if (profile.socials.leetcode) {
-  SOCIALS.push({
-    icon: <FaLaptopCode />,
-    href: profile.socials.leetcode,
-    label: "LeetCode",
-  });
-}
-
-if (profile.socials.website || profile.socials.portfolio) {
-  SOCIALS.push({
-    icon: <FaGlobe />,
-    href: profile.socials.website || profile.socials.portfolio!,
-    label: "Portfolio",
-  });
-}
-
-if (profile.socials.youtube) {
-  SOCIALS.push({
-    icon: <SiYoutube />,
-    href: profile.socials.youtube,
-    label: "YouTube",
-  });
-}
-
-if (profile.socials.hackerrank) {
-  SOCIALS.push({
-    icon: <SiHackerrank />,
-    href: profile.socials.hackerrank,
-    label: "HackerRank",
-  });
-}
-
-  return (
-    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
-      {SOCIALS.map((s) => (
-        <a
-          key={s.label}
-          href={s.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={s.label}
-          className="
-            flex items-center justify-center
-            w-12 h-12
-            rounded-full
-            border border-white/[0.08]
-            bg-white/[0.03]
-            text-neutral-400
-            text-[20px]
-            hover:border-sky-500/40
-            hover:text-sky-400
-            hover:-translate-y-1
-            hover:scale-110
-            transition-all
-            duration-300
-          "
-        >
-          {s.icon}
-        </a>
-      ))}
-    </div>
-  );
-}
 
 interface HeroProps {
   profile: Profile;
 }
 
-export default function Hero({
-  profile,
-}: HeroProps) {
-  console.log(profile.resume);
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
+const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
+
+export default function Hero({ profile }: HeroProps) {
+  const containerRef = useRef<HTMLElement>(null);
+  const [isAnimeMode, setIsAnimeMode] = useState(true);
+  const [activeTagIndex, setActiveTagIndex] = useState(0);
+
+  // Rotating roles / anime skills
+  const animeRoles = useMemo(
+    () => [
+      "Full-Stack Architect",
+      "Digital World Creator",
+      "Next.js Specialist",
+      "Creative Engineer",
+    ],
+    []
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveTagIndex((prev) => (prev + 1) % animeRoles.length);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [animeRoles.length]);
+
+  // 3D Mouse Parallax & Dynamic Perspective
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth springs
+  const springX = useSpring(mouseX, { stiffness: 100, damping: 22 });
+  const springY = useSpring(mouseY, { stiffness: 100, damping: 22 });
+
+  // Transforms for character & glowing background halos
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-9, 9]);
+  const rotateX = useTransform(springY, [-0.5, 0.5], [7, -7]);
+  const charX = useTransform(springX, [-0.5, 0.5], [-18, 18]);
+  const charY = useTransform(springY, [-0.5, 0.5], [-12, 12]);
+  const haloX = useTransform(springX, [-0.5, 0.5], [25, -25]);
+  const haloY = useTransform(springY, [-0.5, 0.5], [20, -20]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   return (
-    <div className="bg-[#0a0a0b]">
+    <div className="relative bg-[#FAF8F5] overflow-hidden selection:bg-orange-500 selection:text-white">
+      {/* ===== HERO SECTION ===== */}
+      <section
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="relative min-h-[92vh] lg:min-h-screen flex items-center justify-center px-5 sm:px-8 lg:px-14 pt-24 pb-16 sm:pt-28 sm:pb-20 lg:py-24"
+        style={{ perspective: 1200 }}
+      >
+        {/* ========================================================= */}
+        {/* BACKGROUND: COLORFUL ANIME GLOWS, CYBER MESH & PARTICLES */}
+        {/* ========================================================= */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* Main Burnt Orange Radiant Orb behind character */}
+          <motion.div
+            animate={{
+              scale: [1, 1.12, 1],
+              opacity: [0.38, 0.52, 0.38],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[850px] h-[600px] sm:h-[850px] rounded-full blur-[140px] pointer-events-none"
+            style={{
+              x: haloX,
+              y: haloY,
+              background:
+                "radial-gradient(circle, rgba(234,88,12,0.42) 0%, rgba(249,115,22,0.25) 42%, rgba(217,70,239,0.12) 70%, transparent 85%)",
+            }}
+          />
 
-      {/* ===== HERO ===== */}
-      <section ref={heroRef} className="relative md:py-[8rem] min-h-screen flex items-center overflow-hidden px-5 sm:px-8 lg:px-0 -mt-[5rem]">
+          {/* Electric Violet Anime Mana Bloom (top-right) */}
+          <div
+            className="absolute -top-20 right-10 w-[440px] h-[440px] rounded-full blur-[140px] opacity-40 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(236,72,153,0.18) 50%, transparent 80%)",
+            }}
+          />
 
-        {/* grain */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]" style={{ backgroundImage: GRAIN_URL, backgroundRepeat: "repeat", backgroundSize: "128px" }} />
+          {/* Warm Amber Core Dawn Aura (bottom-left) */}
+          <div
+            className="absolute -bottom-10 left-5 w-[460px] h-[460px] rounded-full blur-[150px] opacity-45 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, rgba(245,158,11,0.36) 0%, rgba(234,88,12,0.18) 60%, transparent 80%)",
+            }}
+          />
 
-        {/* blobs */}
-        <div aria-hidden className="pointer-events-none absolute -top-32 -right-32 w-[560px] h-[560px] rounded-full bg-blue-600/[0.08] blur-[160px]" />
-        <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-violet-600/[0.06] blur-[140px]" />
+          {/* Stylized Anime Cyber Grid Pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.035] pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(234,88,12,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(234,88,12,0.5) 1px, transparent 1px)",
+              backgroundSize: "64px 64px",
+            }}
+          />
 
-        {/* top rule */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1.4, ease: EASE, delay: 0.1 }}
-          style={{ transformOrigin: "left" }}
-          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
-        />
-
-        
-
-        <div className="relative z-10 w-full max-w-7xl mx-auto py-20 sm:py-24 lg:py-0 lg:min-h-screen flex items-center">
-
-          {/* ===== MOBILE LAYOUT (stacked: image → text) ===== */}
-          <div className="flex flex-col py-8 w-full lg:hidden gap-8">
-
-            {/* Mobile image */}
+          {/* Anime Floating Mana Sparks (Kept strictly on character side so they never overlap text) */}
+          {[...Array(6)].map((_, i) => (
             <motion.div
-              {...slideIn(0.06)}
-              className="relative w-full flex justify-center"
+              key={`spark-${i}`}
+              className="absolute w-2 h-2 rounded-full pointer-events-none"
+              style={{
+                left: `${8 + i * 7}%`,
+                bottom: "14%",
+                background: i % 2 === 0 ? "#EA580C" : "#F59E0B",
+                boxShadow: "0 0 12px rgba(234,88,12,0.9), 0 0 20px rgba(245,158,11,0.6)",
+              }}
+              animate={{
+                y: [0, -320 - (i % 3) * 70],
+                opacity: [0, 0.85, 0],
+                scale: [0.6, 1.4, 0.2],
+                x: [(i % 2 === 0 ? 1 : -1) * 16, (i % 2 === 0 ? -1 : 1) * 20],
+              }}
+              transition={{
+                duration: 4 + (i % 3) * 1.5,
+                repeat: Infinity,
+                delay: i * 0.6,
+                ease: "easeOut",
+              }}
+            />
+          ))}
+
+          {/* Large Stylized Background Anime Kanji Watermarks (Ghost Opacity) */}
+          <div className="absolute top-16 right-8 lg:right-20 select-none pointer-events-none font-black text-stone-900/[0.035] text-[130px] lg:text-[230px] leading-none tracking-tighter">
+            創造
+          </div>
+          <div className="absolute bottom-10 left-6 lg:left-14 select-none pointer-events-none font-black text-orange-600/[0.04] text-[90px] lg:text-[180px] leading-none tracking-tighter">
+            限界突破
+          </div>
+        </div>
+
+        {/* Top Decorative Anime HUD Border */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/25 to-transparent" />
+
+        {/* ========================================================= */}
+        {/* MAIN HERO CONTENT CONTAINER (RESPONSIVE GRID)             */}
+        {/* ========================================================= */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-12 items-center gap-12 lg:gap-14 pt-2">
+
+          {/* ======================================================= */}
+          {/* LEFT: FREE-STANDING ANIME CHARACTER (NO BOX / NO FRAME) */}
+          {/* ======================================================= */}
+          <div className="w-full lg:col-span-5 xl:col-span-5 flex flex-col items-center justify-center order-1 lg:order-1">
+            <motion.div
+              style={{
+                rotateX,
+                rotateY,
+                x: charX,
+                y: charY,
+                transformStyle: "preserve-3d",
+              }}
+              className="relative w-full max-w-[360px] sm:max-w-[430px] lg:max-w-[480px] flex flex-col items-center justify-center"
             >
-              {/* glow behind image */}
-              <div className="absolute inset-0 rounded-[40px] bg-gradient-to-b from-sky-500/10 via-blue-500/5 to-transparent blur-2xl" />
-              <div className="relative w-64 h-80 sm:w-72 sm:h-96">
-                <motion.div style={{ y: imgY }} className="absolute inset-0">
-                  <Image
-                    src={profile.profileImage?.url || "/images/main1.png"}
-                    alt="Bahul"
-                    fill
-                    className="object-cover object-top"
-                    sizes="520px"
-                    
-                    priority
-                  />
-                </motion.div>
-                {/* bottom fade so image bleeds into bg */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-transparent to-transparent" />
-                {/* subtle side fades */}
-                {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0b]/40 via-transparent to-[#0a0a0b]/40" /> */}
+              {/* Anime Celestial Energy Halo Ring (Spins smoothly behind figure) */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[300px] sm:w-[400px] lg:w-[450px] h-[300px] sm:h-[400px] lg:h-[450px] rounded-full border border-orange-500/20 pointer-events-none"
+                style={{
+                  boxShadow: "0 0 60px rgba(234,88,12,0.22), inset 0 0 45px rgba(249,115,22,0.15)",
+                }}
+              >
+                {/* Orbital Neon Nodes on the Ring */}
+                <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-orange-500 shadow-[0_0_12px_#EA580C]" />
+                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#F59E0B]" />
+                <span className="absolute top-1/2 -left-1.5 -translate-y-1/2 w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_#FB923C]" />
+                <span className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_10px_#EC4899]" />
+              </motion.div>
+
+              {/* Concentric Cyber Dashed Ring */}
+              <div
+                className="absolute w-[240px] sm:w-[330px] lg:w-[370px] h-[240px] sm:h-[330px] lg:h-[370px] rounded-full border border-dashed border-orange-400/25 pointer-events-none animate-spin"
+                style={{ animationDuration: "55s" }}
+              />
+
+              {/* Glassmorphic Character Card Frame */}
+              <div
+                className="relative w-full aspect-[3.7/4.8] sm:aspect-[3.8/4.9] rounded-[32px] sm:rounded-[40px] overflow-hidden p-3.5 sm:p-4 flex flex-col justify-between items-center pointer-events-auto"
+                style={{
+                  background:
+                    "linear-gradient(145deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.18) 55%, rgba(255, 237, 213, 0.28) 100%)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  border: "1.5px solid rgba(255, 255, 255, 0.85)",
+                  boxShadow:
+                    "0 24px 55px -10px rgba(234, 88, 12, 0.16), 0 8px 24px -4px rgba(0, 0, 0, 0.04), inset 0 2px 3px rgba(255, 255, 255, 0.95), inset 0 -1.5px 2px rgba(234, 88, 12, 0.08)",
+                }}
+              >
+                {/* Top Glass Card Header (HUD Badges) */}
+                <div className="w-full flex items-center justify-between z-20 px-1 pt-1">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/70 backdrop-blur-md border border-white/85 shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping" />
+                    <span className="text-[10px] font-orbitron font-bold tracking-widest text-stone-700 uppercase">
+                      SYS.ONLINE
+                    </span>
+                  </div>
+                  <div className="px-2.5 py-1 rounded-full text-[10px] font-orbitron font-bold bg-orange-500/10 text-orange-700 border border-orange-500/25 backdrop-blur-md">
+                    「特級」 RANK S
+                  </div>
+                </div>
+
+                {/* Subtle Inner Ambient Glow (Behind character inside the card) */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 50% 65%, rgba(234, 88, 12, 0.16) 0%, rgba(249, 115, 22, 0.06) 50%, transparent 80%)",
+                  }}
+                />
+
+                {/* Specular Diagonal Sheen across the glass */}
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-40"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 45%)",
+                  }}
+                />
+
+                {/* Character Image (Full Crisp Colors, NO white gradient over it!) */}
+                <div className="relative w-full flex-1 flex items-end justify-center z-10 -mb-3.5 sm:-mb-4">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={isAnimeMode ? "hero-anime-char" : "hero-real-char"}
+                      initial={{ opacity: 0, scale: 0.94, y: 15 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.94, y: -15 }}
+                      transition={{ duration: 0.45, ease: EASE }}
+                      className="relative w-full h-[105%] flex items-end justify-center"
+                    >
+                      <Image
+                        src={
+                          isAnimeMode
+                            ? "/images/hero-anime.png"
+                            : profile.profileImage?.url || "/images/main1.png"
+                        }
+                        alt={profile.fullName || "Bahul V Gopal"}
+                        fill
+                        priority
+                        className="object-contain object-bottom select-none filter drop-shadow-[0_14px_28px_rgba(234,88,12,0.22)]"
+                        sizes="(max-width: 640px) 360px, (max-width: 1024px) 440px, 480px"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              {/* Minimalist Floating Switcher Pill (Surge Button Removed) */}
+              <div className="relative z-30 mt-4 flex items-center justify-center">
+                <div className="flex items-center gap-1 bg-white/80 backdrop-blur-md border border-stone-200/90 p-1 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+                  <button
+                    type="button"
+                    onClick={() => setIsAnimeMode(true)}
+                    className={`flex items-center gap-1.5 px-3.5 py-1 rounded-full font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer ${
+                      isAnimeMode
+                        ? "bg-[#EA580C] text-white shadow-sm"
+                        : "text-stone-500 hover:text-stone-900"
+                    }`}
+                  >
+                    <Sparkles size={11} />
+                    Anime
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAnimeMode(false)}
+                    className={`flex items-center gap-1.5 px-3.5 py-1 rounded-full font-orbitron text-[11px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer ${
+                      !isAnimeMode
+                        ? "bg-[#EA580C] text-white shadow-sm"
+                        : "text-stone-500 hover:text-stone-900"
+                    }`}
+                  >
+                    <Eye size={11} />
+                    Photo
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ======================================================= */}
+          {/* RIGHT: REDESIGNED ANIME HERO TYPOGRAPHY & LAYOUT        */}
+          {/* ======================================================= */}
+          <div className="w-full lg:col-span-7 xl:col-span-7 flex flex-col justify-center order-2 lg:order-2 text-center lg:text-left">
+
+            {/* Anime Status Header Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="inline-flex items-center self-center lg:self-start gap-2.5 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-orange-500/25 shadow-[0_2px_12px_rgba(234,88,12,0.08)] mb-5"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EA580C]" />
+              </span>
+              <span className="font-rajdhani text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-stone-700">
+                AVAILABLE FOR NEW OPPORTUNITIES
+              </span>
+              <span className="font-orbitron text-[10px] font-bold text-orange-600 bg-orange-500/10 px-2 py-0.5 rounded">
+                「活動中」
+              </span>
+            </motion.div>
+
+            {/* Anime Style Headline with Manga Temple Font */}
+            <div className="mb-6">
+              {/* Anime Sub-kicker */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.05 }}
+                className="font-orbitron text-xs sm:text-sm font-bold tracking-[0.25em] uppercase text-orange-600 mb-2"
+              >
+                // LEVEL S // PROTOCOL: ARCHITECT
+              </motion.div>
+
+              {/* Main Name Greeting with Manga Temple Font */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.75, ease: EASE, delay: 0.1 }}
+                className="font-manga text-[clamp(2.4rem,5.6vw,4.8rem)] font-bold tracking-wide leading-[1.05] uppercase mb-3"
+              >
+                <span className="text-stone-900">Hi, I&apos;m </span>
+                <span className="bg-gradient-to-r from-orange-600 via-amber-500 to-red-600 bg-clip-text text-transparent filter drop-shadow-[0_2px_14px_rgba(234,88,12,0.2)]">
+                  {profile.fullName || "Bahul V Gopal"}
+                </span>
+              </motion.h1>
+
+              {/* Anime Impact Tagline in Manga Temple Font */}
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.75, ease: EASE, delay: 0.18 }}
+                className="font-manga uppercase text-[clamp(1.5rem,3.4vw,2.8rem)] leading-[1.15] text-stone-900 tracking-wide"
+              >
+                CRAFTING{" "}
+                <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                  DIGITAL REALITIES
+                </span>{" "}
+                &amp; NEXT-GEN WEB EXPERIENCES.
+              </motion.h2>
+            </div>
+
+            {/* Anime Specialization Terminal Strip */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="flex items-center justify-center lg:justify-start gap-2.5 mb-6"
+            >
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-stone-900/[0.04] border border-stone-200/90 backdrop-blur-md font-rajdhani text-sm sm:text-base font-bold">
+                <Terminal size={15} className="text-[#EA580C]" />
+                <span className="text-stone-500 uppercase tracking-widest font-semibold text-xs sm:text-sm">SPECIALIZATION:</span>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={animeRoles[activeTagIndex]}
+                    initial={{ y: 8, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -8, opacity: 0 }}
+                    transition={{ duration: 0.28 }}
+                    className="font-orbitron font-bold text-xs sm:text-sm text-stone-900 uppercase tracking-wider"
+                  >
+                    {animeRoles[activeTagIndex]}
+                  </motion.span>
+                </AnimatePresence>
+                <span className="w-2 h-4 bg-[#EA580C] animate-pulse rounded-xs" />
               </div>
             </motion.div>
 
-            {/* Mobile text */}
-            <div className="flex flex-col">
-              <motion.h1 {...reveal(0.1)} className="text-[clamp(2.6rem,10vw,5rem)] font-black leading-[0.9] tracking-tight text-white mb-5" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-                Hi, I&apos;m{" "}
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">{profile.fullName}</span>
-                  <motion.svg
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 1, ease: "easeInOut", delay: 0.7 }}
-                    className="absolute -bottom-2 left-0 w-full"
-                    viewBox="0 0 200 12"
-                    fill="none"
-                    preserveAspectRatio="none"
-                  >
-                    <motion.path d="M2 8 C40 2, 80 12, 120 6 S180 2, 198 7" stroke="url(#sqGradM)" strokeWidth="2.5" strokeLinecap="round" />
-                    <defs>
-                      <linearGradient id="sqGradM" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#38bdf8" />
-                        <stop offset="100%" stopColor="#818cf8" />
-                      </linearGradient>
-                    </defs>
-                  </motion.svg>
-                </span>
-                <br />
-                <span className="text-[clamp(1.6rem,7vw,3.5rem)] font-light italic text-neutral-400">I build</span>{" "}
-                <span className="bg-gradient-to-br from-white via-neutral-200 to-neutral-500 bg-clip-text text-transparent">digital</span>
-                <br />
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">experiences.</span>
-              </motion.h1>
+            {/* Clean, Readable Bio in Rajdhani */}
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: EASE, delay: 0.3 }}
+              className="font-rajdhani font-semibold text-base sm:text-lg text-stone-600 leading-[1.65] tracking-wide max-w-xl mb-8 self-center lg:self-start"
+            >
+              {profile.shortBio ||
+                "Computer Science student passionate about building real-world products with modern web tech. Clean UI, performance, and meaningful user experiences."}
+            </motion.p>
 
-              <motion.p {...reveal(0.18)} className="text-[clamp(0.9rem,2.5vw,1rem)] text-neutral-400 leading-[1.75] mb-6">
-                {profile.shortBio}
-              </motion.p>
-
-              {/* <motion.div {...reveal(0.22)} className="flex flex-wrap gap-2 mb-8">
-                {TAGS.map((tag, i) => (
-                  <motion.span
-                    key={tag}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 + i * 0.06, duration: 0.4, ease: "backOut" }}
-                    className="px-3 py-1 rounded-full text-[11px] font-medium tracking-wide text-neutral-400 border border-white/[0.08] bg-white/[0.03] hover:border-blue-500/40 hover:text-blue-300 transition-colors duration-200 cursor-default"
-                  >
-                    {tag}
-                  </motion.span>
-                ))}
-              </motion.div> */}
-
-              <motion.div {...reveal(0.26)} className="flex flex-wrap gap-3">
-                <Link href="/projects" className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 transition-all duration-200 shadow-[0_0_32px_rgba(255,255,255,0.08)]">
+            {/* Call To Action Buttons (Orbitron Font) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, ease: EASE, delay: 0.38 }}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5"
+            >
+              {/* Primary View Projects Button */}
+              <Link
+                href="/projects"
+                className="group relative inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl font-orbitron text-xs sm:text-sm font-bold tracking-wider uppercase bg-[#EA580C] text-white overflow-hidden transition-all duration-300 shadow-[0_6px_22px_rgba(234,88,12,0.32)] hover:shadow-[0_10px_30px_rgba(234,88,12,0.45)] hover:-translate-y-0.5 active:translate-y-0"
+              >
+                {/* Shimmer sweep effect */}
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                <span className="relative z-10 flex items-center gap-2">
                   View Projects
-                  <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-                <a href={profile.resume.url ?? "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                  </svg>
-                  {profile.resume.buttonText}
-                </a>
-              </motion.div>
-
-              {/* Social icons */}
-              <motion.div {...reveal(0.32)} className="mt-8 pt-6 flex justify-center items-center border-t border-white/[0.06]">
-                <SocialRow profile={profile}/>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* ===== DESKTOP LAYOUT (image LEFT, text RIGHT) ===== */}
-          <div className="hidden lg:grid w-full grid-cols-[480px_1fr] xl:grid-cols-[520px_1fr] items-center gap-12 xl:gap-20">
-
-            {/* LEFT — image */}
-            <motion.div {...slideIn(0.1)} className="relative flex items-end -mt-[15rem] justify-center  h-[88vh]">
-
-              {/* glow halo behind the figure */}
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[380px] h-[560px] rounded-full blur-[80px] pointer-events-none"
-                style={{ background: "radial-gradient(ellipse at 50% 80%, rgba(56,189,248,0.12) 0%, rgba(129,140,248,0.07) 50%, transparent 80%)" }}
-              />
-
-              
-
-              {/* image — no frame, just the transparent-bg figure */}
-              <motion.div style={{ y: imgY }} className="relative w-full h-full">
-                <Image
-                  src={profile.profileImage?.url || "/images/main1.png"}
-                  alt="Bahul"
-                  fill
-                  className="object-contain object-bottom"
-                  sizes="520px"
-                  priority
-                />
-                {/* subtle bottom fade to anchor into page */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-[#0a0a0b]/10 to-transparent" style={{ maskImage: "linear-gradient(to top, black 0%, black 8%, transparent 30%)" }} />
-              </motion.div>
-            </motion.div>
-
-            {/* RIGHT — text */}
-            <div className="flex flex-col">
-
-              <motion.h1 {...reveal(0.08)} className="text-[clamp(2.8rem,5.5vw,6rem)] font-black leading-[0.9] tracking-tight text-white mb-6" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-                Hi, I&apos;m{" "}
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">{profile.fullName}</span>
-                  <motion.svg
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 1, ease: "easeInOut", delay: 0.7 }}
-                    className="absolute -bottom-2 left-0 w-full"
-                    viewBox="0 0 200 12"
-                    fill="none"
-                    preserveAspectRatio="none"
-                  >
-                    <motion.path d="M2 8 C40 2, 80 12, 120 6 S180 2, 198 7" stroke="url(#sqGradD)" strokeWidth="2.5" strokeLinecap="round" />
-                    <defs>
-                      <linearGradient id="sqGradD" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#38bdf8" />
-                        <stop offset="100%" stopColor="#818cf8" />
-                      </linearGradient>
-                    </defs>
-                  </motion.svg>
+                  <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </span>
-                <br className="hidden sm:block" />
-                <span className="text-[clamp(2rem,4vw,5rem)] font-light italic text-neutral-400">I build</span>{" "}
-                <span className="bg-gradient-to-br from-white via-neutral-200 to-neutral-500 bg-clip-text text-transparent">digital</span>
-                <br />
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">experiences.</span>
-              </motion.h1>
+              </Link>
 
-              <motion.p {...reveal(0.18)} className="max-w-lg text-[clamp(0.9rem,1.5vw,1.05rem)] text-neutral-400 leading-[1.75] mb-8">
-                {profile.shortBio}
-              </motion.p>
-
-              
-
-              <motion.div {...reveal(0.26)} className="flex flex-wrap gap-3 mb-8">
-                <Link href="/projects" className="group relative inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 transition-all duration-200 shadow-[0_0_32px_rgba(255,255,255,0.08)] hover:shadow-[0_0_48px_rgba(255,255,255,0.14)]">
-                  <span className="relative z-10">View Projects</span>
-                  <svg className="w-4 h-4 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-
-                <a href={profile.resume.url ?? "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/[0.12] text-neutral-300 hover:border-white/25 hover:text-white hover:bg-white/[0.04] transition-all duration-200">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                  </svg>
-                  {profile.resume.buttonText}
-                </a>
-
-                
-              </motion.div>
-
-              {/* Social icons */}
-              <motion.div {...reveal(0.3)} className="mb-10 mt-[2rem] flex justify-center items-center">
-                <SocialRow profile={profile} />
-              </motion.div>
-
-
-            </div>
+              {/* Secondary Resume Button */}
+              <a
+                href={profile.resume?.url ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-orbitron text-xs sm:text-sm font-bold tracking-wider uppercase bg-white/80 backdrop-blur-md text-stone-800 border border-stone-300/80 hover:border-orange-500 hover:text-orange-600 hover:bg-orange-50/50 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <Download size={15} className="transition-transform duration-200 group-hover:-translate-y-0.5" />
+                <span>{profile.resume?.buttonText || "Resume"}</span>
+              </a>
+            </motion.div>
           </div>
-
         </div>
       </section>
 
-      {/* Divider */}
+      {/* Subtle Anime Blade Section Divider */}
       <div className="relative max-w-6xl mx-auto px-5 sm:px-8 lg:px-0">
-        <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(56,189,248,0.12) 30%, rgba(129,140,248,0.12) 70%, transparent)" }} />
+        <div
+          className="h-px w-full"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(234,88,12,0.25) 25%, rgba(245,158,11,0.4) 50%, rgba(234,88,12,0.25) 75%, transparent 100%)",
+          }}
+        />
       </div>
-
-    
-
     </div>
   );
 }

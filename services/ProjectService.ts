@@ -9,97 +9,102 @@ class ProjectService {
   /* ================= CREATE ================= */
 
   async createProject(data: ProjectInput) {
-  const slug = await this.generateUniqueSlug(data.title);
+    const slug = await this.generateUniqueSlug(data.title);
 
-  return ProjectRepository.create({
-    ...data,
-    slug,
+    return ProjectRepository.create({
+      ...data,
+      slug,
 
-    image: data.image ?? undefined,
+      image: data.image ?? undefined,
 
-    walkthrough:
-      data.walkthrough?.map((step) => ({
-        ...step,
-        image: step.image ?? undefined,
-      })) ?? [],
-  });
-}
+      walkthrough:
+        data.walkthrough?.map((step) => ({
+          ...step,
+          image: step.image ?? undefined,
+        })) ?? [],
+    });
+  }
 
   /* ================= READ ================= */
 
   async getProjects() {
-  return ProjectRepository.getProjects();
-}
+    return ProjectRepository.getProjects();
+  }
 
-    async getProjectBySlug(slug: string) {
-  return ProjectRepository.getProjectBySlug(slug);
-}
+  async getProjectBySlug(slug: string) {
+    return ProjectRepository.getProjectBySlug(slug);
+  }
 
   async getPublishedProjects() {
-  return ProjectRepository.getPublishedProjects();
-}
+    return ProjectRepository.getPublishedProjects();
+  }
 
   async getFeaturedProjects() {
-  return ProjectRepository.getFeaturedProjects();
-}
+    return ProjectRepository.getFeaturedProjects();
+  }
 
   async getProject(id: string) {
-  return ProjectRepository.getProjectById(id);
-}
-
- /* ================= UPDATE ================= */
-
-async updateProject(
-  id: string,
-  data: Partial<ProjectInput>
-) {
-  const project = await ProjectRepository.findById(id);
-
-  if (!project) {
-    return null;
+    return ProjectRepository.getProjectById(id);
   }
 
-  /* ---------- Thumbnail ---------- */
+  /* ================= UPDATE ================= */
 
-  if (
-    data.image?.publicId &&
-    project.image?.publicId &&
-    data.image.publicId !== project.image.publicId
+  async updateProject(
+    id: string,
+    data: Partial<ProjectInput>
   ) {
-    await cloudinary.uploader.destroy(project.image.publicId);
+    const project = await ProjectRepository.findById(id);
+
+    if (!project) {
+      return null;
+    }
+
+    /* ---------- Thumbnail ---------- */
+
+    if (
+      data.image?.publicId &&
+      project.image?.publicId &&
+      data.image.publicId !== project.image.publicId
+    ) {
+      await cloudinary.uploader.destroy(project.image.publicId);
+    }
+
+    /* ---------- Walkthrough Images ---------- */
+
+    if (project.walkthrough?.length) {
+      const oldImages = project.walkthrough
+        .map((step) => step.image?.publicId)
+        .filter((id): id is string => Boolean(id));
+
+      const newImages =
+        data.walkthrough
+          ?.map((step) => step.image?.publicId)
+          .filter((id): id is string => Boolean(id)) ?? [];
+
+      const removedImages = oldImages.filter(
+        (id) => id && !newImages.includes(id)
+      );
+
+      await Promise.all(
+        removedImages.map((id) =>
+          cloudinary.uploader.destroy(id!)
+        )
+      );
+    }
+
+    const updatePayload: Record<string, any> = { ...data };
+
+    if (data.image !== undefined) {
+      updatePayload.image = data.image ?? undefined;
+    }
+
+    if (data.walkthrough !== undefined) {
+      updatePayload.walkthrough = data.walkthrough;
+    }
+
+    await ProjectRepository.update(id, updatePayload);
+    return ProjectRepository.getProjectById(id);
   }
-
-  /* ---------- Walkthrough Images ---------- */
-
-  if (project.walkthrough?.length) {
-   const oldImages = project.walkthrough
-  .map((step) => step.image?.publicId)
-  .filter((id): id is string => Boolean(id));
-
-    const newImages =
-  data.walkthrough
-    ?.map((step) => step.image?.publicId)
-    .filter((id): id is string => Boolean(id)) ?? [];
-
-    const removedImages = oldImages.filter(
-      (id) => id && !newImages.includes(id)
-    );
-
-    await Promise.all(
-      removedImages.map((id) =>
-        cloudinary.uploader.destroy(id!)
-      )
-    );
-  }
-
-  return ProjectRepository.update(id, {
-  ...data,
-
-  image: data.image ?? undefined,
-
-  walkthrough: data.walkthrough ?? [],
-});
-}
 
   /* ================= DELETE ================= */
 
@@ -117,17 +122,16 @@ async updateProject(
       );
     }
 
-    // Delete screenshots
     // Delete walkthrough images
-if (project.walkthrough?.length) {
-  await Promise.all(
-   project.walkthrough
-  .filter((step) => step.image?.publicId)
-  .map((step) =>
-    cloudinary.uploader.destroy(step.image!.publicId)
-  )
-  );
-}
+    if (project.walkthrough?.length) {
+      await Promise.all(
+        project.walkthrough
+          .filter((step) => step.image?.publicId)
+          .map((step) =>
+            cloudinary.uploader.destroy(step.image!.publicId)
+          )
+      );
+    }
 
     return ProjectRepository.delete(id);
   }
@@ -144,8 +148,8 @@ if (project.walkthrough?.length) {
     let count = 1;
 
     while (await ProjectRepository.getProjectBySlug(slug)) {
-  slug = `${baseSlug}-${count++}`;
-}
+      slug = `${baseSlug}-${count++}`;
+    }
     return slug;
   }
 }

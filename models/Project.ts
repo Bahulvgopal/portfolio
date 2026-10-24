@@ -35,6 +35,7 @@ export interface IProject {
   order: number;
 
   image?: ICloudinaryImage;
+  videoUrl?: string;
 
   github: string;
   live: string;
@@ -42,9 +43,12 @@ export interface IProject {
   tags: string[];
   tech: string[];
   features: string[];
+  highlights?: string[];
 
   problem: string;
   solution: string;
+  challenges?: string;
+  architecture?: string;
   learnings: string;
 
   walkthrough: IWalkthroughStep[];
@@ -123,16 +127,20 @@ const ProjectSchema = new Schema<IProject>(
     },
 
     image: {
-  url: {
-    type: String,
-    default: "",
-  },
+      url: {
+        type: String,
+        default: "",
+      },
+      publicId: {
+        type: String,
+        default: "",
+      },
+    },
 
-  publicId: {
-    type: String,
-    default: "",
-  },
-},
+    videoUrl: {
+      type: String,
+      default: "",
+    },
 
     github: {
       type: String,
@@ -163,12 +171,28 @@ const ProjectSchema = new Schema<IProject>(
       },
     ],
 
+    highlights: [
+      {
+        type: String,
+      },
+    ],
+
     problem: {
       type: String,
       default: "",
     },
 
     solution: {
+      type: String,
+      default: "",
+    },
+
+    challenges: {
+      type: String,
+      default: "",
+    },
+
+    architecture: {
       type: String,
       default: "",
     },
@@ -230,6 +254,11 @@ const ProjectSchema = new Schema<IProject>(
     timestamps: true,
   }
 );
+
+// Ensure schema updates are picked up in development
+if (process.env.NODE_ENV !== "production" && models.Project) {
+  delete (models as any).Project;
+}
 
 const ProjectModel: Model<IProject> =
   models.Project ||

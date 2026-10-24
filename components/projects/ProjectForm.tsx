@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAnimeConfirm } from "@/components/ui/AnimeConfirmModal";
+import { FiVideo, FiCpu, FiLayers, FiAlertCircle, FiAward, FiCheck } from "react-icons/fi";
 
 import { WalkthroughEditor } from "@/components/projects/walkthrough";
-import { ProjectSchema, type ProjectInput } from "@/validations/project";
+import { ProjectSchema, type ProjectInput, cleanVideoUrl } from "@/validations/project";
 import type { Project } from "@/types/project";
 
 import ChipInput from "@/components/ui/form/ChipInput";
@@ -25,10 +27,34 @@ const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 const reveal = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, ease: EASE, delay },
+  transition: { duration: 0.65, ease: EASE, delay },
 });
 
 const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
+
+function getVideoEmbed(url: string) {
+  if (!url) return null;
+  const str = url.trim();
+  const iframeMatch = str.match(/src=["']([^"']+)["']/i);
+  const target = iframeMatch ? iframeMatch[1] : str;
+
+  const ytMatch = target.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/i
+  );
+  if (ytMatch) return { type: "iframe", src: `https://www.youtube.com/embed/${ytMatch[1]}` };
+
+  const vimeoMatch = target.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+  if (vimeoMatch) return { type: "iframe", src: `https://player.vimeo.com/video/${vimeoMatch[1]}` };
+
+  const loomMatch = target.match(/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/i);
+  if (loomMatch) return { type: "iframe", src: `https://www.loom.com/embed/${loomMatch[1]}` };
+
+  if (target.match(/\.(mp4|webm|ogg)$/i) || target.includes("cloudinary.com")) {
+    return { type: "video", src: target };
+  }
+
+  return null;
+}
 
 interface ProjectFormProps {
   mode: "create" | "edit";
@@ -36,6 +62,7 @@ interface ProjectFormProps {
 }
 
 export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
+  const confirm = useAnimeConfirm();
   const {
     control,
     register,
@@ -57,22 +84,29 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
       projectType: initialData?.projectType ?? "Individual",
       order: initialData?.order ?? 0,
       image: initialData?.image ?? null,
+      videoUrl: initialData?.videoUrl ?? "",
       github: initialData?.github ?? "",
       live: initialData?.live ?? "",
       tags: initialData?.tags ?? [],
       tech: initialData?.tech ?? [],
       features: initialData?.features ?? [],
+      highlights: initialData?.highlights ?? [],
       problem: initialData?.problem ?? "",
       solution: initialData?.solution ?? "",
+      challenges: initialData?.challenges ?? "",
+      architecture: initialData?.architecture ?? "",
       learnings: initialData?.learnings ?? "",
       walkthrough: initialData?.walkthrough ?? [],
       featured: initialData?.featured ?? false,
-      status: initialData?.status ?? "draft",
+      status: initialData?.status ?? "published",
     },
   });
 
   const tags = useWatch({ control, name: "tags" });
   const tech = useWatch({ control, name: "tech" });
+  const features = useWatch({ control, name: "features" });
+  const highlights = useWatch({ control, name: "highlights" });
+  const videoUrlValue = useWatch({ control, name: "videoUrl" });
 
   useEffect(() => {
     if (!initialData) return;
@@ -88,21 +122,35 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
       projectType: initialData.projectType ?? "Individual",
       order: initialData.order ?? 0,
       image: initialData.image ?? null,
+      videoUrl: initialData.videoUrl ?? "",
       github: initialData.github ?? "",
       live: initialData.live ?? "",
-      tags: initialData?.tags ?? [],
+      tags: initialData.tags ?? [],
       tech: initialData.tech ?? [],
       features: initialData.features ?? [],
+      highlights: initialData.highlights ?? [],
       problem: initialData.problem ?? "",
       solution: initialData.solution ?? "",
+      challenges: initialData.challenges ?? "",
+      architecture: initialData.architecture ?? "",
       learnings: initialData.learnings ?? "",
       walkthrough: initialData.walkthrough ?? [],
       featured: initialData.featured ?? false,
-      status: initialData.status ?? "draft",
+      status: initialData.status ?? "published",
     });
   }, [initialData, reset]);
 
   const router = useRouter();
+
+  const onInvalid = (formErrors: any) => {
+    console.error("Form validation errors:", formErrors);
+    const errKeys = Object.keys(formErrors);
+    if (errKeys.length > 0) {
+      const firstField = errKeys[0];
+      const message = formErrors[firstField]?.message || "Invalid input";
+      toast.error(`Please fix ${firstField}: ${message}`);
+    }
+  };
 
   async function onSubmit(data: ProjectInput) {
     try {
@@ -119,16 +167,17 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
       const result = await res.json();
 
       if (!res.ok || !result.success) {
-        throw new Error(result.message || "Failed to create project");
+        throw new Error(result.message || "Failed to save project");
       }
 
       toast.success(
         mode === "create"
-          ? "Project created successfully!"
-          : "Project updated successfully!"
+          ? "Project deployment created successfully!"
+          : "Project mission updated successfully!"
       );
 
       router.push("/admin/projects");
+      router.refresh();
     } catch (error) {
       console.error(error);
       toast.error(error instanceof Error ? error.message : "Something went wrong.");
@@ -138,9 +187,14 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
   async function handleDelete() {
     if (!initialData?._id) return;
 
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this project?"
-    );
+    const confirmed = await confirm({
+      title: "PURGE PROJECT MISSION",
+      subtitle: "TACTICAL PURGE DECREE // 「緊急消去警告」",
+      message: `Permanently delete "${initialData.title}"? All walkthrough checkpoints and media linkages will be lost.`,
+      confirmText: "EXECUTE PURGE // 削除実行",
+      cancelText: "ABORT // 中止",
+      variant: "danger",
+    });
     if (!confirmed) return;
 
     try {
@@ -163,130 +217,279 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
     }
   }
 
+  const videoPreview = getVideoEmbed(videoUrlValue || "");
+
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#0a0a0b] px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      {/* grain */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]"
-        style={{ backgroundImage: GRAIN_URL, backgroundRepeat: "repeat", backgroundSize: "128px" }}
-      />
+    <div className="space-y-8">
+      {/* Header Glass Card */}
+      <motion.div
+        {...reveal(0)}
+        className="relative overflow-hidden rounded-[30px] sm:rounded-[34px] border border-white/20 bg-slate-950/40 backdrop-blur-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-10 -left-10 w-36 h-36 rounded-3xl bg-gradient-to-br from-[#FF5E3A]/30 to-[#FF2A54]/25 blur-2xl z-0"
+        />
 
-      {/* glow blobs — smaller on mobile so they never force horizontal scroll */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 -right-20 h-[240px] w-[240px] rounded-full bg-blue-600/[0.08] blur-[100px] sm:-top-32 sm:-right-32 sm:h-[420px] sm:w-[420px] sm:blur-[140px]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 h-[200px] w-[200px] rounded-full bg-violet-600/[0.06] blur-[90px] sm:h-[340px] sm:w-[340px] sm:blur-[120px]"
-      />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-orbitron text-[9px] font-bold text-orange-400 tracking-widest uppercase">
+                // PROJECT STUDIO // 「プロジェクト編集」
+              </span>
+              <span className="px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-600 text-white font-orbitron text-[9px] font-black uppercase tracking-wider shadow-[0_2px_10px_rgba(249,115,22,0.4)]">
+                {mode === "create" ? "NEW DEPLOYMENT" : "MISSION EDIT"}
+              </span>
+            </div>
 
-      <div className="relative z-10 mx-auto max-w-4xl">
-        <motion.div {...reveal(0)} className="mb-6 sm:mb-8">
-          <h1
-            className="text-[clamp(1.6rem,6vw,2.4rem)] font-black tracking-tight text-white"
-            style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-          >
-            {mode === "create" ? (
-              <>
-                Add{" "}
-                <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Project
-                </span>
-              </>
-            ) : (
-              <>
-                Edit{" "}
-                <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Project
-                </span>
-              </>
-            )}
-          </h1>
-          <p className="mt-2 text-sm text-neutral-400">
-            {mode === "create"
-              ? "Add a new project to your portfolio."
-              : "Update the details of this project."}
-          </p>
-        </motion.div>
+            <h1 className="font-orbitron text-2xl sm:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide">
+              {mode === "create" ? "NEW MISSION DEPLOYMENT" : "UPDATE MISSION PARAMETERS"}
+            </h1>
+
+            <p className="mt-2 font-rajdhani text-sm sm:text-base font-semibold text-stone-300">
+              {mode === "create"
+                ? "Publish a new software deployment with case study breakdown, demo videos, and technical lore."
+                : `Refine architecture, telemetry, video showcase, and case study parameters for ${initialData?.title || "this project"}.`}
+            </p>
+          </div>
+
+          <div className="text-stone-500 font-mono text-xs hidden sm:block tracking-widest self-start">
+            · · ·
+          </div>
+        </div>
+      </motion.div>
+
+      <div>
 
         <motion.form
           {...reveal(0.08)}
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 sm:space-y-6"
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          noValidate
+          className="space-y-6"
         >
+          {/* ================================================================= */}
+          {/* 1. CORE OVERVIEW                                                  */}
+          {/* ================================================================= */}
           <FormSection
-            title="Overview"
-            description="The core details visitors see first."
+            title="Core Overview"
+            description="The title, brief pitch, and high-level summary seen by users."
           >
             <FormInput
-              label="Title"
+              label="Mission Title"
               required
               register={register("title")}
               error={errors.title}
-              placeholder="Portfolio Website"
+              placeholder="e.g. Amoraweds E-Commerce Platform"
             />
 
             <FormInput
-              label="Tagline"
+              label="Tagline (Punchy One-Liner)"
               register={register("tagline")}
               error={errors.tagline}
-              placeholder="One-line summary of the project"
+              placeholder="e.g. Modern Full-Stack Wedding Registry & Gift Logistics System"
             />
 
             <FormTextarea
-              label="Description"
-              rows={6}
+              label="Main Description"
+              rows={5}
               register={register("description")}
               error={errors.description}
+              placeholder="Comprehensive summary of what the system does, who it serves, and key capabilities..."
+            />
+          </FormSection>
+
+          {/* ================================================================= */}
+          {/* 2. MEDIA SHOWCASE & DEMO VIDEO                                    */}
+          {/* ================================================================= */}
+          <FormSection
+            title="Media Showcase & Interactive Video"
+            description="Visual media and live video walkthroughs of the product in action."
+          >
+            {/* Thumbnail */}
+            <FormImage
+              label="Project Hero / Thumbnail Image"
+              folder="projects"
+              value={watch("image")}
+              onChange={(image) =>
+                setValue("image", image, { shouldValidate: true })
+              }
+              error={errors.image}
+            />
+
+            {/* Video URL Input */}
+            <div className="space-y-2 mt-5">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-stone-200 flex items-center gap-2">
+                  <FiVideo className="text-orange-500 w-4 h-4" />
+                  <span>Demo Video Walkthrough URL (Optional)</span>
+                </label>
+                <span className="text-[11px] font-mono text-stone-400">
+                  YouTube, Vimeo, Loom, or MP4
+                </span>
+              </div>
+
+              <input
+                {...register("videoUrl")}
+                type="text"
+                onBlur={(e) => {
+                  register("videoUrl").onBlur(e);
+                  const cleaned = cleanVideoUrl(e.target.value);
+                  if (cleaned !== e.target.value) {
+                    setValue("videoUrl", cleaned, { shouldValidate: true, shouldDirty: true });
+                  }
+                }}
+                placeholder="https://www.youtube.com/watch?v=... or https://www.loom.com/share/..."
+                className="w-full rounded-xl bg-white/[0.04] border border-white/[0.12] px-4 py-3 text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+              />
+              {errors.videoUrl && (
+                <p className="text-xs text-red-400 mt-1">{errors.videoUrl.message}</p>
+              )}
+
+              {/* Video Live Preview */}
+              {videoPreview && (
+                <div className="mt-4 rounded-2xl overflow-hidden border border-orange-500/30 bg-black/50 p-2 shadow-lg">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-orange-400 px-2 py-1 block">
+                    ✓ Video Preview Attached
+                  </span>
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black mt-1">
+                    {videoPreview.type === "iframe" ? (
+                      <iframe
+                        src={videoPreview.src}
+                        title="Demo Video Preview"
+                        className="w-full h-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video src={videoPreview.src} controls className="w-full h-full object-contain" />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </FormSection>
+
+          {/* ================================================================= */}
+          {/* 3. DEEP DIVE: ARCHITECTURE & CHALLENGES                          */}
+          {/* ================================================================= */}
+          <FormSection
+            title="System Architecture & Deep Dive Lore"
+            description="The engineering hurdles, technical decisions, and architecture story."
+          >
+            <FormTextarea
+              label="Architecture & System Design"
+              rows={4}
+              register={register("architecture")}
+              error={errors.architecture}
+              placeholder="e.g. Distributed Next.js server actions with MongoDB replicas, Tailwind styling, and Cloudinary CDN caching..."
             />
 
             <FormTextarea
-  label="Problem (Optional)"
-  rows={5}
-  register={register("problem")}
-  error={errors.problem}
-  placeholder="What problem, limitation, or gap existed before this project?"
-/>
+              label="Key Challenges & Obstacles Overcome"
+              rows={4}
+              register={register("challenges")}
+              error={errors.challenges}
+              placeholder="e.g. Complex cart synchronization under high concurrency, 60 FPS mobile scroll rendering..."
+            />
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <FormTextarea
+                label="The Problem"
+                rows={4}
+                register={register("problem")}
+                error={errors.problem}
+                placeholder="What limitation or pain point existed before this product?"
+              />
+
+              <FormTextarea
+                label="The Solution"
+                rows={4}
+                register={register("solution")}
+                error={errors.solution}
+                placeholder="How did this application resolve the problem effectively?"
+              />
+            </div>
+
+            <FormTextarea
+              label="Key Learnings & Takeaways"
+              rows={3}
+              register={register("learnings")}
+              error={errors.learnings}
+              placeholder="Key technical growth, framework insights, or patterns discovered during development..."
+            />
           </FormSection>
 
+          {/* ================================================================= */}
+          {/* 4. HIGHLIGHTS & KEY FEATURES                                      */}
+          {/* ================================================================= */}
           <FormSection
-            title="Details"
-            description="Role, timeline, and classification."
+            title="Key Highlights & Features"
+            description="Punchy quantifiable achievements and bullet points."
+          >
+            <div>
+              <ChipInput
+                label="Impact Metrics & Technical Wins (Press Enter)"
+                value={highlights ?? []}
+                onChange={(newHighlights) =>
+                  setValue("highlights", newHighlights, { shouldDirty: true })
+                }
+                placeholder="e.g. 99.9% Uptime, Sub-80ms API response, 10k+ Monthly Users..."
+              />
+              <p className="mt-2 text-xs text-stone-400">
+                Quantifiable metrics that highlight project performance and reliability.
+              </p>
+            </div>
+
+            <div className="mt-5">
+              <ChipInput
+                label="Key Features & Capabilities (Press Enter)"
+                value={features ?? []}
+                onChange={(newFeatures) =>
+                  setValue("features", newFeatures, { shouldDirty: true })
+                }
+                placeholder="e.g. Real-Time Sync, Stripe Checkout, Responsive Dark Mode..."
+              />
+            </div>
+          </FormSection>
+
+          {/* ================================================================= */}
+          {/* 5. METADATA & TELEMETRY SPECS                                     */}
+          {/* ================================================================= */}
+          <FormSection
+            title="Telemetry Specifications"
+            description="Role, duration, category, and catalog classification."
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
               <FormInput
-                label="Role"
+                label="Your Role"
                 register={register("role")}
                 error={errors.role}
-                placeholder="Full Stack Developer"
+                placeholder="Lead Full-Stack Developer"
               />
 
               <FormInput
                 label="Duration"
                 register={register("duration")}
                 error={errors.duration}
-                placeholder="2 Months"
+                placeholder="e.g. 3 Months"
               />
 
               <FormInput
-                label="Year"
+                label="Year of Build"
                 register={register("year")}
                 error={errors.year}
-                placeholder="2026"
+                placeholder="2024"
               />
 
               <FormInput
                 type="number"
-                label="Display Order"
+                label="Display Order (Sort weight)"
                 register={register("order", { valueAsNumber: true })}
                 error={errors.order}
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 mt-5">
               <FormSelect
                 label="Category"
                 register={register("category")}
@@ -313,24 +516,40 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
             </div>
           </FormSection>
 
+          {/* ================================================================= */}
+          {/* 6. TECHNOLOGY & TAGS                                              */}
+          {/* ================================================================= */}
           <FormSection
-            title="Thumbnail"
-            description="The cover image shown in project listings."
+            title="Tech Stack & Search Tags"
+            description="Technologies power public project filter chips; tags power search."
           >
-            <FormImage
-              label="Thumbnail"
-              folder="projects"
-              value={watch("image")}
-              onChange={(image) =>
-                setValue("image", image, { shouldValidate: true })
+            <ChipInput
+              label="Tech Stack (Chips)"
+              value={tech ?? []}
+              onChange={(newTech) =>
+                setValue("tech", newTech, { shouldDirty: true })
               }
-              error={errors.image}
+              placeholder="Next.js, MongoDB, Tailwind, TypeScript..."
             />
+
+            <div className="mt-5">
+              <ChipInput
+                label="Search Tags & Keywords"
+                value={tags ?? []}
+                onChange={(newTags) =>
+                  setValue("tags", newTags, { shouldDirty: true })
+                }
+                placeholder="e-commerce, fullstack, portfolio, saas..."
+              />
+            </div>
           </FormSection>
 
+          {/* ================================================================= */}
+          {/* 7. WALKTHROUGH BUILD STEPS                                        */}
+          {/* ================================================================= */}
           <FormSection
-            title="Walkthrough"
-            description="Step-by-step breakdown of the project build."
+            title="Step-by-Step Build Walkthrough"
+            description="Chronological milestones and device screenshots."
           >
             <div className="-mx-1 overflow-x-auto px-1">
               <WalkthroughEditor
@@ -342,16 +561,19 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
             </div>
           </FormSection>
 
+          {/* ================================================================= */}
+          {/* 8. EXTERNAL REPO & LIVE DEPLOYMENT                                 */}
+          {/* ================================================================= */}
           <FormSection
-            title="Links"
-            description="Where visitors can see the project live or view its source."
+            title="External Deployments & Links"
+            description="Where visitors can view the live app or repository."
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
               <FormInput
-                label="GitHub URL"
+                label="GitHub Source URL"
                 register={register("github")}
                 error={errors.github}
-                placeholder="https://github.com/username/repo"
+                placeholder="https://github.com/Bahulvgopal/..."
               />
 
               <FormInput
@@ -363,63 +585,32 @@ export default function ProjectForm({ mode, initialData }: ProjectFormProps) {
             </div>
           </FormSection>
 
+          {/* ================================================================= */}
+          {/* 9. PUBLISHING & VISIBILITY                                        */}
+          {/* ================================================================= */}
           <FormSection
-  title="Technology"
-  description="Technologies used in this project. These power the project filters."
->
-  <ChipInput
-    label="Tech Stack"
-    value={tech ?? []}
-    onChange={(newTech) =>
-      setValue("tech", newTech, { shouldDirty: true })
-    }
-    placeholder="Next.js, MongoDB, Tailwind..."
-  />
-
-  <div className="mt-3 text-xs text-neutral-500">
-    Use these exact names for filtering:
-    <span className="ml-1 text-neutral-400">
-      Next.js, MongoDB, Tailwind, Python, HTML, CSS, JS
-    </span>
-  </div>
-</FormSection>
-
-<FormSection
-  title="Tags"
-  description="Keywords used for search and project categorization."
->
-  <ChipInput
-    label="Project Tags"
-    value={tags ?? []}
-    onChange={(newTags) =>
-      setValue("tags", newTags, { shouldDirty: true })
-    }
-    placeholder="Type a tag and press Enter"
-  />
-</FormSection>
-
-          <FormSection
-            title="Publishing"
-            description="Control visibility and highlight status."
+            title="Publishing Status"
+            description="Control homepage showcase and visibility state."
           >
             <FormCheckbox
-              label="Featured Project"
-              description="Show this project in the featured section."
+              label="Featured Project (★ S-Rank)"
+              description="Display prominently on the homepage mission showcase."
               register={register("featured")}
             />
 
             <FormSelect
-              label="Status"
+              label="Visibility Status"
               register={register("status")}
               error={errors.status}
               options={[
-                { label: "Draft", value: "draft" },
-                { label: "Published", value: "published" },
+                { label: "Published (Live to public)", value: "published" },
+                { label: "Draft (Hidden from public)", value: "draft" },
               ]}
             />
           </FormSection>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-6">
+          {/* Actions Bar */}
+          <div className="rounded-[28px] border border-white/20 bg-slate-950/40 backdrop-blur-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]">
             <FormActions
               mode={mode}
               entity="Project"

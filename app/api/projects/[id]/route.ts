@@ -85,18 +85,12 @@ export async function PATCH(
 
     const body = await req.json();
 
-    
-
     const data = ProjectSchema.partial().parse(body);
-
-    
 
     const updated = await ProjectService.updateProject(
       id,
       data
     );
-
-    
 
     if (!updated) {
       return NextResponse.json(
@@ -108,6 +102,8 @@ export async function PATCH(
       );
     }
 
+    revalidatePath("/admin/projects");
+    revalidatePath("/admin/projects/[id]", "page");
     revalidatePath("/projects");
     revalidatePath("/projects/[slug]", "page");
 
@@ -115,13 +111,26 @@ export async function PATCH(
       success: true,
       data: updated,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === "ZodError") {
+      const firstIssue = error.issues?.[0];
+      const detail = firstIssue ? `${firstIssue.path.join(".")}: ${firstIssue.message}` : "Validation failed";
+      return NextResponse.json(
+        {
+          success: false,
+          message: detail,
+          errors: error.flatten ? error.flatten() : error.issues,
+        },
+        { status: 400 }
+      );
+    }
+
     console.error(error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to update project.",
+        message: error instanceof Error ? error.message : "Failed to update project.",
       },
       { status: 500 }
     );
@@ -149,8 +158,6 @@ export async function DELETE(
       );
     }
 
-    revalidatePath("/projects");
-    revalidatePath("/projects/[slug]", "page");
     const deleted = await ProjectService.deleteProject(id);
 
     if (!deleted) {
@@ -162,6 +169,9 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    revalidatePath("/admin/projects");
+    revalidatePath("/projects");
 
     return NextResponse.json({
       success: true,

@@ -4,77 +4,85 @@ interface StatCardProps {
   title: string;
   value: number;
   icon: LucideIcon;
+  accentGradient?: string;
+  badgeLabel?: string;
 }
 
 export default function StatCard({
   title,
   value,
   icon: Icon,
+  accentGradient = "from-[#FF5E3A] to-[#FF2A54]",
+  badgeLabel,
 }: StatCardProps) {
   return (
-    <div
-      className="
-        group
-        relative
-        overflow-hidden
-        rounded-2xl
-        border border-white/10
-        bg-[#111112]
-        p-4 sm:p-6
-        transition-all
-        duration-500
-        hover:-translate-y-1
-        hover:border-white/20
-        hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)]
-      "
-    >
-      {/* accent line */}
+    <div className="group relative">
+      {/* 1. Behind-the-card floating glowing gradient square (matching the reference image) */}
+      <div
+        aria-hidden
+        className={`
+          absolute -top-3 -left-3 w-28 h-28 sm:w-32 sm:h-32
+          rounded-[26px] bg-gradient-to-br ${accentGradient}
+          opacity-90 blur-[1px]
+          shadow-[0_8px_30px_rgba(255,61,0,0.45)]
+          transition-transform duration-500 ease-out
+          group-hover:scale-105 group-hover:-translate-x-1 group-hover:-translate-y-1
+          z-0
+        `}
+      />
+
+      {/* 2. Glassmorphism Card Face */}
       <div
         className="
-          absolute left-0 top-0 h-[3px] w-full
-          bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400
-          origin-left scale-x-0
-          transition-transform duration-500
-          group-hover:scale-x-100
+          relative z-10 overflow-hidden
+          rounded-[30px] sm:rounded-[34px]
+          border border-white/20
+          bg-slate-950/40 backdrop-blur-3xl
+          p-6 sm:p-7
+          transition-all duration-500 ease-out
+          shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.3),inset_0_-1px_2px_rgba(0,0,0,0.4)]
+          hover:-translate-y-1.5 hover:border-white/30 hover:shadow-[0_25px_60px_rgba(0,0,0,0.7),inset_0_1px_3px_rgba(255,255,255,0.4)]
+          flex flex-col justify-between min-h-[220px]
         "
-      />
+      >
+        {/* Ambient Glass Highlight Line */}
+        <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
 
-      {/* hover glow */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(circle at top, rgba(56,189,248,.10), transparent 65%)",
-        }}
-      />
+        {/* Top Header / Badges */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <span className="font-orbitron text-[9px] font-bold text-stone-400 tracking-widest uppercase block mb-2">
+              · VECTOR CMS ·
+            </span>
 
-      <div className="relative z-10">
-        <div className="mb-3 sm:mb-4 flex items-center justify-between gap-2">
-          <p className="truncate text-xs sm:text-sm text-neutral-400">
-            {title}
-          </p>
+            {/* Glowing Gradient Badge Pill (like GLASS in the image) */}
+            <div className={`inline-flex items-center px-3.5 py-1 rounded-xl bg-gradient-to-r ${accentGradient} text-white font-orbitron text-[11px] font-black uppercase tracking-widest shadow-[0_4px_16px_rgba(255,42,84,0.4)] border border-white/20`}>
+              {badgeLabel || title}
+            </div>
+          </div>
 
-          <div
-            className="
-              flex h-9 w-9 sm:h-10 sm:w-10 shrink-0
-              items-center justify-center
-              rounded-xl
-              border border-white/10
-              bg-blue-600/20
-              text-blue-400
-              transition-all duration-300
-              group-hover:border-white/20
-              group-hover:bg-blue-600/25
-            "
-          >
-            <Icon size={18} className="sm:hidden" />
-            <Icon size={20} className="hidden sm:block" />
+          {/* Frosted Glass Icon Pod */}
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/[0.06] backdrop-blur-xl text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)] transition-transform duration-300 group-hover:scale-110 group-hover:border-orange-400/50">
+            <Icon size={20} className="text-orange-300" />
           </div>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-bold text-white">
-          {value}
-        </h2>
+        {/* Center / Bottom: Value & Micro Dots */}
+        <div className="mt-6 flex items-end justify-between">
+          <div>
+            <div className="font-orbitron text-4xl sm:text-5xl font-black text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
+              {String(value).padStart(2, "0")}
+            </div>
+            <p className="font-rajdhani text-sm sm:text-base font-semibold text-stone-300 tracking-wide mt-1">
+              Active {title} Records
+            </p>
+          </div>
+
+          {/* Micro dots · · · from the image */}
+          <div className="text-stone-400 font-mono tracking-widest text-sm opacity-60 group-hover:opacity-100 group-hover:text-orange-400 transition-opacity">
+            · · ·
+          </div>
+        </div>
       </div>
     </div>
   );

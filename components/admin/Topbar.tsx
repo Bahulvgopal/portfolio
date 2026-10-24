@@ -1,73 +1,64 @@
 "use client";
 
-import { Bell } from "lucide-react";
 import { motion } from "framer-motion";
+import { Sparkles, ShieldCheck } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const GRAIN_URL = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
 export default function Topbar() {
   return (
     <motion.header
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: EASE }}
-      className="relative flex h-16 sm:h-20 items-center justify-between overflow-hidden border-b border-white/[0.08] bg-[#0a0a0b] px-4 sm:px-6 lg:px-8"
+      transition={{ duration: 0.6, ease: EASE }}
+      className="relative flex h-18 sm:h-20 items-center justify-between border-b border-white/10 bg-[#070b14]/50 backdrop-blur-2xl px-4 sm:px-6 lg:px-8 z-20"
     >
-      {/* grain */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]"
-        style={{ backgroundImage: GRAIN_URL, backgroundRepeat: "repeat", backgroundSize: "128px" }}
-      />
+      {/* Ambient glass glare line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-      {/* ambient glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-24 left-1/3 h-[220px] w-[220px] rounded-full bg-blue-600/[0.08] blur-[100px]"
-      />
-
-      {/* LEFT — title */}
+      {/* LEFT — Title & Status */}
       <div className="relative z-10 min-w-0">
-        <h2
-          className="truncate text-lg sm:text-xl font-black tracking-tight text-white"
-          style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-        >
-          Dashboard
+        <div className="flex items-center gap-2 mb-1">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-emerald-500/30 bg-emerald-500/[0.08] text-[9px] font-orbitron font-bold text-emerald-400 uppercase tracking-widest">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            CORE ACTIVE
+          </span>
+          <span className="text-stone-500 font-mono text-xs hidden sm:inline">· · ·</span>
+        </div>
+
+        <h2 className="truncate font-orbitron text-base sm:text-lg font-black tracking-wide text-white uppercase">
+          WORKSPACE COMMAND //{" "}
+          <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-rose-400 bg-clip-text text-transparent">
+            STUDIO
+          </span>
         </h2>
-        <p className="hidden sm:block text-xs sm:text-sm text-neutral-400 truncate">
-          Welcome back, Bahul 👋
-        </p>
       </div>
 
-      {/* RIGHT — actions */}
-      <div className="relative z-10 flex items-center gap-2 sm:gap-4 lg:gap-5">
-        {/* notification button */}
-        {/* <button
-          aria-label="Notifications"
-          className="relative rounded-xl p-2 text-neutral-400 border border-transparent transition-all duration-200 hover:border-white/[0.08] hover:bg-white/[0.03] hover:text-sky-400"
-        >
-          <Bell size={19} />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-gradient-to-br from-rose-400 to-red-500 ring-2 ring-[#0a0a0b]" />
-        </button> */}
+      {/* RIGHT — Actions & Profile */}
+      <div className="relative z-10 flex items-center gap-3 sm:gap-4">
+        {/* Telemetry pill */}
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-inner">
+          <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+          <span className="font-mono text-xs text-stone-300">
+            NEXT.JS 16 · MONGO ACTIVE
+          </span>
+        </div>
 
-        {/* divider — hidden on mobile */}
-        <div className="hidden sm:block h-8 w-px bg-white/[0.08]" />
+        <div className="hidden sm:block h-7 w-px bg-white/10" />
 
-        {/* profile */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-500 font-black text-white shadow-[0_0_20px_rgba(56,189,248,0.25)]">
-            B
+        {/* Profile Card */}
+        <div className="flex items-center gap-2.5 sm:gap-3 p-1 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl">
+          <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 via-rose-500 to-amber-500 font-black text-white shadow-[0_4px_16px_rgba(249,115,22,0.4)] border border-white/30">
+            <span className="font-orbitron text-sm font-bold">B</span>
           </div>
 
-          {/* name/role — hidden below md, shown from md up */}
-          <div className="hidden md:flex flex-col leading-tight">
-            <p className="text-sm font-semibold text-white truncate max-w-[140px] lg:max-w-none">
+          <div className="hidden sm:flex flex-col pr-3 leading-tight">
+            <p className="font-rajdhani text-sm font-bold text-white truncate max-w-[140px]">
               Bahul V Gopal
             </p>
-            <span className="inline-flex w-fit items-center rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium tracking-wider text-sky-400 font-mono uppercase">
-              Administrator
+            <span className="inline-flex items-center gap-1 text-[9px] font-orbitron font-bold tracking-wider text-orange-400 uppercase">
+              <ShieldCheck className="w-3 h-3 text-orange-400" />
+              S-RANK ADMIN
             </span>
           </div>
         </div>

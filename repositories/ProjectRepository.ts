@@ -13,16 +13,16 @@ class ProjectRepository extends BaseRepository<IProject> {
 
       title: doc.title,
       slug: doc.slug,
-      tagline: doc.tagline,
+      tagline: doc.tagline ?? "",
       description: doc.description,
-      role: doc.role,
-      duration: doc.duration,
-      year: doc.year,
+      role: doc.role ?? "",
+      duration: doc.duration ?? "",
+      year: doc.year ?? "",
 
       category: doc.category,
       projectType: doc.projectType,
 
-      order: doc.order,
+      order: doc.order ?? 0,
 
       image: doc.image
         ? {
@@ -31,35 +31,40 @@ class ProjectRepository extends BaseRepository<IProject> {
           }
         : undefined,
 
-      github: doc.github,
-      live: doc.live,
+      videoUrl: doc.videoUrl ?? "",
+
+      github: doc.github ?? "",
+      live: doc.live ?? "",
 
       tags: doc.tags ?? [],
       tech: doc.tech ?? [],
       features: doc.features ?? [],
+      highlights: doc.highlights ?? [],
 
-      problem: doc.problem,
-      solution: doc.solution,
-      learnings: doc.learnings,
+      problem: doc.problem ?? "",
+      solution: doc.solution ?? "",
+      challenges: doc.challenges ?? "",
+      architecture: doc.architecture ?? "",
+      learnings: doc.learnings ?? "",
 
       walkthrough:
         doc.walkthrough?.map((step: any) => ({
           title: step.title,
           description: step.description,
           image: {
-            url: step.image.url,
-            publicId: step.image.publicId,
+            url: step.image?.url ?? "",
+            publicId: step.image?.publicId ?? "",
           },
-          device: step.device,
-          order: step.order,
+          device: step.device ?? "desktop",
+          order: step.order ?? 0,
         })) ?? [],
 
-      featured: doc.featured,
+      featured: doc.featured ?? false,
 
-      status: doc.status,
+      status: doc.status ?? "published",
 
-      createdAt: doc.createdAt.toISOString(),
-      updatedAt: doc.updatedAt.toISOString(),
+      createdAt: doc.createdAt?.toISOString ? doc.createdAt.toISOString() : new Date().toISOString(),
+      updatedAt: doc.updatedAt?.toISOString ? doc.updatedAt.toISOString() : new Date().toISOString(),
     };
   }
 

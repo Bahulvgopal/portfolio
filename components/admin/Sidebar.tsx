@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -16,9 +17,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 import SidebarItem from "./SidebarItem";
-import { useRouter } from "next/navigation";
 
 const menu = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -40,126 +41,136 @@ export default function Sidebar() {
     router.refresh();
   }
 
-  const Logo = ({ size = "text-xl sm:text-2xl" }) => (
-    <h1
-      className={`${size} font-normal text-white flex items-center gap-2`}
-      style={{ fontFamily: "'Georgia','Times New Roman',serif" }}
-    >
-      <span
-        className="flex h-8 w-8 items-center justify-center rounded-lg"
-        style={{
-          background: "linear-gradient(135deg,#38bdf8,#818cf8)",
-        }}
-      >
-        <Sparkles className="h-4 w-4 text-[#0a0a0b]" />
-      </span>
-      Portfolio{" "}
-      <span
-        style={{
-          background: "linear-gradient(90deg,#38bdf8,#818cf8)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}
-      >
-        CMS
-      </span>
-    </h1>
+  const Logo = ({ size = "text-lg sm:text-xl" }) => (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-1.5">
+        <span className="font-orbitron text-[9px] font-bold text-orange-400 tracking-widest uppercase">
+          · VECTOR CONTROL ·
+        </span>
+      </div>
+
+      <div className={`font-orbitron font-extrabold text-white flex items-center gap-2.5 ${size}`}>
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-rose-600 shadow-[0_4px_16px_rgba(249,115,22,0.45)] border border-white/25">
+          <Sparkles className="h-4 w-4 text-white" />
+        </span>
+
+        <span className="tracking-wide">PORTFOLIO</span>
+
+        <span className="bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 text-white font-black text-[10px] tracking-widest uppercase px-2 py-0.5 rounded-md shadow-[0_2px_10px_rgba(249,115,22,0.4)]">
+          CMS
+        </span>
+      </div>
+    </div>
   );
 
   const SidebarContent = (
-    <>
-      {/* Header */}
-      <div className="mb-8">
-        <Logo />
+    <div className="flex flex-col h-full justify-between">
+      <div>
+        {/* Header */}
+        <div className="mb-6 pb-6 border-b border-white/[0.08]">
+          <Logo />
 
-        <Link
-          href="/"
+          <Link
+            href="/"
+            onClick={() => setIsOpen(false)}
+            className="
+              mt-5 flex items-center justify-between
+              rounded-2xl border border-white/12 bg-white/[0.03] backdrop-blur-xl
+              px-3.5 py-2.5
+              text-xs font-rajdhani font-bold tracking-wider uppercase text-stone-300
+              transition-all duration-300
+              hover:border-orange-500/40 hover:bg-white/[0.07] hover:text-orange-400
+              shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]
+              group
+            "
+          >
+            <span className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live Site
+            </span>
+            <ExternalLink className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-stone-400 group-hover:text-orange-400" />
+          </Link>
+        </div>
+
+        {/* Section Label */}
+        <div className="mb-3 px-3 flex items-center justify-between text-[10px] font-orbitron font-bold uppercase tracking-widest text-stone-500">
+          <span>NAVIGATION</span>
+          <span className="text-orange-500 font-mono">· · ·</span>
+        </div>
+
+        {/* Navigation Items */}
+        <nav
+          className="space-y-1.5"
           onClick={() => setIsOpen(false)}
-          className="
-            mt-4 flex items-center gap-2
-            rounded-xl border border-white/10 bg-white/[0.02]
-            px-3 py-2.5
-            text-sm text-neutral-400
-            transition-all duration-300
-            hover:border-sky-400/30 hover:bg-white/[0.05] hover:text-sky-400
-            group
-          "
         >
-          <ExternalLink className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          View Portfolio
-        </Link>
+          {menu.map((item) => (
+            <SidebarItem key={item.href} {...item} />
+          ))}
+        </nav>
       </div>
 
-      {/* Nav */}
-      <div className="mb-3 px-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-600">
-        Menu
-      </div>
-      <nav
-        className="space-y-1.5 sm:space-y-2"
-        onClick={() => setIsOpen(false)}
-      >
-        {menu.map((item) => (
-          <SidebarItem key={item.href} {...item} />
-        ))}
-      </nav>
-
-      {/* Footer */}
-      <div className="mt-10 border-t border-white/10 pt-6">
+      {/* Footer / Logout */}
+      <div className="pt-6 border-t border-white/[0.08] mt-6">
         <button
           onClick={handleLogout}
           className="
-            flex w-full items-center gap-3
-            rounded-xl border border-transparent
+            flex w-full items-center justify-between
+            rounded-2xl border border-rose-500/20 bg-rose-500/[0.05] backdrop-blur-xl
             px-4 py-3
-            text-neutral-300
+            text-sm font-rajdhani font-bold text-rose-300
             transition-all duration-300
-            hover:border-red-500/20 hover:bg-red-500/[0.06] hover:text-red-400
+            hover:border-rose-500/40 hover:bg-rose-500/[0.12] hover:text-rose-200
+            shadow-[inset_0_1px_1px_rgba(244,63,94,0.15)]
+            group
           "
         >
-          <LogOut className="h-5 w-5" />
-          Logout
+          <span className="flex items-center gap-3">
+            <LogOut className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
+            <span>DISCONNECT SESSION</span>
+          </span>
+          <span className="text-[10px] font-orbitron text-rose-400 font-mono">
+            EXIT
+          </span>
         </button>
       </div>
-    </>
+    </div>
   );
 
   return (
     <>
-      {/* Mobile top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-[#0a0a0b]/95 backdrop-blur-md px-4 py-4 lg:hidden">
-        <Logo size="text-lg" />
+      {/* Mobile Top Bar */}
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-[#070b14]/85 backdrop-blur-2xl px-4 py-3.5 lg:hidden">
+        <Logo size="text-base" />
 
         <button
           onClick={() => setIsOpen(true)}
-          aria-label="Open menu"
+          aria-label="Open navigation menu"
           className="
             flex h-10 w-10 items-center justify-center
-            rounded-xl border border-white/10 bg-white/[0.03]
-            text-neutral-300
+            rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-xl
+            text-stone-200
             transition-colors duration-200
-            hover:border-sky-400/30 hover:text-white
+            hover:border-orange-500/50 hover:text-white
           "
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-5 w-5 text-orange-400" />
         </button>
       </div>
 
-      {/* Desktop sidebar */}
+      {/* Desktop Sidebar (Fixed Glass Column) */}
       <aside
         className="
           hidden lg:flex lg:flex-col
-          w-72 shrink-0 h-screen sticky top-0
-          border-r border-white/10 bg-[#0a0a0b]
-          p-6
+          w-72 h-screen fixed inset-y-0 left-0
+          border-r border-white/10 bg-[#070b14]/75 backdrop-blur-3xl
+          p-6 z-40 overflow-y-auto no-scrollbar
+          shadow-[20px_0_60px_rgba(0,0,0,0.5),inset_-1px_0_0_rgba(255,255,255,0.06)]
         "
-        style={{
-          boxShadow: "inset -1px 0 0 rgba(255,255,255,0.03)",
-        }}
       >
         {SidebarContent}
       </aside>
 
-      {/* Mobile drawer */}
+      {/* Mobile Drawer (Glass Sheet) */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -169,7 +180,7 @@ export default function Sidebar() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md lg:hidden"
             />
 
             <motion.aside
@@ -179,30 +190,29 @@ export default function Sidebar() {
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="
                 fixed inset-y-0 left-0 z-50
-                w-[80vw] max-w-72
+                w-[82vw] max-w-72
                 overflow-y-auto
-                border-r border-white/10
-                bg-[#0a0a0b]
+                border-r border-white/15
+                bg-[#070b14]/90 backdrop-blur-3xl
                 p-6
                 lg:hidden
+                shadow-[25px_0_70px_rgba(0,0,0,0.7)]
               "
-              style={{
-                boxShadow: "20px 0 60px rgba(0,0,0,0.5)",
-              }}
             >
-              <button
-                onClick={() => setIsOpen(false)}
-                aria-label="Close menu"
-                className="
-                  mb-6 flex h-9 w-9 items-center justify-center
-                  rounded-xl border border-white/10 bg-white/[0.03]
-                  text-neutral-300
-                  transition-colors duration-200
-                  hover:border-white/20 hover:text-white
-                "
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <div className="flex items-center justify-end mb-4">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close menu"
+                  className="
+                    flex h-9 w-9 items-center justify-center
+                    rounded-xl border border-white/15 bg-white/[0.04]
+                    text-stone-300
+                    hover:border-white/30 hover:text-white
+                  "
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
               {SidebarContent}
             </motion.aside>

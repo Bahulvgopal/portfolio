@@ -22,21 +22,15 @@ export default function EditProjectPage() {
         const res = await fetch(`/api/projects/${id}`);
         const result = await res.json();
 
-console.log("Fetched Project:", result.data);
-console.log("Fetched Tags:", result.data.tags);
+        if (!res.ok || !result.success) {
+          throw new Error(result.message || "Failed to fetch project.");
+        }
 
-if (!res.ok || !result.success) {
-  throw new Error(result.message || "Failed to fetch project.");
-}
-
-setProject(result.data);
+        setProject(result.data);
       } catch (error) {
         console.error(error);
-
         toast.error(
-          error instanceof Error
-            ? error.message
-            : "Something went wrong."
+          error instanceof Error ? error.message : "Something went wrong."
         );
       } finally {
         setLoading(false);
@@ -58,23 +52,6 @@ setProject(result.data);
       />
     );
   }
-console.log(project);
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-white">
-          Edit Project
-        </h1>
 
-        <p className="mt-2 text-slate-400">
-          Update your project details.
-        </p>
-      </div>
-
-      <ProjectForm
-        mode="edit"
-        initialData={project}
-      />
-    </div>
-  );
+  return <ProjectForm mode="edit" initialData={project} />;
 }

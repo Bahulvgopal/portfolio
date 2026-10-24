@@ -11,34 +11,33 @@ class ProfileService {
     return ProfileRepository.getProfile();
   }
 
-  async updateProfile(
-  data: ProfileApiData
-) {
-  await connectDB();
+  async updateProfile(data: ProfileApiData) {
+    await connectDB();
 
-  const existing =
-    await ProfileRepository.getProfile();
+    const existing = await ProfileRepository.getProfile();
 
-  if (
-    existing?.profileImage?.publicId &&
-    data.profileImage &&
-    existing.profileImage.publicId !==
-      data.profileImage.publicId
-  ) {
-    await cloudinary.uploader.destroy(
-      existing.profileImage.publicId
-    );
+    if (
+      existing?.profileImage?.publicId &&
+      data.profileImage &&
+      existing.profileImage.publicId !== data.profileImage.publicId
+    ) {
+      await cloudinary.uploader.destroy(existing.profileImage.publicId);
+    }
+
+    return ProfileRepository.updateProfile({
+      ...data,
+      profileImage: data.profileImage ?? undefined,
+      ...(data.hero
+        ? {
+            hero: {
+              heading: data.hero.heading ?? "",
+              subtitle: data.hero.subtitle ?? "",
+              typingWords: data.hero.typingWords ?? [],
+            },
+          }
+        : {}),
+    });
   }
-
-  return ProfileRepository.updateProfile({
-    ...data,
-    profileImage: data.profileImage ?? undefined,
-    hero: {
-      ...data.hero,
-      typingWords: data.hero.typingWords,
-    },
-  });
-}
 }
 
 export default new ProfileService();

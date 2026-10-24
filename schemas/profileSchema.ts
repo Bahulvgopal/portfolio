@@ -4,6 +4,7 @@ const imageSchema = z.object({
   url: z.string().url(),
   publicId: z.string(),
 });
+
 const optionalUrl = z.preprocess(
   (value) => {
     if (typeof value !== "string") return "";
@@ -12,64 +13,58 @@ const optionalUrl = z.preprocess(
   },
   z.union([z.literal(""), z.string().url()])
 );
+
 export const profileSchema = z.object({
   fullName: z
     .string()
     .min(2, "Full name is required"),
 
-  title: z
-    .string()
-    .min(2, "Professional title is required"),
-
   shortBio: z
     .string()
-    .min(10)
-    .max(200),
-
-  about: z
-    .string()
-    .min(30),
+    .min(10, "Short bio must be at least 10 characters")
+    .max(300, "Short bio cannot exceed 300 characters"),
 
   profileImage: imageSchema.optional(),
 
   email: z
     .string()
-    .email(),
-
-  phone: z.string().optional(),
-
-  location: z.string().optional(),
+    .email("Valid email address is required"),
 
   socials: z.object({
-  github: optionalUrl,
-  linkedin: optionalUrl,
-  instagram: optionalUrl,
-  twitter: optionalUrl,
-  youtube: optionalUrl,
-  leetcode: optionalUrl,
-  hackerrank: optionalUrl,
-  portfolio: optionalUrl,
-}),
-
-  hero: z.object({
-  heading: z.string().min(2),
-  subtitle: z.string().min(2),
-
-  typingWords: z
-    .array(
-      z.object({
-        value: z.string().min(1),
-      })
-    )
-    .min(1),
-}),
+    github: optionalUrl,
+    linkedin: optionalUrl,
+    instagram: optionalUrl,
+    twitter: optionalUrl,
+    youtube: optionalUrl,
+    portfolio: optionalUrl,
+    leetcode: optionalUrl.optional(),
+    hackerrank: optionalUrl.optional(),
+  }),
 
   resume: z.object({
-  url: z.string().optional(),
-  publicId: z.string().optional(),
-  buttonText: z.string(),
-}),
+    url: z.string().optional(),
+    publicId: z.string().optional(),
+    buttonText: z.string().min(1, "Button text is required"),
+  }),
+
+  // Optional legacy fields to maintain backward compatibility with DB data
+  title: z.string().optional(),
+  about: z.string().optional(),
+  phone: z.string().optional(),
+  location: z.string().optional(),
+  hero: z
+    .object({
+      heading: z.string().optional(),
+      subtitle: z.string().optional(),
+      typingWords: z
+        .array(
+          z.object({
+            value: z.string(),
+          })
+        )
+        .optional(),
+    })
+    .optional(),
 });
 
-export type ProfileFormData =
-  z.infer<typeof profileSchema>;
+export type ProfileFormData = z.infer<typeof profileSchema>;
